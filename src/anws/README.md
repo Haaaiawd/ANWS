@@ -3,7 +3,7 @@
 **Antigravity Workflow System** — 一条命令，将 AI 协作工作流体系注入任意项目。
 
 ```
-npm install -g anws
+npm install -g @haaaiawd/anws
 anws init
 ```
 
@@ -12,7 +12,7 @@ anws init
 ## 安装
 
 ```bash
-npm install -g anws
+npm install -g @haaaiawd/anws
 ```
 
 需要 **Node.js ≥ 18**。

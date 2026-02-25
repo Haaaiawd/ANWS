@@ -1,19 +1,26 @@
 {
-  "name": "anws",
+  "name": "@haaaiawd/anws",
   "version": "1.0.0",
   "description": "Antigravity Workflow System CLI — one command to install AI collaboration workflows into your project",
-  "keywords": ["ai", "workflow", "agent", "cli", "developer-tools"],
+  "keywords": [
+    "ai",
+    "workflow",
+    "agent",
+    "cli",
+    "developer-tools"
+  ],
   "homepage": "https://github.com/your-org/antigravity-workflow-system",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-org/antigravity-workflow-system.git"
+    "url": "git+https://github.com/your-org/antigravity-workflow-system.git"
   },
+  "author": "haaaiawd <1134180104@qq.com>",
   "license": "MIT",
   "engines": {
     "node": ">=18"
   },
   "bin": {
-    "anws": "./bin/cli.js"
+    "anws": "bin/cli.js"
   },
   "files": [
     "bin/",
