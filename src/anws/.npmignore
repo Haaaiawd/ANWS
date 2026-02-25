@@ -1,0 +1,28 @@
+# npm publish 时排除的文件
+
+# 开发工具配置
+.editorconfig
+.eslintrc*
+.prettierrc*
+
+# 测试文件
+test/
+*.test.js
+*.spec.js
+
+# 开发文档
+DEVELOPMENT.md
+CONTRIBUTING.md
+
+# 临时文件
+*.log
+.DS_Store
+Thumbs.db
+
+# 版本控制
+.git/
+.gitignore
+
+# 编译中间产物
+*.pyc
+__pycache__/
