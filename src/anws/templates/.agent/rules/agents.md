@@ -34,12 +34,15 @@
 
 ## 📍 当前状态 (由 Workflow 自动更新)
 
-> **注意**: 此部分由 `/genesis` 和 `/blueprint` 自动维护。
+> **注意**: 此部分由 `/genesis`、`/blueprint` 和 `/forge` 自动维护。
 
 - **最新架构版本**: `尚未初始化`
 - **活动任务清单**: `尚未生成`
 - **待办任务数**: -
 - **最近一次更新**: `-`
+
+### 🌊 Wave 1 — 待 /blueprint 或 /forge 设置
+_尚未开始执行_
 
 ---
 
@@ -69,11 +72,11 @@
 | `/genesis` | 新项目 / 重大重构 | PRD, Architecture, ADRs |
 | `/scout` | 变更前 / 接手项目 | `genesis/v{N}/00_SCOUT_REPORT.md` |
 | `/design-system` | genesis 后 | 04_SYSTEM_DESIGN/*.md |
-| `/blueprint` | genesis 后 | 05_TASKS.md |
-| `/forge` | blueprint 后 | 实际代码实现 |
+| `/blueprint` | genesis 后 | 05_TASKS.md + agents.md 初始 Wave |
 | `/change` | 微调已有任务 | 更新 TASKS + SYSTEM_DESIGN (仅修改) + CHANGELOG |
 | `/explore` | 调研时 | 探索报告 |
-| `/challenge` | 决策前质疑 | 07_CHALLENGE_REPORT.md |
+| `/challenge` | 决策前质疑 | 07_CHALLENGE_REPORT.md (含问题总览目录) |
+| `/forge` | 编码执行 | 代码 + 更新 agents.md Wave 块 |
 | `/craft` | 创建工作流/技能/提示词 | Workflow / Skill / Prompt 文档 |
 
 ---

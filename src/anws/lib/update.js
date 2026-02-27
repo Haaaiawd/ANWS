@@ -2,6 +2,7 @@
 
 const fs = require('node:fs/promises');
 const path = require('node:path');
+const crypto = require('node:crypto');
 const { MANAGED_FILES, USER_PROTECTED_FILES } = require('./manifest');
 const { success, warn, error, info, fileLine, skippedLine, blank, logo } = require('./output');
 
@@ -66,10 +67,24 @@ async function update() {
       skippedLine(rel.replace(/\\/g, '/'));
     }
   }
+
+  // 检查 agents.md 模板是否有变更，提供 .new 文件供用户合并
+  const agentsMerged = await checkAgentsTemplate(cwd, srcRoot);
+
   blank();
   success(`Done! ${updated.length} file(s) updated${skipped.length > 0 ? `, ${skipped.length} skipped` : ''}.`);
   info('Managed files have been updated to the latest version.');
   info('Your custom files in .agent/ were not touched.');
+
+  if (agentsMerged) {
+    blank();
+    warn('agents.md template has changed!');
+    info('A new template has been saved to:');
+    info('  .agent/rules/agents.md.new');
+    blank();
+    info('Please review and merge the changes into your agents.md.');
+    info('After merging, delete agents.md.new.');
+  }
 }
 
 /**
@@ -93,6 +108,46 @@ async function askUpdate() {
       }
     );
   });
+}
+
+/**
+ * 检查 agents.md 模板是否相比上次安装/更新有变化。
+ * 用 hash 文件记录上次模板指纹，与新模板比较。
+ * 如果有变化 → 写入 agents.md.new + 更新 hash。
+ *
+ * @param {string} cwd       项目根目录
+ * @param {string} srcRoot   模板 .agent/ 目录
+ * @returns {Promise<boolean>} 是否产生了 .new 文件
+ */
+async function checkAgentsTemplate(cwd, srcRoot) {
+  const templatePath = path.join(path.dirname(srcRoot), '.agent', 'rules', 'agents.md');
+  const hashPath = path.join(cwd, '.agent', 'rules', '.agents-template-hash');
+  const newPath = path.join(cwd, '.agent', 'rules', 'agents.md.new');
+
+  const templateExists = await fs.access(templatePath).then(() => true).catch(() => false);
+  if (!templateExists) return false;
+
+  const templateContent = await fs.readFile(templatePath, 'utf-8');
+  const newHash = crypto.createHash('md5').update(templateContent).digest('hex');
+
+  // 读取上次存储的 hash
+  let oldHash = null;
+  try {
+    oldHash = (await fs.readFile(hashPath, 'utf-8')).trim();
+  } catch {
+    // hash 文件不存在（首次 update 或旧版本安装）
+  }
+
+  if (oldHash === newHash) {
+    return false; // 模板没变化
+  }
+
+  // 模板有变化 → 写入 .new 供用户合并
+  await fs.writeFile(newPath, templateContent, 'utf-8');
+  // 更新 hash 记录
+  await fs.writeFile(hashPath, newHash, 'utf-8');
+
+  return true;
 }
 
 module.exports = update;
