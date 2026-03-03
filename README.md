@@ -57,7 +57,9 @@ anws update
 
 ### Your First Project 🐣
 
-> **Example Prompt**: "I want to build a web-based macOS simulator, including Dock, top bar, and several system apps. Please start this new project from scratch according to the development process."
+> **The easiest way to start**: Just run the `/quickstart` command! The AI will automatically analyze your project state and guide you step-by-step through the entire lifecycle (from `/genesis` to `/forge`).
+
+**Looking for inspiration? Alternative prompt**: "I want to build a web-based macOS simulator, including Dock, top bar, and several system apps. Please start this new project from scratch according to the development process."
 
 ### 🔁 Built with Itself (Dogfooding)
 
@@ -143,17 +145,18 @@ We used the `/genesis` workflow to design the CLI's architecture, and the `/forg
 
 ## 📋 Workflows
 
-| Command          | Purpose                                       | Input             | Output                                     |
-| ---------------- | --------------------------------------------- | ----------------- | ------------------------------------------ |
-| `/genesis`       | Start from zero, create PRD & architecture    | Vague idea        | PRD, Architecture, ADRs                    |
-| `/scout`         | Analyze legacy codebase risks                 | Existing code     | Risk report, Gap analysis                  |
-| `/design-system` | Detailed design for a system                  | Architecture      | System Design doc                          |
-| `/challenge`     | Review Design & Tasks (intelligent detection) | Full Docs / TASKS | Challenge Report (Graded)                  |
-| `/blueprint`     | Break architecture into tasks                 | PRD + Arch        | TASKS.md (WBS)                             |
-| `/forge`         | Execute tasks — architecture to code          | TASKS.md          | Working code, verified                     |
-| `/change`        | Tweak existing tasks (no new tasks)           | Minor tweak       | Updated TASKS + Design files (modify only) |
-| `/explore`       | Deep research & brainstorm                    | Topic/Question    | Exploration report                         |
-| `/craft`         | Create workflows/skills/prompts               | Creation request  | Workflow / Skill / Prompt docs             |
+| Command           | Purpose                                                 | Input             | Output                                     |
+| ----------------- | ------------------------------------------------------- | ----------------- | ------------------------------------------ |
+| **`/quickstart`** | **One-command entry: orchestrates the whole lifecycle** | Auto-detected     | Full pipeline orchestration                |
+| `/genesis`        | Start from zero, create PRD & architecture              | Vague idea        | PRD, Architecture, ADRs                    |
+| `/scout`          | Analyze legacy codebase risks                           | Existing code     | Risk report, Gap analysis                  |
+| `/design-system`  | Detailed design for a system                            | Architecture      | System Design doc                          |
+| `/challenge`      | Review Design & Tasks (intelligent detection)           | Full Docs / TASKS | Challenge Report (Graded)                  |
+| `/blueprint`      | Break architecture into tasks                           | PRD + Arch        | TASKS.md (WBS)                             |
+| `/forge`          | Execute tasks — architecture to code                    | TASKS.md          | Working code, verified                     |
+| `/change`         | Tweak existing tasks (no new tasks)                     | Minor tweak       | Updated TASKS + Design files (modify only) |
+| `/explore`        | Deep research & brainstorm                              | Topic/Question    | Exploration report                         |
+| `/craft`          | Create workflows/skills/prompts                         | Creation request  | Workflow / Skill / Prompt docs             |
 
 ---
 
