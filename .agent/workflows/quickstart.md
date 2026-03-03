@@ -1,5 +1,5 @@
 ---
-description: 一键启动入口。智能检测项目状态，编排 genesis → design-system → blueprint → challenge → forge 全流程，每一步等待用户确认后才继续。新用户只需知道这一个命令。
+description: 一键启动入口。智能检测项目状态，编排 scout → genesis → design-system → blueprint → challenge → forge 全流程，每一步等待用户确认后才继续。接手遗留项目时自动插入 scout 侦察阶段。新用户只需知道这一个命令。
 ---
 
 # /quickstart
@@ -26,11 +26,12 @@ description: 一键启动入口。智能检测项目状态，编排 genesis → 
 ### 检测逻辑
 
 ```
-1. 扫描 genesis/ 目录
+1. 扫描 genesis/ 目录 + 扫描是否存在现有代码 (src/, lib/, app/ 等)
 2. 判断状态:
 
    ├── 无 genesis/ 目录
-   │   → 🆕 全新项目 → Jump to Step 1
+   │   ├── 无现有代码 → 🆕 全新项目 → Jump to Step 1 (Genesis)
+   │   └── 有现有代码 → 🏚️ 遗留项目接手 → Jump to Step 0.5 (Scout → Genesis)
    │
    ├── 有 genesis/v{N}/ 但无 05_TASKS.md
    │   ├── 有 04_SYSTEM_DESIGN/ → 需要 blueprint 或设计审查 → Jump to Step 3
@@ -51,16 +52,45 @@ description: 一键启动入口。智能检测项目状态，编排 genesis → 
 ## 🧭 项目状态检测
 
 **检测到的架构版本**: genesis/v{N} (或: 未找到 genesis 目录)
+**现有代码**: ✅ 发现代码库 / ❌ 空项目
 **PRD**: ✅ 存在 / ❌ 缺失
 **Architecture**: ✅ 存在 / ❌ 缺失
 **System Design**: ✅ 已有 {X} 个系统设计 / ⚠️ 未找到
 **Tasks**: ✅ 共 {N} 个任务 ({M} 已完成) / ❌ 缺失
-**代码**: ✅ src/ 存在 / ❌ 未开始
 
 📍 **建议从 Step {X} 开始**: {原因}
 ```
 
 ⏸️ **等待用户确认** → 用户同意后按检测结果跳转到对应 Step。
+
+---
+
+## Step 0.5: 遗留侦察 (Scout) — 条件执行
+
+**触发条件**: 检测到**有现有代码**但**无 genesis/ 目录**时自动触发。全新空项目跳过此步骤直接进入 Step 1。
+
+**目标**: 在 Genesis 之前，通过 `/scout` 工作流探测遗留代码库的风险、隐藏耦合和暗坑，为后续 Genesis 提供高质量输入。
+
+> 引导用户执行 `/scout` 工作流（模式 A：Genesis 前侦察）。
+
+### 完成后展示
+
+```markdown
+## ✅ Step 0.5 完成: 遗留侦察
+
+**产出文件**: genesis/v1/00_SCOUT_REPORT.md
+
+**侦察摘要**:
+- 🏗️ 构建拓扑: {Monolith / Workspace / Polyrepo}
+- 🧩 识别概念: {X} 个领域实体
+- 🔥 Git 热点: {Y} 个高风险模块
+- ⚠️ 发现风险: {Critical: X, High: Y, Medium: Z}
+
+**下一步**: Step 1 — Genesis (基于侦察报告启动需求与架构设计)
+**建议**: 在 /genesis 过程中，引用 00_SCOUT_REPORT.md 中发现的风险作为架构约束输入
+```
+
+⏸️ **等待用户确认** → 用户确认后进入 Step 1 (Genesis)，Scout 报告将作为 Genesis 的背景输入。
 
 ---
 
@@ -264,7 +294,8 @@ description: 一键启动入口。智能检测项目状态，编排 genesis → 
 1. `/forge` — 继续执行未完成的任务
 2. `/change` — 微调已有任务
 3. `/challenge` — 对当前状态做一次审查
-4. `/genesis` — 启动新版本架构 (v{N+1})
+4. `/scout` — 重大变更前侦察风险 (接手后或启动新版本前建议执行)
+5. `/genesis` — 启动新版本架构 (v{N+1})，建议先执行 /scout
 ```
 
 ⏸️ **等待用户选择** → 根据选择跳转到对应工作流。
@@ -283,6 +314,7 @@ description: 一键启动入口。智能检测项目状态，编排 genesis → 
 
 完成本工作流后，根据情况选择：
 
+- **侦察遗留代码** → `/scout` — 接手遗留项目或重大变更前，先探测风险
 - **从头开始** → `/genesis` — 从零开始，将想法转化为 PRD 和架构
 - **任务拆解** → `/blueprint` — 将架构拆解为可执行任务
 - **开始编码** → `/forge` — 按任务清单开始波次执行
