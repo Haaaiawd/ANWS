@@ -14,6 +14,7 @@ const MANAGED_FILES = [
   '.agent/skills/concept-modeler/references/ENTITY_EXTRACTION_PROMPT.md',
   '.agent/skills/concept-modeler/scripts/glossary_gen.py',
   '.agent/skills/concept-modeler/SKILL.md',
+  '.agent/skills/design-reviewer/SKILL.md',
   '.agent/skills/git-forensics/references/ANALYSIS_METHODOLOGY.md',
   '.agent/skills/git-forensics/scripts/git_forensics.py',
   '.agent/skills/git-forensics/scripts/git_hotspots.py',
@@ -25,10 +26,12 @@ const MANAGED_FILES = [
   '.agent/skills/spec-writer/SKILL.md',
   '.agent/skills/system-architect/references/rfc_template.md',
   '.agent/skills/system-architect/SKILL.md',
+  '.agent/skills/system-designer/references/system-design-detail-template.md',
   '.agent/skills/system-designer/references/system-design-template.md',
   '.agent/skills/system-designer/SKILL.md',
   '.agent/skills/task-planner/references/TASK_TEMPLATE.md',
   '.agent/skills/task-planner/SKILL.md',
+  '.agent/skills/task-reviewer/SKILL.md',
   '.agent/skills/tech-evaluator/references/ADR_TEMPLATE.md',
   '.agent/skills/tech-evaluator/SKILL.md',
   '.agent/workflows/blueprint.md',
@@ -39,6 +42,7 @@ const MANAGED_FILES = [
   '.agent/workflows/explore.md',
   '.agent/workflows/forge.md',
   '.agent/workflows/genesis.md',
+  '.agent/workflows/quickstart.md',
   '.agent/workflows/scout.md'
 ];
 
