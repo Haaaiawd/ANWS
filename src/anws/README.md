@@ -52,8 +52,8 @@ cd your-project
 anws update
 ```
 
-> `anws update` overwrites all managed workflow/skill files to the latest version while **preserving** your `AGENTS.md`.
-> If the `AGENTS.md` template has new content, an `AGENTS.md.new` file will be generated for you to merge manually.
+> `anws update` overwrites all managed workflow/skill files to the latest version while **preserving** your existing `AGENTS.md`.
+> If your project still has a legacy `.agent/rules/agents.md`, the CLI will ask whether to migrate to the root `AGENTS.md`.
 
 ### Your First Project 🐣
 

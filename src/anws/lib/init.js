@@ -4,6 +4,7 @@ const fs = require('node:fs/promises');
 const path = require('node:path');
 const { copyDir } = require('./copy');
 const { MANAGED_FILES, USER_PROTECTED_FILES } = require('./manifest');
+const { resolveAgentsInstall, printLegacyMigrationWarning, pathExists } = require('./agents');
 const { success, warn, info, fileLine, skippedLine, blank, logo } = require('./output');
 
 /**
@@ -13,6 +14,13 @@ async function init() {
   const cwd = process.cwd();
   const srcRoot = path.join(__dirname, '..', 'templates', '.agent');
   const destRoot = path.join(cwd, '.agent');
+  const srcAgents = path.join(__dirname, '..', 'templates', 'AGENTS.md');
+
+  const agentsDecision = await resolveAgentsInstall({
+    cwd,
+    askMigrate,
+    forceYes: !!global.__ANWS_FORCE_YES
+  });
 
   // ── 冲突检测（T1.2.3 在此处插入冲突分支）──────────────────────────────────
   const conflicting = await findConflicts(cwd);
@@ -24,7 +32,13 @@ async function init() {
       process.exit(0);
     }
     // 仅覆盖托管文件（用户自有文件不受影响）
-    const { written: updated, skipped } = await overwriteManaged(srcRoot, cwd);
+    const { written: updated, skipped } = await overwriteManaged(srcRoot, cwd, {
+      srcAgents,
+      shouldWriteRootAgents: agentsDecision.shouldWriteRootAgents
+    });
+    if (agentsDecision.shouldWarnMigration) {
+      printLegacyMigrationWarning();
+    }
     printSummary(updated, skipped, 'updated');
     return;
   }
@@ -37,14 +51,18 @@ async function init() {
   const writtenFiles = await copyDir(srcRoot, destRoot);
   const written = Array.isArray(writtenFiles) ? writtenFiles : [];
 
-  // 把外层的 AGENTS.md 拷贝出来
-  const srcAgents = path.join(__dirname, '..', 'templates', 'AGENTS.md');
-  const destAgents = path.join(cwd, 'AGENTS.md');
-  try {
-    await fs.copyFile(srcAgents, destAgents);
-    written.push(destAgents);
-  } catch (e) {
-    // 忽略
+  if (agentsDecision.shouldWriteRootAgents) {
+    const destAgents = path.join(cwd, 'AGENTS.md');
+    try {
+      await fs.copyFile(srcAgents, destAgents);
+      written.push(destAgents);
+    } catch (e) {
+      // 忽略
+    }
+  }
+
+  if (agentsDecision.shouldWarnMigration) {
+    printLegacyMigrationWarning();
   }
 
   // 打印文件列表
@@ -68,7 +86,7 @@ async function findConflicts(cwd) {
   const conflicts = [];
   for (const rel of MANAGED_FILES) {
     const abs = path.join(cwd, rel);
-    const exists = await fs.access(abs).then(() => true).catch(() => false);
+    const exists = await pathExists(abs);
     if (exists) conflicts.push(rel);
   }
   return conflicts;
@@ -102,32 +120,60 @@ async function askOverwrite(count) {
   });
 }
 
+async function askMigrate() {
+  if (global.__ANWS_FORCE_YES) return true;
+
+  if (!process.stdin.isTTY) {
+    return false;
+  }
+
+  const readline = require('node:readline');
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+
+  return new Promise((resolve) => {
+    rl.question(
+      '\n\u26a0 Legacy .agent/rules/agents.md detected. Do you want to migrate to root AGENTS.md? [y/N] ',
+      (answer) => {
+        rl.close();
+        resolve(answer.trim().toLowerCase() === 'y');
+      }
+    );
+  });
+}
+
 /**
  * 仅覆盖 MANAGED_FILES 清单内的文件，用户自有文件不受影响。
  * USER_PROTECTED_FILES 中的文件即便冲突也跳过，保留用户修改。
  * @returns {{ written: string[], skipped: string[] }}
  */
-async function overwriteManaged(srcRoot, cwd) {
+async function overwriteManaged(srcRoot, cwd, options = {}) {
   const srcBase = path.dirname(srcRoot); // templates/
   const written = [];
   const skipped = [];
+  const shouldWriteRootAgents = options.shouldWriteRootAgents !== false;
+  const srcAgents = options.srcAgents || path.join(srcBase, 'AGENTS.md');
 
   for (const rel of MANAGED_FILES) {
+    if (rel === 'AGENTS.md' && !shouldWriteRootAgents) {
+      skipped.push(rel);
+      continue;
+    }
+
     // 受保护文件：文件已存在时跳过，交给用户自行维护
     if (USER_PROTECTED_FILES.includes(rel)) {
       const destPath = path.join(cwd, rel);
-      const exists = await fs.access(destPath).then(() => true).catch(() => false);
+      const exists = await pathExists(destPath);
       if (exists) {
         skipped.push(rel);
         continue;
       }
     }
 
-    const srcPath = path.join(srcBase, rel);
+    const srcPath = rel === 'AGENTS.md' ? srcAgents : path.join(srcBase, rel);
     const destPath = path.join(cwd, rel);
 
     await fs.mkdir(path.dirname(destPath), { recursive: true });
-    const srcExists = await fs.access(srcPath).then(() => true).catch(() => false);
+    const srcExists = await pathExists(srcPath);
     if (srcExists) {
       await fs.copyFile(srcPath, destPath);
       written.push(rel);

@@ -3,6 +3,7 @@
 const fs = require('node:fs/promises');
 const path = require('node:path');
 const { MANAGED_FILES, USER_PROTECTED_FILES } = require('./manifest');
+const { resolveAgentsInstall, printLegacyMigrationWarning, pathExists } = require('./agents');
 const { success, warn, error, info, fileLine, skippedLine, blank, logo } = require('./output');
 
 /**
@@ -13,7 +14,7 @@ async function update() {
   const agentDir = path.join(cwd, '.agent');
 
   // 检查 .agent/ 是否存在
-  const agentExists = await fs.access(agentDir).then(() => true).catch(() => false);
+  const agentExists = await pathExists(agentDir);
   if (!agentExists) {
     logo();
     error('No .agent/ found in current directory.');
@@ -32,43 +33,40 @@ async function update() {
   logo();
   // 仅覆盖托管文件；USER_PROTECTED_FILES 永远跳过
   const srcRoot = path.join(__dirname, '..', 'templates', '.agent');
-  let skipNewAgentsMd = false;
-  
-  const legacyAgentsPath = path.join(cwd, '.agent', 'rules', 'agents.md');
-  const legacyExists = await fs.access(legacyAgentsPath).then(() => true).catch(() => false);
-  const rootAgentsPath = path.join(cwd, 'AGENTS.md');
-  const rootExists = await fs.access(rootAgentsPath).then(() => true).catch(() => false);
+  const srcAgents = path.join(__dirname, '..', 'templates', 'AGENTS.md');
+  const agentsDecision = await resolveAgentsInstall({
+    cwd,
+    askMigrate,
+    forceYes: !!global.__ANWS_FORCE_YES
+  });
 
-  if (legacyExists && !rootExists) {
-    const migrate = await askMigrate();
-    if (!migrate) {
-      skipNewAgentsMd = true;
-      info('Keeping legacy .agent/rules/agents.md. Will not pull root AGENTS.md.');
-    } else {
-      blank();
-      warn('Please manually copy your custom rules from .agent/rules/agents.md to the new root AGENTS.md');
-      warn('After copying, you can safely delete the old .agent/rules/agents.md file.');
-      blank();
-    }
+  if (!agentsDecision.shouldWriteRootAgents && agentsDecision.legacyExists) {
+    info('Keeping legacy .agent/rules/agents.md. Will not pull root AGENTS.md.');
+  }
+  if (agentsDecision.shouldWarnMigration) {
+    printLegacyMigrationWarning();
   }
 
   const updated = [];
   const skipped = [];
 
   for (const rel of MANAGED_FILES) {
-    if (skipNewAgentsMd && rel === 'AGENTS.md') {
-      continue;
-    }
-
-    if (USER_PROTECTED_FILES.includes(rel)) {
+    if (rel === 'AGENTS.md' && !agentsDecision.shouldWriteRootAgents) {
       skipped.push(rel);
       continue;
     }
 
-    const srcPath = path.join(path.dirname(srcRoot), rel);
+    if (USER_PROTECTED_FILES.includes(rel)) {
+      if (!(rel === 'AGENTS.md' && agentsDecision.shouldWriteRootAgents && !agentsDecision.rootExists)) {
+        skipped.push(rel);
+        continue;
+      }
+    }
+
+    const srcPath = rel === 'AGENTS.md' ? srcAgents : path.join(path.dirname(srcRoot), rel);
     const destPath = path.join(cwd, rel);
 
-    const srcExists = await fs.access(srcPath).then(() => true).catch(() => false);
+    const srcExists = await pathExists(srcPath);
     if (!srcExists) continue;
 
     await fs.mkdir(path.dirname(destPath), { recursive: true });
