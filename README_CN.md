@@ -52,8 +52,8 @@ cd your-project
 anws update
 ```
 
-> `anws update` 会覆盖所有托管的工作流/技能文件至最新版本，同时**保留**你的 `AGENTS.md` 不被覆盖。
-> 如果 `AGENTS.md` 模板有新内容，会生成 `AGENTS.md.new` 供你手动合并。
+> `anws update` 会覆盖所有托管的工作流/技能文件至最新版本，同时**保留**你现有的 `AGENTS.md` 不被覆盖。
+> 如果项目里仍有旧版 `.agent/rules/agents.md`，CLI 会询问你是否迁移到根目录 `AGENTS.md`。
 
 ### 你的第一个项目 🐣
 
