@@ -151,7 +151,7 @@ We used the `/genesis` workflow to design the CLI's architecture, and the `/forg
 | ----------------- | ------------------------------------------------------- | ----------------- | ------------------------------------------ |
 | **`/quickstart`** | **One-command entry: orchestrates the whole lifecycle** | Auto-detected     | Full pipeline orchestration                |
 | `/genesis`        | Start from zero, create PRD & architecture              | Vague idea        | PRD, Architecture, ADRs                    |
-| `/scout`          | Analyze legacy codebase risks                           | Existing code     | Risk report, Gap analysis                  |
+| `/probe`         | Analyze legacy codebase risks                           | Existing code     | Risk report, Gap analysis                  |
 | `/design-system`  | Detailed design for a system                            | Architecture      | System Design doc                          |
 | `/challenge`      | Review Design & Tasks (intelligent detection)           | Full Docs / TASKS | Challenge Report (Graded)                  |
 | `/blueprint`      | Break architecture into tasks                           | PRD + Arch        | TASKS.md (WBS)                             |

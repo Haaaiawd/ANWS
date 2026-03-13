@@ -19,7 +19,7 @@ description: "智能编排全流程。适用于不确定从哪个工作流开始
 ### 状态矩阵
 ```
 ├── 🛑 无 genesis/ 
-│   ├── 有代码 → 🏚️ [遗留项目] → Jump to Step 0.5 (Scout)
+│   ├── 有代码 → 🏚️ [遗留项目] → Jump to Step 0.5 (Probe)
 │   └── 无代码 → 🆕 [全新项目] → Jump to Step 1 (Genesis)
 ├── 📝 有架构 (无任务)
 │   ├── 有系统设计 → Step 3 (Challenge Design)
@@ -33,10 +33,10 @@ description: "智能编排全流程。适用于不确定从哪个工作流开始
 
 ---
 
-## Step 0.5: 侦察 (Scout)
+## Step 0.5: 探测 (Probe)
 
-**触发**: 遗留项目。通过 `/scout` 探测暗地里的风险与耦合。
-**产出**: `00_SCOUT_REPORT.md` (Genesis 的重要输入)。
+**触发**: 遗留项目。通过 `/probe` 探测暗地里的风险与耦合。
+**产出**: `00_PROBE_REPORT.md` (Genesis 的重要输入)。
 
 ---
 
@@ -86,7 +86,7 @@ description: "智能编排全流程。适用于不确定从哪个工作流开始
 **场景**: 项目开发中。
 **建议建议**:
 - `/forge` — 继续执行任务
-- `/scout` — 重大变更前探测风险
+- `/probe` — 重大变更前探测风险
 - `/genesis` — 架构大版本升级
 - `/change` — 微调任务细节
 

@@ -1,6 +1,6 @@
 ---
 name: report-template
-description: 综合 Scout 阶段所有分析（build-inspector, runtime-inspector, git-forensics, concept-modeler），生成决策就绪的系统风险报告。
+description: 综合 Probe 阶段所有分析（nexus-mapper, runtime-inspector），生成决策就绪的系统风险报告。
 ---
 
 # 综合者手册 (The Synthesizer's Manual)
@@ -15,9 +15,9 @@ description: 综合 Scout 阶段所有分析（build-inspector, runtime-inspecto
 
 > [!IMPORTANT]
 > 在生成报告之前，你**必须**进行自我检查：
-> 1.  "build-inspector 发现的构建边界和 runtime-inspector 发现的 IPC 边界是否一致？"
-> 2.  "git-forensics 发现的高耦合文件对是否跨越了构建边界？"
-> 3.  "concept-modeler 识别的缺失组件是否与已发现的风险相关？"
+> 1.  "nexus-mapper 发现的构建边界和 runtime-inspector 发现的 IPC 边界是否一致？"
+> 2.  "nexus-mapper 发现的高耦合文件对是否跨越了构建边界？"
+> 3.  "nexus-mapper 识别的缺失组件是否与已发现的风险相关？"
 > 4.  "这份报告是否足够完整？"
 
 ---
@@ -26,19 +26,17 @@ description: 综合 Scout 阶段所有分析（build-inspector, runtime-inspecto
 
 1.  **读取模板 (MANDATORY)**: 使用 `view_file references/REPORT_TEMPLATE.md`。你的报告**必须**完全匹配此结构。
 2.  **综合所有发现**: 汇总来自以下来源的输出：
-    *   `build-inspector` → Build Roots, Topology
+    *   `nexus-mapper` → Build Roots, Topology, Coupling Pairs, Hotspots, Entities, Missing Components
     *   `runtime-inspector` → IPC Surfaces, Contract Status
-    *   `git-forensics` → Coupling Pairs, Hotspots
-    *   `concept-modeler` → Entities, Missing Components
 3.  **起草报告**: 按照模板组织逻辑连接。
-4.  **发布 (CRITICAL)**: 你**必须**使用 `write_to_file` 保存到 `genesis/v{N}/00_SCOUT_REPORT.md`。**禁止**仅打印到聊天。确保 `genesis/v{N}/` 目录存在。
+4.  **发布 (CRITICAL)**: 你**必须**使用 `write_to_file` 保存到 `genesis/v{N}/00_PROBE_REPORT.md`。**禁止**仅打印到聊天。确保 `genesis/v{N}/` 目录存在。
 
 ---
 
 ## ✅ 完成检查清单
 
 在进入下一阶段之前，验证：
-- [ ] 输出文件已创建: `genesis/v{N}/00_SCOUT_REPORT.md`
+- [ ] 输出文件已创建: `genesis/v{N}/00_PROBE_REPORT.md`
 - [ ] 包含: System Fingerprint, Component Map, Risk Matrix, Feature Landing Guide
 - [ ] 用户已确认发现
 
@@ -55,9 +53,9 @@ description: 综合 Scout 阶段所有分析（build-inspector, runtime-inspecto
 *   检查清单: 日志？错误处理？CI/CD？密钥管理？版本握手？
 
 ### 3. 交叉验证 (Cross-Verification)
-*   **build-inspector** 说 "Workspace 统一管理"？
-*   **git-forensics** 说 "高耦合跨越构建根"？
-*   **结论**: 发现隐藏的逻辑耦合 → **重构目标**。
+*   **nexus-mapper** 说 "Workspace 统一管理"？
+*   **nexus-mapper** 说 "高耦合跨越构建根"？
+*   **结论**: 发现隐藏逻辑耦合 → **重构目标**。
 
 ### 4. 人工检查点
 *   强制用户确认: "这份报告完整吗？"
@@ -83,6 +81,5 @@ description: 综合 Scout 阶段所有分析（build-inspector, runtime-inspecto
 
 这份报告的直接消费者是 `/blueprint` 阶段的:
 *   **System Architect**: 依赖你的风险清单来设计规避策略。
-*   **Complexity Guard**: 依赖你的发现来审计 RFC 复杂度。
 
 你的分析质量**直接决定**下一阶段的设计质量。

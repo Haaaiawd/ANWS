@@ -109,7 +109,7 @@ flowchart TD
 ---
 
 ## 6. 约束与限制 (Constraint Analysis)
-<!-- 约束决定了技术选型的天花板。来自于 /scout 报告或立项时的不可抗力。 -->
+<!-- 约束决定了技术选型的天花板。来自于 /probe 报告或立项时的不可抗力。 -->
 
 ### 6.1 技术约束 (Technical Constraints)
 *   **遗留系统**: [例如: 必须兼容老版本的 MySQL 5.7 表结构]

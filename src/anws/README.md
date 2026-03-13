@@ -91,7 +91,7 @@ We used the `/genesis` workflow to design the CLI's architecture, and the `/forg
     └────┬─────┘      └────┬─────┘      └────┬─────┘
          │                 │                 │
          ▼                 ▼                 ▼
-    /genesis          /scout        Tweak existing task?
+    /genesis          /probe        Tweak existing task?
          │                 │              /         \
          │                 │             /           \
          └────────┬────────┘     /change       /genesis
@@ -149,7 +149,7 @@ We used the `/genesis` workflow to design the CLI's architecture, and the `/forg
 | ----------------- | ------------------------------------------------------- | ----------------- | ------------------------------------------ |
 | **`/quickstart`** | **One-command entry: orchestrates the whole lifecycle** | Auto-detected     | Full pipeline orchestration                |
 | `/genesis`        | Start from zero, create PRD & architecture              | Vague idea        | PRD, Architecture, ADRs                    |
-| `/scout`          | Analyze legacy codebase risks                           | Existing code     | Risk report, Gap analysis                  |
+| `/probe`         | Analyze legacy codebase risks                           | Existing code     | Risk report, Gap analysis                  |
 | `/design-system`  | Detailed design for a system                            | Architecture      | System Design doc                          |
 | `/challenge`      | Review Design & Tasks (intelligent detection)           | Full Docs / TASKS | Challenge Report (Graded)                  |
 | `/blueprint`      | Break architecture into tasks                           | PRD + Arch        | TASKS.md (WBS)                             |
@@ -196,13 +196,13 @@ Antigravity will automatically recognize the intent and trigger the appropriate 
 #### ⚡ Method A: Slash Protocol (Explicit)
 Directly type the command in the chat or editor to trigger the workflow.
 - `/genesis` - Start project creation
-- `/scout` - Analyze existing codebase
+- `/probe` - Analyze existing codebase
 - `/blueprint` - Break down architecture into tasks
 
 #### 🧠 Method B: Intent Protocol (Implicit)
 Just speak naturally. Antigravity will automatically select and run the right workflow.
 - *"I want to start a new project for a todo app"* → Triggers `/genesis`
-- *"Help me understand this legacy code and its risks"* → Triggers `/scout`
+- *"Help me understand this legacy code and its risks"* → Triggers `/probe`
 - *"I think there are gaps in this design, challenge it"* → Triggers `/challenge`
 - *"The architecture is ready, let's plan the tasks"* → Triggers `/blueprint`
 - *"Change the error message on the login page"* → Triggers `/change` (tweak existing task)
