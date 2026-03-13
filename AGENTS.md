@@ -27,8 +27,9 @@
 | `src/` | **实现层**。实际的代码库。 | 通过 Task 读/写。 |
 | `genesis/` | **设计演进史**。版本化架构状态 (v1, v2...)。 | **只读**(旧版) / **写一次**(新版)。 |
 | `genesis/v{N}/` | **当前真理**。最新的架构定义。 | 永远寻找最大的 `v{N}`。 |
-| `.agent/workflows/` | **工作流**。`/genesis`, `/blueprint` 等。 | 通过 `view_file` 阅读。 |
-| `.agent/skills/` | **技能库**。原子能力。 | 通过 `view_file` 调用。 |
+| `.agents/workflows/` | **工作流**。`/genesis`, `/blueprint` 等。 | 通过 `view_file` 阅读。 |
+| `.agents/skills/` | **技能库**。原子能力。 | 通过 `view_file` 调用。 |
+| `.nexus-map/` | **知识库**。代码库结构映射。 | 由 nexus-mapper 生成。 |
 
 ---
 
@@ -71,7 +72,7 @@ _尚未开始执行_
 |--------|---------|------|
 | `/quickstart` | 新用户入口 / 不知道从哪开始 | 编排其他工作流 |
 | `/genesis` | 新项目 / 重大重构 | PRD, Architecture, ADRs |
-| `/scout` | 变更前 / 接手项目 | `genesis/v{N}/00_SCOUT_REPORT.md` |
+| `/probe` | 变更前 / 接手项目 | `genesis/v{N}/00_PROBE_REPORT.md` |
 | `/design-system` | genesis 后 | 04_SYSTEM_DESIGN/*.md |
 | `/blueprint` | genesis 后 | 05_TASKS.md + AGENTS.md 初始 Wave |
 | `/change` | 微调已有任务 | 更新 TASKS + SYSTEM_DESIGN (仅修改) + CHANGELOG |

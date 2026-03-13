@@ -11,13 +11,13 @@ const { success, warn, error, info, fileLine, skippedLine, blank, logo } = requi
  */
 async function update() {
   const cwd = process.cwd();
-  const agentDir = path.join(cwd, '.agent');
+  const agentDir = path.join(cwd, '.agents');
 
-  // 检查 .agent/ 是否存在
+  // 检查 .agents/ 是否存在
   const agentExists = await pathExists(agentDir);
   if (!agentExists) {
     logo();
-    error('No .agent/ found in current directory.');
+    error('No .agents/ found in current directory.');
     info('Run `anws init` first to set up the workflow system.');
     process.exit(1);
   }
@@ -32,7 +32,7 @@ async function update() {
 
   logo();
   // 仅覆盖托管文件；USER_PROTECTED_FILES 永远跳过
-  const srcRoot = path.join(__dirname, '..', 'templates', '.agent');
+  const srcRoot = path.join(__dirname, '..', 'templates', '.agents');
   const srcAgents = path.join(__dirname, '..', 'templates', 'AGENTS.md');
   const agentsDecision = await resolveAgentsInstall({
     cwd,
@@ -92,7 +92,7 @@ async function update() {
   blank();
   success(`Done! ${updated.length} file(s) updated${skipped.length > 0 ? `, ${skipped.length} skipped` : ''}.`);
   info('Managed files have been updated to the latest version.');
-  info('Your custom files in .agent/ were not touched.');
+  info('Your custom files in .agents/ were not touched.');
 }
 
 /**
@@ -111,7 +111,7 @@ async function askUpdate() {
 
   return new Promise((resolve) => {
     rl.question(
-      '\n\u26a0 This will overwrite all managed .agent/ files. Continue? [y/N] ',
+      '\n\u26a0 This will overwrite all managed .agents/ files. Continue? [y/N] ',
       (answer) => {
         rl.close();
         resolve(answer.trim().toLowerCase() === 'y');
@@ -135,7 +135,7 @@ async function askMigrate() {
 
   return new Promise((resolve) => {
     rl.question(
-      '\n\u26a0 Legacy .agent/rules/agents.md detected. Do you want to migrate to root AGENTS.md? [y/N] ',
+      '\n\u26a0 Legacy .agents/ directory detected. Do you want to migrate to .agents/? [y/N] ',
       (answer) => {
         rl.close();
         resolve(answer.trim().toLowerCase() === 'y');

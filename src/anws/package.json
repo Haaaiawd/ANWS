@@ -1,9 +1,9 @@
 {
   "name": "@haaaiawd/anws",
   "version": "1.2.5",
-  "description": "A spec-driven workflow framework for AI-assisted development. Empowers prompt engineers to build production-ready software through structured PRD → Architecture → Task decomposition. Designed for Antigravity to enforce design-first principles and prevent architectural drift in vibe coding.",
+  "description": "Anws — A spec-driven workflow framework for AI-assisted development. Empowers prompt engineers to build production-ready software through structured PRD → Architecture → Task decomposition. Works with Claude Code, GitHub Copilot, Cursor, Windsurf, and any tool that reads AGENTS.md.",
   "keywords": [
-    "antigravity",
+    "anws",
     "agentic-ai",
     "workflow-orchestration",
     "spec-driven",
@@ -11,12 +11,16 @@
     "vibe-coding",
     "prompt-engineering",
     "devops-for-ai",
-    "skills-framework"
+    "skills-framework",
+    "claude-code",
+    "github-copilot",
+    "cursor",
+    "windsurf"
   ],
-  "homepage": "https://github.com/Haaaiawd/Antigravity-Workflow-System",
+  "homepage": "https://github.com/Haaaiawd/Anws",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Haaaiawd/Antigravity-Workflow-System.git"
+    "url": "git+https://github.com/Haaaiawd/Anws.git"
   },
   "author": "haaaiawd <1134180104@qq.com>",
   "license": "MIT",

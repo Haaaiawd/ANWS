@@ -12,8 +12,8 @@ const { success, warn, info, fileLine, skippedLine, blank, logo } = require('./o
  */
 async function init() {
   const cwd = process.cwd();
-  const srcRoot = path.join(__dirname, '..', 'templates', '.agent');
-  const destRoot = path.join(cwd, '.agent');
+  const srcRoot = path.join(__dirname, '..', 'templates', '.agents');
+  const destRoot = path.join(cwd, '.agents');
   const srcAgents = path.join(__dirname, '..', 'templates', 'AGENTS.md');
 
   const agentsDecision = await resolveAgentsInstall({
@@ -45,7 +45,7 @@ async function init() {
   // ── 无冲突:直接复制 ─────────────────────────────────────────────────────────
 
   logo();
-  info('Initializing Antigravity Workflow System...');
+  info('Initializing Anws...');
   blank();
 
   const writtenFiles = await copyDir(srcRoot, destRoot);
@@ -72,7 +72,7 @@ async function init() {
   }
 
   blank();
-  success(`Done! ${written.length} files written to .agent/`);
+  success(`Done! ${written.length} files written to .agents/`);
   printNextSteps();
 }
 
@@ -132,7 +132,7 @@ async function askMigrate() {
 
   return new Promise((resolve) => {
     rl.question(
-      '\n\u26a0 Legacy .agent/rules/agents.md detected. Do you want to migrate to root AGENTS.md? [y/N] ',
+      '\n\u26a0 Legacy .agent/ directory detected. Do you want to migrate to .agents/? [y/N] ',
       (answer) => {
         rl.close();
         resolve(answer.trim().toLowerCase() === 'y');

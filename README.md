@@ -1,9 +1,9 @@
 <div align="center">
 
-<img src="assets/logo.png" width="200" alt="Antigravity Workflow System">
+<img src="assets/logo.png" width="200" alt="Anws">
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Target: Antigravity](https://img.shields.io/badge/Environment-Antigravity-blueviolet)](https://github.com/google-deepmind/antigravity)
+[![Multi-Tool](https://img.shields.io/badge/Support-Claude%20Code%20%7C%20Copilot%20%7C%20Cursor%20%7C%20Windsurf-blueviolet)](https://github.com/Haaaiawd/Anws)
 [![Vibe Coding](https://img.shields.io/badge/Vibe%20Coding-Enabled-ff69b4)](https://github.com/karpathy/vibe-coding)
 
 [English](./README.md) | [中文](./README_CN.md)
@@ -14,9 +14,11 @@
 
 ## ⚡ What is this?
 
-A **structured workflow framework** for Agentic AI assistants, designed to solve the core pain points of the Vibe Coding era.
+**Anws** — A **structured workflow framework** for Agentic AI assistants, designed to solve the core pain points of the Vibe Coding era.
 
 > 💡 **TL;DR**: Stop letting AI write spaghetti code. Force it to think like an architect first.
+
+**Works with**: Claude Code, GitHub Copilot, Cursor, Windsurf.
 
 ### 🎯 Problems We Solve
 
@@ -43,7 +45,7 @@ anws init
 
 ### Option B — GitHub Release
 
-Download the latest `.zip` from [Releases](https://github.com/Haaaiawd/Antigravity-Workflow-System/releases), then copy `.agent/` to your project root.
+Download the latest `.zip` from [Releases](https://github.com/Haaaiawd/Anws/releases), then copy `.agents/` to your project root.
 
 ### 📦 Update Existing Installation
 
@@ -53,7 +55,7 @@ anws update
 ```
 
 > `anws update` overwrites all managed workflow/skill files to the latest version while **preserving** your existing `AGENTS.md`.
-> If your project still has a legacy `.agent/rules/agents.md`, the CLI will ask whether to migrate to the root `AGENTS.md`.
+> If your project still has a legacy `.agent/` directory, the CLI will ask whether to migrate to `.agents/`.
 
 ### Your First Project 🐣
 
@@ -64,7 +66,7 @@ anws update
 ### 🔁 Built with Itself (Dogfooding)
 
 Fun fact: **This very CLI tool (`anws`) was built using its own workflows!**
-We used the `/genesis` workflow to design the CLI's architecture, and the `/forge` workflow to implement the code. This project serves as a live demonstration of what Antigravity Workflow System can achieve.
+We used the `/genesis` workflow to design the CLI's architecture, and the `/forge` workflow to implement the code. This project serves as a live demonstration of what Anws can achieve.
 
 **Deep Thinking & Architecture Design**: The AI will automatically execute the `/genesis` workflow, thinking deeply about project requirements and producing the PRD and architecture design.
 <img src="assets/genesis工作流演示.jpg" width="800" alt="Genesis Workflow">
@@ -91,7 +93,7 @@ We used the `/genesis` workflow to design the CLI's architecture, and the `/forg
     └────┬─────┘      └────┬─────┘      └────┬─────┘
          │                 │                 │
          ▼                 ▼                 ▼
-    /genesis          /scout        Tweak existing task?
+    /genesis          /probe         Tweak existing task?
          │                 │              /         \
          │                 │             /           \
          └────────┬────────┘     /change       /genesis
@@ -162,28 +164,26 @@ We used the `/genesis` workflow to design the CLI's architecture, and the `/forg
 
 ## 🛠️ Compatibility & Prerequisites
 
-> ⚠️ **Important**: This framework requires **Antigravity** environment with `.agent/workflows/` support.
+> ⚠️ **Important**: This framework works with any AI coding tool that reads `AGENTS.md` and supports `.agents/` directory structure.
 
 | Environment     |            Status            | Notes                          |
 | --------------- | :--------------------------: | ------------------------------ |
-| **Antigravity** |         ✅ Supported          | Full workflow + skills support |
-| Claude Code     | ❌ No native workflow support |                                |
-| Cursor          |    ❌ No workflow support     |                                |
-| GitHub Copilot  |    ❌ No workflow support     |                                |
+| **Windsurf**       |     ✅ Full Support      | Native `.agents/workflows/` + slash commands |
+| **Claude Code**    |     ✅ Full Support      | Reads `AGENTS.md` + workflows via instructions |
+| **GitHub Copilot** |     ✅ Full Support      | `AGENTS.md` + `.github/instructions/` + skills |
+| **Cursor**         |     ✅ Supported        | Via `.cursor/rules/` + `AGENTS.md` |
+| **Others**         |     ✅ Compatible       | Any tool that reads `AGENTS.md` |
 
-**What is Antigravity?**
-
-Antigravity is an Agentic AI coding environment that natively recognizes `.agent/workflows/` directory and can execute slash commands like `/genesis`, `/blueprint`, etc.
+**How it works**: Anws uses `AGENTS.md` as the universal anchor point. Each tool reads this file to understand project context and workflow locations. The `.agents/` directory contains workflows and skills that can be discovered and executed.
 
 ### 🔌 Required: Sequential Thinking MCP Server
 
-This framework uses `sequentialthinking` for deep reasoning. Install it via MCP Store:
+This framework uses `sequentialthinking` for deep reasoning. Install it via your tool's MCP Store:
 
-1. Open **Antigravity Editor**
-2. Click **"..."** (three dots) in the sidebar → **Additional Options**
-3. Select **MCP Servers**
-4. Open **MCP Store** and search for `sequential-thinking`
-5. Click **Add** to install
+- **Windsurf**: Settings → MCP Servers → Add `sequential-thinking`
+- **Claude Code**: Add to `.claude/settings.json` or use MCP installer
+- **Cursor**: Settings → MCP → Add `sequential-thinking`
+- **Copilot**: Via VS Code extensions
 
 > 💡 Without this, workflows still work, but deep thinking features will be limited.
 
@@ -191,18 +191,18 @@ This framework uses `sequentialthinking` for deep reasoning. Install it via MCP 
 
 ## ⚡ Invoke Workflows
 
-Antigravity will automatically recognize the intent and trigger the appropriate workflow. You can use it in two ways:
+Your AI tool will automatically recognize the intent and trigger the appropriate workflow. You can use it in two ways:
 
 #### ⚡ Method A: Slash Protocol (Explicit)
 Directly type the command in the chat or editor to trigger the workflow.
 - `/genesis` - Start project creation
-- `/scout` - Analyze existing codebase
+- `/probe` - Analyze existing codebase risks
 - `/blueprint` - Break down architecture into tasks
 
 #### 🧠 Method B: Intent Protocol (Implicit)
-Just speak naturally. Antigravity will automatically select and run the right workflow.
+Just speak naturally. Your AI tool will automatically select and run the right workflow.
 - *"I want to start a new project for a todo app"* → Triggers `/genesis`
-- *"Help me understand this legacy code and its risks"* → Triggers `/scout`
+- *"Help me understand this legacy code and its risks"* → Triggers `/probe`
 - *"I think there are gaps in this design, challenge it"* → Triggers `/challenge`
 - *"The architecture is ready, let's plan the tasks"* → Triggers `/blueprint`
 - *"Change the error message on the login page"* → Triggers `/change` (tweak existing task)
@@ -214,11 +214,11 @@ Just speak naturally. Antigravity will automatically select and run the right wo
 
 ```
 your-project/
-├── AGENTS.md          # 🧠 AI's anchor point
-├── .agent/
+├── AGENTS.md          # 🧠 AI's anchor point (universal)
+├── .agents/
 │   ├── workflows/             # Workflow definitions
 │   │   ├── genesis.md
-│   │   ├── scout.md
+│   │   ├── probe.md
 │   │   ├── design-system.md
 │   │   ├── challenge.md
 │   │   ├── blueprint.md
@@ -231,6 +231,7 @@ your-project/
 │       ├── concept-modeler/
 │       ├── spec-writer/
 │       ├── task-planner/
+│       ├── nexus-mapper/     # Codebase knowledge mapping
 │       └── ...
 │
 └── genesis/               # Versioned architecture docs
@@ -260,5 +261,16 @@ Contributions are welcome! Please read our contributing guidelines before submit
 **Made for architects who code, and AIs who think.**
 
 🧠 *"Good architecture isn't written. It's designed."*
+
+---
+
+## 📦 Integrated: nexus-skills
+
+Anws integrates **[nexus-skills](https://github.com/Haaaiawd/nexus-skills)** for codebase knowledge mapping:
+
+- **nexus-mapper**: Analyzes repositories and generates `.nexus-map/` knowledge bases for AI cold-start
+- **nexus-query**: Instant structural queries during active development
+
+The `/probe` workflow leverages nexus-mapper's PROBE protocol for deep codebase analysis, detecting hidden risks, coupling hotspots, and architectural drift.
 
 </div>
