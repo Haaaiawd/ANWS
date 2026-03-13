@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/logo.png" width="200" alt="Antigravity Workflow System">
+<img src="assets/logo.png" width="200" alt="Anws">
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Target: Antigravity](https://img.shields.io/badge/Environment-Antigravity-blueviolet)](https://github.com/google-deepmind/antigravity)

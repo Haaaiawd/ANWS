@@ -1,6 +1,6 @@
 /**
- * Antigravity Workflow System - Assets Sync Script
- * -----------------------------------------------
+ * Anws - Assets Sync Script
+ * -------------------------
  * 此脚本用于在发布前从项目根目录同步最新的文档和工作流模板到 anws 包中。
  * 确保 GitHub 首页与 npm 安装包中的内容完全一致。
  */
@@ -14,7 +14,7 @@ const PACKAGE_DIR = path.resolve(__dirname, '..');
 const SYNC_CONFIG = [
   { from: 'README.md', to: 'README.md' },
   { from: 'README_CN.md', to: 'README_CN.md' },
-  { from: '.agent', to: 'templates/.agent' }
+  { from: '.agents', to: 'templates/.agents' }
 ];
 
 console.log('🔄 Starting assets synchronization...');

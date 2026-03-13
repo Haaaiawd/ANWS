@@ -10,7 +10,7 @@ const { version } = require(path.join(__dirname, '..', 'package.json'));
 
 // ─── 帮助文本 ─────────────────────────────────────────────────────────────────
 const HELP = `
-  v${version} — Antigravity Workflow System
+  v${version} — Anws
 
 USAGE
   anws <command> [options]
