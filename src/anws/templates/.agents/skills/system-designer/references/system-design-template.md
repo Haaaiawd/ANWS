@@ -268,45 +268,69 @@ classDiagram
 ## 8. Trade-offs & Alternatives (权衡与备选方案)
 <!-- ⚠️ CRITICAL: Google Design Docs风格 - 说明为什么选A而不是B -->
 
-### 8.1 Decision 1: 为什么用PostgreSQL而不是MongoDB？
+> [!IMPORTANT]
+> **ADR 引用规则 (单向引用链)**:
+> - 如果决策已在 ADR 中记录，**只引用不复制**
+> - 引用格式：`> **决策来源**: [ADR-XXX: 决策标题](../03_ADR/ADR_XXX.md)`
+> - 本系统特有的决策才在此详细说明
 
-**Option A: PostgreSQL (✅ Selected)**
+### 8.1 [跨系统决策] - 引用 ADR
+
+<!-- 如果此决策影响多个系统，应在 ADR 中记录 -->
+
+> **决策来源**: [ADR-XXX: 决策标题](../03_ADR/ADR_XXX.md)
+>
+> 本系统实现 ADR-XXX 定义的设计，不在此重复决策理由。
+>
+> **本系统特有实现**: [补充本系统如何实现该决策]
+
+---
+
+### 8.2 [本系统特有决策] - 详细说明
+
+<!-- 如果此决策只影响本系统，在此详细说明 -->
+
+**Option A: [名称] (✅ Selected)**
 - ✅ **优点**: 
-  - ACID保证，强一致性
-  - 关系型数据适合我们的用户-权限模型
-  - 团队熟悉SQL，学习成本低
-  - JSON支持满足灵活性需求
+  - ...
 - ❌ **缺点**:
-  - 横向扩展不如NoSQL简单
-  - Schema变更需要migration
+  - ...
 
-**Option B: MongoDB**
+**Option B: [名称]**
 - ✅ **优点**:
-  - 灵活Schema，易于快速迭代
-  - 天然横向扩展
+  - ...
 - ❌ **缺点**:
-  - 我们需要强一致性（用户认证）
-  - 关系查询复杂
-  - 团队不熟悉
+  - ...
 
-**Decision**: 选择PostgreSQL，因为**数据一致性**比灵活性更重要。未来如果需要扩展，可以考虑读写分离+分片。
+**Decision**: 选择 [Option A]，因为 [核心理由]。
 
 ---
 
-### 8.2 Decision 2: 认证方式选择
+<!-- 示例：引用 ADR 的决策 -->
+### 8.x 示例: 数据库选型 (引用 ADR)
 
-**Option A: JWT (✅ Selected)**
-- ✅ 无状态，易于横向扩展
-- ✅ 前后端分离友好
-- ❌ Token无法主动撤销
-
-**Option B: Session**
-- ✅ 可撤销
-- ❌ 需要共享Session存储（如Redis）
-
-**Decision**: 选择JWT + 黑名单机制（Redis存储被撤销的token ID），兼顾两者优点。
+> **决策来源**: [ADR-001: 技术栈选型](../03_ADR/ADR_001_TECH_STACK.md)
+>
+> 本系统使用 ADR-001 定义的 PostgreSQL 作为主数据库。
+>
+> **本系统特有配置**:
+> - 连接池大小: 20
+> - 使用 asyncpg 异步驱动
 
 ---
+
+<!-- 示例：本系统特有决策 -->
+### 8.y 示例: 缓存策略 (本系统决策)
+
+**Option A: Redis (✅ Selected)**
+- ✅ 高性能，团队熟悉
+- ❌ 需要额外运维
+
+**Option B: 内存缓存**
+- ✅ 简单
+- ❌ 不支持分布式
+
+**Decision**: 选择 Redis，因为本系统需要支持多实例部署。
 
 ## 9. 安全性考虑 (Security Considerations)
 

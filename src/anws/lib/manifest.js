@@ -13,6 +13,7 @@ const MANAGED_FILES = [
   '.agents/skills/report-template/references/REPORT_TEMPLATE.md',
   '.agents/skills/report-template/SKILL.md',
   '.agents/skills/runtime-inspector/SKILL.md',
+  '.agents/skills/sequential-thinking/SKILL.md',
   '.agents/skills/spec-writer/references/prd_template.md',
   '.agents/skills/spec-writer/SKILL.md',
   '.agents/skills/system-architect/references/rfc_template.md',

@@ -145,10 +145,23 @@ description: "为单个系统设计详细的技术文档。适用于架构拆解
 ### 1.5 加载相关ADR
 扫描 `genesis/v{N}/03_ADR/` 目录
 
+> [!IMPORTANT]
+> **ADR 与 SYSTEM_DESIGN 的单向引用链**:
+> - ADR 记录跨系统决策详情
+> - SYSTEM_DESIGN §8 Trade-offs **只引用 ADR，不复制决策内容**
+> - 在设计时，必须识别哪些决策已在 ADR 中记录
+
 **选择性加载**与该系统相关的ADR，例如：
 - 技术栈选择 (ADR001_TECH_STACK.md)
 - 认证方式 (ADR002_AUTHENTICATION.md，如果该系统涉及认证)
 - 数据库选择 (如果该系统是后端或数据库系统)
+
+**引用格式** (在 §8 中使用):
+```markdown
+> **决策来源**: [ADR-XXX: 决策标题](../03_ADR/ADR_XXX.md)
+>
+> 本系统实现 ADR-XXX 定义的设计，不在此重复决策理由。
+```
 
 读取 `genesis/v{N}/03_ADR/ADR001_TECH_STACK.md`
 
