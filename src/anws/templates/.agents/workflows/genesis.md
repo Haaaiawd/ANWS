@@ -18,7 +18,6 @@ description: "从 0 到代码的项目启动全流程。适用于新项目立项
 
 **Output Goal (Versioned)**: 
 - `genesis/v{N}/00_MANIFEST.md` ← 版本元数据
-- `genesis/v{N}/concept_model.json`
 - `genesis/v{N}/01_PRD.md`
 - `genesis/v{N}/02_ARCHITECTURE_OVERVIEW.md`
 - `genesis/v{N}/03_ADR/*`
@@ -137,7 +136,7 @@ description: "从 0 到代码的项目启动全流程。适用于新项目立项
 
 1.  **调用技能**: `spec-writer`
 2.  **执行撰写**:
-    *   基于 `concept_model.json`
+    *   基于用户需求
     *   分配 ID `[REQ-XXX]`
     *   Given-When-Then 验收标准
 3.  **输出**: 保存到 `genesis/v{N}/01_PRD.md`
@@ -148,6 +147,14 @@ description: "从 0 到代码的项目启动全流程。适用于新项目立项
 ---
 
 ## Step 3: 技术选型 (Tech Stack Selection)
+
+> [!TIP]
+> **Skill 交互说明**:
+> 以下步骤中，Skill 可能需要向用户追问信息：
+> - Step 2 (`spec-writer`): **会追问模糊需求**，这是预期行为，不要跳过
+> - Step 3 (`tech-evaluator`): 可能需要用户提供团队/预算信息
+> 
+> 每个 Skill 的追问都是必要的交互，应当执行而非绕过。
 
 **目标**: 选择最适合项目的技术栈。
 

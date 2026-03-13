@@ -228,7 +228,7 @@ your-project/
 │   │   └── craft.md
 │   │
 │   └── skills/            # 可复用的技能库
-│       ├── concept-modeler/
+│       ├── nexus-mapper/
 │       ├── spec-writer/
 │       ├── task-planner/
 │       └── ...
@@ -238,6 +238,7 @@ your-project/
     │   ├── 01_PRD.md
     │   ├── 02_ARCHITECTURE.md
     │   ├── 03_ADR/
+    │   ├── 04_SYSTEM_DESIGN/
     │   ├── 05_TASKS.md
     │   └── 07_CHALLENGE_REPORT.md
     └── v2/                # 重大变更时的新版本

@@ -228,19 +228,20 @@ your-project/
 │   │   └── craft.md
 │   │
 │   └── skills/            # Reusable skills
-│       ├── concept-modeler/
+│       ├── nexus-mapper/
 │       ├── spec-writer/
 │       ├── task-planner/
 │       └── ...
 │
-└── genesis/               # Versioned architecture docs
+└── genesis/               # Versioned architecture documents
     ├── v1/
     │   ├── 01_PRD.md
     │   ├── 02_ARCHITECTURE.md
     │   ├── 03_ADR/
+    │   ├── 04_SYSTEM_DESIGN/
     │   ├── 05_TASKS.md
     │   └── 07_CHALLENGE_REPORT.md
-    └── v2/                # New version on major changes
+    └── v2/                # New version for major changes
 ```
 
 ## 🙌 Contributing

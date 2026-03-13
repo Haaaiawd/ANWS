@@ -7,6 +7,7 @@
  */
 const MANAGED_FILES = [
   'AGENTS.md',
+  '.agents/skills/concept-modeler/SKILL.md',
   '.agents/skills/design-reviewer/SKILL.md',
   '.agents/skills/nexus-mapper/SKILL.md',
   '.agents/skills/report-template/references/REPORT_TEMPLATE.md',
