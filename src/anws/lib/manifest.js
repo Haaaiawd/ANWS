@@ -35,7 +35,8 @@ const MANAGED_FILES = [
   '.agents/workflows/forge.md',
   '.agents/workflows/genesis.md',
   '.agents/workflows/probe.md',
-  '.agents/workflows/quickstart.md'
+  '.agents/workflows/quickstart.md',
+  '.agents/workflows/upgrade.md'
 ];
 
 /**

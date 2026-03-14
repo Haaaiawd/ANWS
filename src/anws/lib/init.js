@@ -5,6 +5,7 @@ const path = require('node:path');
 const { copyDir } = require('./copy');
 const { MANAGED_FILES, USER_PROTECTED_FILES } = require('./manifest');
 const { resolveAgentsInstall, printLegacyMigrationWarning, pathExists } = require('./agents');
+const { ensureChangelogDir } = require('./changelog');
 const { success, warn, info, fileLine, skippedLine, blank, logo } = require('./output');
 
 /**
@@ -36,6 +37,7 @@ async function init() {
       srcAgents,
       shouldWriteRootAgents: agentsDecision.shouldWriteRootAgents
     });
+    await ensureChangelogDir(cwd);
     if (agentsDecision.shouldWarnMigration) {
       printLegacyMigrationWarning();
     }
@@ -50,6 +52,7 @@ async function init() {
 
   const writtenFiles = await copyDir(srcRoot, destRoot);
   const written = Array.isArray(writtenFiles) ? writtenFiles : [];
+  await ensureChangelogDir(cwd);
 
   if (agentsDecision.shouldWriteRootAgents) {
     const destAgents = path.join(cwd, 'AGENTS.md');
