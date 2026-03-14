@@ -1,108 +1,108 @@
 ---
 name: spec-writer
-description: Transforms ambiguous user requests into rigorous Product Requirements Documents (PRDs). Use when requirements are vague or high-level.
+description: 将模糊或高层需求转化为严格的产品需求文档（PRD）。适用于需求含糊、范围过大或表达停留在概念层的场景。
 ---
 
-# The Detective's Guide (需求侦探手册)
+# 需求侦探手册
 
-> "The hardest part of building software is deciding precisely what to build."
+> “软件开发最难的部分，不是如何实现，而是精确定义到底要实现什么。”
 
-Your job is to kill ambiguity.
+你的任务是**消灭歧义**。
 
-## ⚡ Quick Start
+## ⚡ 快速开始
 
-1.  **Read Request (MANDATORY)**: Use `view_file` or context to identify "Vibe Words" (Fast, Modern, Easy).
-2.  **Deep Think (CRITICAL)**: You MUST call `sequential thinking` with 3-7 reasoning steps (depending on complexity) to:
-    *   Extract User Stories (As a X, I want Y, so that Z)
-    *   Identify ambiguities
-    *   Draft clarifying questions
-3.  **Interrogate**: Present questions to user. DO NOT proceed without answers.
-4.  **Draft PRD (MANDATORY)**: Use `view_file references/prd_template.md` then `write_to_file` to create `genesis/v{N}/01_PRD.md`.
-5.  **Ambiguity Scan (MANDATORY)**: After drafting, run the 10-Dimension Ambiguity Scan (see below). Fix issues inline or mark `[ASSUMPTION]`.
-6.  **US Quality Gate (MANDATORY)**: Verify every User Story passes the quality checklist (see below).
+1.  **阅读需求（强制）**：阅读用户请求与上下文，识别其中的“感觉词”（如“快”“现代”“简单”）。
+2.  **深度思考（关键）**：你**必须**进行 3-7 轮结构化推理（视复杂度而定），完成以下工作：
+    *   提取 User Story（As a X, I want Y, so that Z）
+    *   识别歧义点
+    *   起草澄清问题
+3.  **追问澄清**：向用户提出问题。**未获得答案前不得继续**。
+4.  **起草 PRD（强制）**：读取 `references/prd_template.md`，然后创建 `.anws/v{N}/01_PRD.md`。
+5.  **歧义扫描（强制）**：起草完成后，执行下文的“10 维歧义扫描”。对发现的问题就地修正，或标记为 `[ASSUMPTION]`。
+6.  **User Story 质量闸门（强制）**：验证每条 User Story 都通过下文质量检查表。
 
-## 🛑 Mandatory Steps
-Before creating the PRD, you MUST:
-1. Extract at least 3 clear User Stories.
-2. Define at least 3 Non-Goals (what we're NOT building).
-3. Clarify "Vibe Words" with the user (What does "Fast" mean to you? What does "Modern" imply?).
-4. Use `write_to_file` to save output. DO NOT just print to chat.
+## 🛑 强制步骤
+在创建 PRD 之前，你**必须**：
+1. 提取至少 3 条清晰的 User Story。
+2. 定义至少 3 条 Non-Goal（明确**不做什么**）。
+3. 向用户澄清“感觉词”（例如：“快”具体意味着什么？“现代”指什么？）。
+4. 创建输出文件，**不要只在聊天里打印内容**。
 
-After creating the PRD, you MUST:
-5. Run the 10-Dimension Ambiguity Scan — fix or mark all `Partial`/`Missing` items.
-6. Verify every User Story has: Priority / 独立可测 / 涉及系统 / 边界情况.
-7. Ensure `[NEEDS CLARIFICATION]` tags ≤ 3 (hard limit). Excess → use reasonable defaults + `[ASSUMPTION]` tag.
+在创建 PRD 之后，你**必须**：
+5. 执行“10 维歧义扫描”，修复或标记所有 `Partial` / `Missing` 项。
+6. 验证每条 User Story 都具备：优先级 / 独立可测 / 涉及系统 / 边界情况。
+7. 确保 `[NEEDS CLARIFICATION]` 标签数量 ≤ 3（硬限制）。若超出，则采用合理默认值并加 `[ASSUMPTION]` 标签。
 
-## ✅ Completion Checklist
-- [ ] PRD file created: `genesis/v{N}/01_PRD.md`
-- [ ] Contains User Stories, Acceptance Criteria, Non-Goals
-- [ ] Every requirement is testable/measurable
-- [ ] User has approved the PRD
+## ✅ 完成检查清单
+- [ ] PRD 文件已创建：`.anws/v{N}/01_PRD.md`
+- [ ] 包含 User Stories、验收标准、Non-Goals
+- [ ] 每条需求都可测试、可度量
+- [ ] 用户已确认 PRD
 
-## 🛠️ The Techniques
+## 🛠️ 方法工具
 
-### 1. Socratic Interrogation (苏格拉底追问)
-*   **User**: "I want it to be fast."
-*   **You**: "< 100ms p99? Or just UI optimistic updates?"
-*   *Goal*: Turn adjectives into numbers.
+### 1. 苏格拉底追问
+*   **用户**：“我希望它很快。”
+*   **你**：“是指 p99 小于 100ms？还是只要求 UI 采用乐观更新？”
+*   *目标*：把形容词转成数字和可验证标准。
 
-### 2. Context Compression (上下文压缩)
-*   **Input**: 500 lines of chat history.
-*   **Action**: Extract the *User Stories*. "As a User, I want X, so that Y."
-*   **Discard**: Implementation details discussed too early (e.g., "Use Redis").
+### 2. 上下文压缩
+*   **输入**：500 行聊天记录。
+*   **动作**：提取 *User Stories*，即 “As a User, I want X, so that Y.”
+*   **丢弃**：过早出现的实现细节（例如“使用 Redis”）。
 
-### 3. Non-Goal Setting (画圈)
-*   Define what we are **NOT** doing.
-*   *Why*: Prevents scope creep. Prevents "What about X?" later.
+### 3. Non-Goal 设定（画圈）
+*   明确定义我们**不做什么**。
+*   *为什么*：防止范围蔓延，避免后续不断冒出“那 X 呢？”的问题。
 
-## ⚠️ Detective's Code
+## ⚠️ 侦探守则
 
-1.  **Contract First**: If you can't test it, don't write it.
-2.  **No Solutions**: Describe *what*, not *how*. Leave *how* to the Architect.
-3.  **User Centric**: Every requirement must trace back to a user value.
+1.  **契约优先**：如果无法验证，就不要写进 PRD。
+2.  **不抢设计工作**：描述 *做什么*，不要过早写 *怎么做*。实现方式留给架构设计阶段。
+3.  **用户价值优先**：每条需求都必须能追溯到明确的用户价值。
 
-## 🧰 The Toolkit
-*   `references/prd_template.md`: The Product Requirements Document template.
+## 🧰 工具箱
+*   `references/prd_template.md`：产品需求文档模板。
 
-## 🔍 10-Dimension Ambiguity Scan
+## 🔍 10 维歧义扫描
 
-After drafting the PRD, you **MUST** systematically scan it against these 10 dimensions. This replaces ad-hoc "any questions?" with a **repeatable, exhaustive** sweep.
+起草 PRD 后，你**必须**从以下 10 个维度系统性扫描全文。这一步是为了用**可重复、可穷尽**的方法替代随意的“还有问题吗？”。
 
-For each dimension, mark status: `Clear` ✅ / `Partial` ⚠️ / `Missing` ❌
+对每个维度，标记状态：`Clear` ✅ / `Partial` ⚠️ / `Missing` ❌
 
-| # | Dimension | What to Check | Status |
-|---|-----------|--------------|:------:|
-| 1 | **Functional Scope & Behavior** | Core objectives / success criteria / explicit exclusions / user role distinctions | |
-| 2 | **Domain & Data Model** | Entities, attributes, relationships / uniqueness rules / lifecycle & state transitions / data volume assumptions | |
-| 3 | **Interaction & UX Flow** | Key user journeys / error, empty, loading states / accessibility & i18n | |
-| 4 | **Non-Functional Quality** | Performance / scalability / reliability / observability / security & privacy / compliance | |
-| 5 | **Integration & External** | External service failure modes / import-export formats / protocol version assumptions | |
-| 6 | **Edge Cases & Failure** | Negative scenarios / rate limiting / concurrency conflict resolution | |
-| 7 | **Constraints & Tradeoffs** | Technical constraints / explicit tradeoff records / rejected alternative archives | |
-| 8 | **Terminology Consistency** | Canonical glossary / synonym normalization across PRD | |
-| 9 | **Completion Signals** | Acceptance criteria testability / quantifiable DoD | |
-| 10 | **Placeholders** | TODO markers / unquantified vague adjectives (fast, scalable, secure, intuitive, robust) | |
+| # | 维度 | 检查内容 | 状态 |
+|---|------|----------|:------:|
+| 1 | **功能范围与行为** | 核心目标 / 成功标准 / 明确排除项 / 用户角色区分 | |
+| 2 | **领域与数据模型** | 实体、属性、关系 / 唯一性规则 / 生命周期与状态转换 / 数据规模假设 | |
+| 3 | **交互与 UX 流程** | 关键用户路径 / 错误、空状态、加载状态 / 无障碍与 i18n | |
+| 4 | **非功能质量** | 性能 / 可扩展性 / 可靠性 / 可观测性 / 安全与隐私 / 合规 | |
+| 5 | **集成与外部依赖** | 外部服务失败模式 / 导入导出格式 / 协议版本假设 | |
+| 6 | **边界情况与失败场景** | 负向场景 / 限流 / 并发冲突处理 | |
+| 7 | **约束与权衡** | 技术约束 / 显式权衡记录 / 被否决的备选架构 | |
+| 8 | **术语一致性** | 标准术语表 / 同义词在全文中的统一 | |
+| 9 | **完成信号** | 验收标准是否可测 / DoD 是否可量化 | |
+| 10 | **占位符与模糊词** | TODO 标记 / 未量化形容词（快、可扩展、安全、直观、健壮） | |
 
-**Rules**:
-- `Partial` or `Missing` items → rank by **Impact × Uncertainty**, pick **top 5** to ask user
-- Ask **one question at a time**; provide your recommended answer; user can accept or customize
-- After user answers → **atomically write** the answer into the corresponding PRD section (never leave contradictory text)
-- **NEEDS CLARIFICATION hard limit ≤ 3** — if more remain, fill with reasonable defaults + `[ASSUMPTION: ...]` tag
-- **Do NOT ask about these reasonable defaults**: industry-standard data retention, standard web/mobile performance expectations, user-friendly error messages with fallbacks, standard session-based or OAuth2 auth
+**规则**：
+- 对于 `Partial` 或 `Missing` 项，按 **影响 × 不确定性** 排序，选取前 **5 个**向用户追问
+- **一次只问一个问题**；给出推荐答案；用户可接受或自定义
+- 用户回答后，**原子化写入**对应 PRD 段落，不允许保留互相矛盾的文本
+- `[NEEDS CLARIFICATION]` 标签数量**硬限制 ≤ 3**；若仍超出，则采用合理默认值并加 `[ASSUMPTION: ...]`
+- **不要向用户追问这些合理默认值**：行业通用的数据保留策略、标准 Web/移动性能预期、带兜底的友好错误提示、标准 Session 或 OAuth2 认证
 
-## ✅ User Story Quality Gate
+## ✅ User Story 质量闸门
 
-Every User Story in the PRD **MUST** pass these checks before the PRD is considered complete:
+PRD 中的每条 User Story，在 PRD 被视为完成前，**都必须**通过以下检查：
 
-| Check | Requirement |
-|-------|------------|
-| **Unique ID** | Has `[REQ-XXX]` identifier for traceability |
-| **Priority** | Marked P0 / P1 / P2 — P0 stories listed first |
-| **独立可测** | Describes how this story can be **independently** demonstrated and verified |
-| **涉及系统** | Lists specific system IDs (must align with `02_ARCHITECTURE_OVERVIEW.md`) |
-| **Acceptance Criteria** | At least 1 Given-When-Then + at least 1 Error Case |
-| **边界情况** | At least 1 boundary condition identified |
-| **No Vibe Words** | No unquantified adjectives (fast → <100ms p99, scalable → support N users) |
-| **User Value** | One sentence describing value to end user |
+| 检查项 | 要求 |
+|-------|------|
+| **唯一 ID** | 必须带 `[REQ-XXX]` 以便追踪 |
+| **优先级** | 标记为 P0 / P1 / P2，且 P0 必须排前 |
+| **独立可测** | 说明该故事如何**独立**演示和验证 |
+| **涉及系统** | 列出具体系统 ID（必须与 `02_ARCHITECTURE_OVERVIEW.md` 对齐） |
+| **验收标准** | 至少 1 条 Given-When-Then + 至少 1 个错误场景 |
+| **边界情况** | 至少识别 1 个边界条件 |
+| **无模糊感觉词** | 不允许出现未量化形容词（如快 → <100ms p99，可扩展 → 支持 N 用户） |
+| **用户价值** | 用一句话描述对终端用户的价值 |
 
-If any User Story fails a check → fix it before delivering the PRD.
+若任一 User Story 未通过检查，**必须先修复，再交付 PRD**。

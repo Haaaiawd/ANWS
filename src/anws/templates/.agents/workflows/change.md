@@ -17,9 +17,9 @@ description: "处理微调级变更请求，仅允许修改已有任务的细节
 - **可追溯** - 所有变更都记录在 CHANGELOG
 
 **Output Goal**: 
-- 更新 `genesis/v{N}/05_TASKS.md` (仅修改已有任务)
-- 更新 `genesis/v{N}/06_CHANGELOG.md`
-- (可选) 微调 `genesis/v{N}/04_SYSTEM_DESIGN/` 中已有文件的细节
+- 更新 `.anws/v{N}/05_TASKS.md` (仅修改已有任务)
+- 更新 `.anws/v{N}/06_CHANGELOG.md`
+- (可选) 微调 `.anws/v{N}/04_SYSTEM_DESIGN/` 中已有文件的细节
 
 ---
 
@@ -78,10 +78,10 @@ description: "处理微调级变更请求，仅允许修改已有任务的细节
 ## Step 0: 定位当前版本
 
 1.  **扫描版本**:
-    扫描 `genesis/` 目录，找到最新版本号 `v{N}`
+    扫描 `.anws/` 目录，找到最新版本号 `v{N}`
 2.  **确定当前版本**:
     - 找到数字最大的文件夹 `v{N}`。
-    - **TARGET_DIR** = `genesis/v{N}`。
+    - **TARGET_DIR** = `.anws/v{N}`。
 
 3.  **检查必需文件**:
     - [ ] `{TARGET_DIR}/01_PRD.md` 存在

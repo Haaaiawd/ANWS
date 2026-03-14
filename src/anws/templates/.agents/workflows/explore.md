@@ -24,7 +24,7 @@ description: "深度探索复杂问题，产出结构化洞察。适用于技术
 ## ⚠️ CRITICAL 深度思考要求
 
 > [!IMPORTANT]
-> **为什么必须使用 `sequentialthinking`？**
+> **为什么必须使用 `sequential-thinking`？**
 > 
 > 探索不是"搜一下 + 想一下"。真正的探索需要：
 > - **分解问题**：找到正确的问题比找到答案更重要
@@ -57,7 +57,7 @@ description: "深度探索复杂问题，产出结构化洞察。适用于技术
 **目标**: 真正理解问题，将其分解为可探索的子问题。
 
 > [!IMPORTANT]
-> 你**必须**调用 `sequentialthinking` 进行 **3-5 步**思考。
+> 你**必须**使用 `sequential-thinking` skill 组织 **3-5 个 thought**。
 >
 > **为什么？** 问题分解的质量决定了整个探索的方向。错误的分解会导致：
 > - 搜索了不相关的信息
@@ -124,7 +124,7 @@ description: "深度探索复杂问题，产出结构化洞察。适用于技术
 用于：产生创意、探索可能性、突破常规
 
 > [!IMPORTANT]
-> 你**必须**调用 `sequentialthinking` 进行 **5-8 步**发散思考。
+> 你**必须**使用 `sequential-thinking` skill 组织 **5-8 个 thought**进行发散思考。
 >
 > **为什么？** 第一个想法通常是最普通的。突破需要：
 > - 强迫自己继续想
@@ -185,7 +185,7 @@ description: "深度探索复杂问题，产出结构化洞察。适用于技术
 **目标**: 整合所有发现，验证一致性，收敛到核心洞察。
 
 > [!IMPORTANT]
-> 你**必须**调用 `sequentialthinking` 进行 **3-5 步**收敛思考。
+> 你**必须**使用 `sequential-thinking` skill 组织 **3-5 个 thought**进行收敛思考。
 >
 > **为什么？** 原始发现是碎片化的。你需要：
 > - 识别模式和主题
@@ -208,7 +208,7 @@ description: "深度探索复杂问题，产出结构化洞察。适用于技术
 **目标**: 产出结构化的探索报告。
 
 **保存路径**:
-- 如果由 `/design-system` 调用: `genesis/v{N}/04_SYSTEM_DESIGN/_research/{system-id}-research.md`
+- 如果由 `/design-system` 调用: `.anws/v{N}/04_SYSTEM_DESIGN/_research/{system-id}-research.md`
 - 如果独立调用: `explore/reports/{YYYYMMDD}_{topic_slug}.md`
 - 确保对应目录存在
 

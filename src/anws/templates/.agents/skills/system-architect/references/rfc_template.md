@@ -1,59 +1,59 @@
-# Request for Comments (RFC) / Technical Spec
+# 技术设计说明（RFC / 技术规格）
 
-**PRD Reference**: [Link to PRD]
-**Feature**: [Feature Name]
-**Status**: Draft
+**PRD 参考**: [链接到 PRD]
+**功能名称**: [功能名称]
+**状态**: 草稿
 
-## 1. High-Level Design
-### Architecture Diagram (Mermaid)
-<!-- Use Mermaid to show data flow -->
+## 1. 高层设计
+### 架构图（Mermaid）
+<!-- 使用 Mermaid 展示数据流 -->
 ```mermaid
 graph TD
-    A[User] -->|Action| B(Component)
-    B -->|API Call| C{Service}
+    A[用户] -->|操作| B[组件]
+    B -->|API 调用| C{服务}
 ```
 
-### Component Hierarchy
-*   `ParentComponent`
-    *   `ChildA` (Props: x, y)
-    *   `ChildB` (State: z)
+### 组件层级
+*   `父组件`
+    *   `子组件A`（Props: x, y）
+    *   `子组件B`（State: z）
 
-## 2. API Contract (The "Signature")
-<!-- CRITICAL: Define exact signatures. No hallucination allowed. -->
+## 2. API 契约（接口签名）
+<!-- 关键：定义精确签名。禁止幻觉。 -->
 
-### Endpoints
+### 接口端点
 *   `POST /api/v1/resource`
-    *   **Request Body**:
+    *   **请求体**：
         ```typescript
         interface CreateRequest {
-          field: string; // required
+          field: string; // 必填
         }
         ```
-    *   **Response**: `200 OK` (Schema below)
+    *   **响应**：`200 OK`（Schema 见下）
 
-### Function Interfaces
-<!-- Signatures for key internal functions -->
+### 函数接口
+<!-- 关键内部函数签名 -->
 ```typescript
 function calculateSomething(input: InputType): ResultType
 ```
 
-## 3. Data Model Strategy
-### Database Schema Changes
+## 3. 数据模型策略
+### 数据库 Schema 变更
 ```sql
--- DDL goes here
+-- 在这里填写 DDL
 CREATE TABLE ...
 ```
 
-### State Management
-*   Global State: [e.g. Redux/Zustand slice]
-*   Local State: [e.g. React.useState]
+### 状态管理
+*   全局状态：[例如 Redux / Zustand slice]
+*   本地状态：[例如 React.useState]
 
-## 4. Implementation Steps
-<!-- Atomic, ordered steps -->
-1.  [Step 1: DB Migration]
-2.  [Step 2: API Backend]
-3.  [Step 3: Frontend UI]
+## 4. 实施步骤
+<!-- 原子化、按顺序的实施步骤 -->
+1.  [步骤 1：数据库迁移]
+2.  [步骤 2：后端 API]
+3.  [步骤 3：前端界面]
 
-## 5. Security & Risk
-*   **Auth**: [How is this secured?]
-*   **Validation**: [Input validation library?]
+## 5. 安全与风险
+*   **认证**：[如何保证访问安全？]
+*   **校验**：[使用什么输入校验方案？]

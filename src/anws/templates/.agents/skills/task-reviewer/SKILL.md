@@ -14,7 +14,7 @@ description: 系统性审查 05_TASKS.md 的质量与完备性。通过 6 大检
 
 ## ⚡ 任务目标
 
-1. **加载文档 (必须)**: 读取 `genesis/v{N}/05_TASKS.md`、`01_PRD.md`、`02_ARCHITECTURE_OVERVIEW.md` 以及所有 `03_ADR/*.md`。
+1. **加载文档 (必须)**: 读取 `.anws/v{N}/05_TASKS.md`、`01_PRD.md`、`02_ARCHITECTURE_OVERVIEW.md` 以及所有 `03_ADR/*.md`。
 2. **构建语义模型**: 构建 3 个清单模型（见 §语义模型构建）。
 3. **执行 6 大 Pass (A→F)**: 顺序执行每个检测 Pass——每个 Pass 在语义模型上操作。
 4. **严重度分级**: 为每条发现分配严重度（CRITICAL / HIGH / MEDIUM / LOW）。
@@ -186,7 +186,7 @@ T{X.Y.Z}: 标题
 ```markdown
 ## 📊 任务审查报告
 
-> **审查文件**: genesis/v{N}/05_TASKS.md  
+> **审查文件**: .anws/v{N}/05_TASKS.md  
 > **对照文档**: 01_PRD.md, 02_ARCHITECTURE_OVERVIEW.md, 03_ADR/*  
 > **日期**: {YYYY-MM-DD}
 

@@ -10,7 +10,7 @@ description: "为单个系统设计详细的技术文档。适用于架构拆解
 **你的能力**：
 - 为单个系统设计详细的技术架构
 - 调研业界最佳实践（/explore）
-- 深度思考设计方案（sequentialthinking）
+- 使用 `sequential-thinking` skill 组织多步设计推理
 - 产出完整的系统设计文档
 
 **核心理念**：
@@ -25,7 +25,7 @@ description: "为单个系统设计详细的技术文档。适用于架构拆解
 - `/design-system database-system`
 - `/design-system agent-system`
 
-**Output Goal**: `genesis/v{N}/04_SYSTEM_DESIGN/{system-id}.md`
+**Output Goal**: `.anws/v{N}/04_SYSTEM_DESIGN/{system-id}.md`
 </phase_context>
 
 ---
@@ -95,12 +95,12 @@ description: "为单个系统设计详细的技术文档。适用于架构拆解
 **加载步骤**:
 
 ### 1.1 检查文件存在性
-扫描 `genesis/` 目录，找到所有 `v{N}` 版本文件夹。
+扫描 `.anws/` 目录，找到所有 `v{N}` 版本文件夹。
 
 **检查**:
-- [ ] `genesis/v{N}/01_PRD.md` 存在
-- [ ] `genesis/v{N}/02_ARCHITECTURE_OVERVIEW.md` 存在
-- [ ] `genesis/v{N}/03_ADR/` 存在
+- [ ] `.anws/v{N}/01_PRD.md` 存在
+- [ ] `.anws/v{N}/02_ARCHITECTURE_OVERVIEW.md` 存在
+- [ ] `.anws/v{N}/03_ADR/` 存在
 
 **如果缺失**:
 - 提示用户先运行 `/genesis`
@@ -109,7 +109,7 @@ description: "为单个系统设计详细的技术文档。适用于架构拆解
 ---
 
 ### 1.2 加载PRD
-读取 `genesis/v{N}/01_PRD.md`
+读取 `.anws/v{N}/01_PRD.md`
 
 **关注重点**:
 - Executive Summary - 项目核心目的
@@ -122,7 +122,7 @@ description: "为单个系统设计详细的技术文档。适用于架构拆解
 ---
 
 ### 1.3 加载Architecture Overview
-读取 `genesis/v{N}/02_ARCHITECTURE_OVERVIEW.md`
+读取 `.anws/v{N}/02_ARCHITECTURE_OVERVIEW.md`
 
 **关注重点**:
 - 系统清单 - 了解所有系统
@@ -132,7 +132,7 @@ description: "为单个系统设计详细的技术文档。适用于架构拆解
 ---
 
 ### 1.4 查找该系统的详细定义
-在 `genesis/v{N}/02_ARCHITECTURE_OVERVIEW.md` 中搜索 system-id 相关内容
+在 `.anws/v{N}/02_ARCHITECTURE_OVERVIEW.md` 中搜索 system-id 相关内容
 
 或手动在Architecture Overview中查找该系统的：
 - **职责 (Responsibility)**: 这个系统负责什么
@@ -143,7 +143,7 @@ description: "为单个系统设计详细的技术文档。适用于架构拆解
 ---
 
 ### 1.5 加载相关ADR
-扫描 `genesis/v{N}/03_ADR/` 目录
+扫描 `.anws/v{N}/03_ADR/` 目录
 
 > [!IMPORTANT]
 > **ADR 与 SYSTEM_DESIGN 的单向引用链**:
@@ -163,14 +163,14 @@ description: "为单个系统设计详细的技术文档。适用于架构拆解
 > 本系统实现 ADR-XXX 定义的设计，不在此重复决策理由。
 ```
 
-读取 `genesis/v{N}/03_ADR/ADR001_TECH_STACK.md`
+读取 `.anws/v{N}/03_ADR/ADR001_TECH_STACK.md`
 
 ---
 
 ### 1.6 生成上下文摘要
 
 > [!IMPORTANT]
-> 你**必须**使用 `sequentialthinking` (3-5步) 生成上下文摘要。
+> 你**必须**使用 `sequential-thinking` skill 组织 3-5 个 thought 生成上下文摘要。
 
 **思考引导**:
 1. "该系统关联哪些PRD需求？[REQ-XXX]"
@@ -211,12 +211,41 @@ description: "为单个系统设计详细的技术文档。适用于架构拆解
 
 ---
 
+### 1.7 检查 ADR 引用清单
+
+> [!IMPORTANT]
+> 你**必须**在设计前明确哪些 ADR 需要在 §8 Trade-offs 中引用。
+>
+> **为什么**: 未雨绸缪,在设计前就明确哪些决策来自 ADR,避免在 §8 时才发现遗漏或重复记录决策。
+
+**检查步骤**:
+1. 列出 `.anws/v{N}/03_ADR/` 目录中的所有 ADR 文件
+2. 识别与本系统相关的 ADR (如技术栈、认证方式、数据库选型等)
+3. 生成"需要引用的 ADR 清单"
+
+**输出**: ADR 引用清单 (保存在内存中)
+
+**示例清单**:
+```markdown
+## ADR 引用清单
+
+需要在 §8 Trade-offs 中引用的 ADR:
+- [ADR-001: 技术栈选型](../03_ADR/ADR_001_TECH_STACK.md) - 本系统使用 React + Vite
+- [ADR-002: 认证方式](../03_ADR/ADR_002_AUTH.md) - 本系统需要处理 JWT Token
+
+本系统特有决策 (不在 ADR 中):
+- 状态管理方案 (Context vs Zustand)
+- 组件库选择
+```
+
+---
+
 ## Step 2: 系统理解 (System Understanding)
 
 **目标**: 深度理解该系统的职责和边界
 
 > [!IMPORTANT]
-> 你**必须**使用 `sequentialthinking` (3-5步) 进行系统理解。
+> 你**必须**使用 `sequential-thinking` skill 组织 3-5 个 thought 进行系统理解。
 >
 > **为什么？** 深度理解是良好设计的前提。
 
@@ -275,7 +304,7 @@ description: "为单个系统设计详细的技术文档。适用于架构拆解
 ```
 
 **产出**:
-- 调研报告自动保存到: `genesis/v{N}/04_SYSTEM_DESIGN/_research/{system-id}-research.md`
+- 调研报告自动保存到: `.anws/v{N}/04_SYSTEM_DESIGN/_research/{system-id}-research.md`
 
 **关键要点**: 从调研中提取:
 - 推荐的架构模式
@@ -286,12 +315,12 @@ description: "为单个系统设计详细的技术文档。适用于架构拆解
 
 ---
 
-## Step 4: 设计 (Design via sequentialthinking)
+## Step 4: 设计 (Design via sequential-thinking)
 
 **目标**: 基于调研和上下文，深度设计系统架构
 
 > [!IMPORTANT]
-> 你**必须**使用 `sequentialthinking` (5-7步) 进行设计思考。
+> 你**必须**使用 `sequential-thinking` skill 组织 5-7 个 thought 进行设计思考。
 >
 > **为什么？** 好的设计需要深度思考，不是拍脑袋决定。
 
@@ -436,24 +465,35 @@ description: "为单个系统设计详细的技术文档。适用于架构拆解
 **关键要求**:
 - **L0 架构图**: 必须使用 Mermaid 绘制
 - **L0 决策树**: 用 Mermaid `flowchart TD`，不用伪代码
-- **L1 锚点原则 (L1 Anchor Principle)**: L0 作为大纲与目录，**必须**为 L1 里的所有细节块留下导航坐标（锚点）。例如在数据模型末尾必须显式注明 *“常量字典配置祥见 [xxx.detail.md §1](./xxx.detail.md)”*。**严禁在 L1 中存在 L0 完全没有提及/引用的“孤岛内容”**。
+- **L1 锚点原则 (L1 Anchor Principle)**: L0 作为大纲与目录，**必须**为 L1 里的所有细节块留下导航坐标（锚点）。例如在数据模型末尾必须显式注明 *"常量字典配置祥见 [xxx.detail.md §1](./xxx.detail.md)"*。**严禁在 L1 中存在 L0 完全没有提及/引用的"孤岛内容"**。
 - **Trade-offs**: 每个重要技术选型都要说明"为什么选 A 不选 B"
 - **追溯链**: 在相关章节引用 PRD 需求 [REQ-XXX]
 - **约束继承**: 从 PRD 和 ADR 继承约束
+
+> [!IMPORTANT]
+> **§8 Trade-offs 必须使用引用格式**
+>
+> 你**必须**使用 Step 1.7 生成的 ADR 引用清单,区分"引用 ADR"vs"本系统特有决策"。
+>
+> **为什么**: 决策只记录一次,避免重复和遗漏。
+>
+> - 跨系统决策 → 引用 ADR,不复制内容
+> - 本系统特有决策 → 详细说明"为什么选 A 不选 B"
+> - 引用格式参考 `system-design-template.md` §8 的示例
 
 ---
 
 ### 5.3 保存文档
 
 **保存 L0 文件**（必须）:
-将内容保存到 `genesis/v{N}/04_SYSTEM_DESIGN/{system-id}.md`
+将内容保存到 `.anws/v{N}/04_SYSTEM_DESIGN/{system-id}.md`
 
 **保存 L1 文件**（如果 5.0 决策为「需要」）:
-将内容保存到 `genesis/v{N}/04_SYSTEM_DESIGN/{system-id}.detail.md`
+将内容保存到 `.anws/v{N}/04_SYSTEM_DESIGN/{system-id}.detail.md`
 
 **示例路径**:
-- L0: `genesis/v{N}/04_SYSTEM_DESIGN/core.md`
-- L1: `genesis/v{N}/04_SYSTEM_DESIGN/core.detail.md`
+- L0: `.anws/v{N}/04_SYSTEM_DESIGN/core.md`
+- L1: `.anws/v{N}/04_SYSTEM_DESIGN/core.detail.md`
 
 ---
 
@@ -468,7 +508,7 @@ description: "为单个系统设计详细的技术文档。适用于架构拆解
 
 **调用方式**:
 ```
-/challenge genesis/v{N}/04_SYSTEM_DESIGN/{system-id}.md
+/challenge .anws/v{N}/04_SYSTEM_DESIGN/{system-id}.md
 ```
 
 **产出**: 质疑报告 + 改进建议
@@ -491,8 +531,8 @@ description: "为单个系统设计详细的技术文档。适用于架构拆解
 **展示**:
 ```
 ✅ 系统设计文档已生成:
-  - 文件: genesis/v{N}/04_SYSTEM_DESIGN/{system-id}.md
-  - 调研: genesis/v{N}/04_SYSTEM_DESIGN/_research/{system-id}-research.md
+  - 文件: .anws/v{N}/04_SYSTEM_DESIGN/{system-id}.md
+  - 调研: .anws/v{N}/04_SYSTEM_DESIGN/_research/{system-id}-research.md
 
 📋 文档包含:
   - 14个章节（完整版）或 11个章节（简化版）
@@ -521,7 +561,7 @@ description: "为单个系统设计详细的技术文档。适用于架构拆解
 
 ```markdown
 ### 系统边界
-- {system-id}: {一句话职责} — 详细设计见 `genesis/v{N}/04_SYSTEM_DESIGN/{system-id}.md`
+- {system-id}: {一句话职责} — 详细设计见 `.anws/v{N}/04_SYSTEM_DESIGN/{system-id}.md`
 ```
 
 > 仅追加，不覆盖已有系统的条目（除非同一 system-id 有更新值）。
@@ -531,9 +571,9 @@ description: "为单个系统设计详细的技术文档。适用于架构拆解
 <completion_criteria>
 - ✅ 系统ID已确认
 - ✅ 上下文已加载（PRD + Architecture Overview + 相关ADR）
-- ✅ 系统理解已完成 (sequentialthinking 3-5步)
+- ✅ 系统理解已完成 (`sequential-thinking` 3-5 thoughts)
 - ✅ 调研已完成 (/explore)
-- ✅ 设计已完成 (sequentialthinking 5-7步)
+- ✅ 设计已完成 (`sequential-thinking` 5-7 thoughts)
 - ✅ 文档已生成 (使用模板)
 - ✅ 更新了 AGENTS.md AUTO:BEGIN 区块 (系统边界)
 - ✅ 用户已确认
@@ -554,16 +594,3 @@ description: "为单个系统设计详细的技术文档。适用于架构拆解
 
 **为多智能体系统设计**:
 `/design-system agent-system`
-
----
-
-## 🛡️ 常见问题 (FAQ)
-
-**Q1: 如果Architecture Overview中没有我要设计的系统怎么办？**
-A: 提示用户先运行 `/genesis` 或更新 `02_ARCHITECTURE_OVERVIEW.md` 添加该系统。
-
-**Q2: 如果调研找不到相关最佳实践怎么办？**
-A: 调整调研关键词，或基于通用软件架构原则设计。记录在文档的"References"章节说明缺乏参考资料。
-
-**Q3: 小项目是否需要完整的14章节？**
-A: 结构保持一致，但可以简化内容。可省略章节: 13 (未来考虑), 14 (附录)。可简化章节: 12 (部署)。

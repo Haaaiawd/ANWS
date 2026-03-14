@@ -18,7 +18,7 @@ description: "智能编排全流程。适用于不确定从哪个工作流开始
 
 ### 状态矩阵
 ```
-├── 🛑 无 genesis/ 
+├── 🛑 无 .anws/ 
 │   ├── 有代码 → 🏚️ [遗留项目] → Jump to Step 0.5 (Probe)
 │   └── 无代码 → 🆕 [全新项目] → Jump to Step 1 (Genesis)
 ├── 📝 有架构 (无任务)
@@ -36,7 +36,7 @@ description: "智能编排全流程。适用于不确定从哪个工作流开始
 ## Step 0.5: 探测 (Probe)
 
 **触发**: 遗留项目。通过 `/probe` 探测暗地里的风险与耦合。
-**产出**: `00_PROBE_REPORT.md` (Genesis 的重要输入)。
+**产出**: `.anws/v{N}/00_PROBE_REPORT.md` (Genesis 的重要输入)。
 
 ---
 

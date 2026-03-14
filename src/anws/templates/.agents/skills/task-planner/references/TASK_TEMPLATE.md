@@ -1,144 +1,144 @@
-# Task Decomposition Template
+# 任务拆解模板
 
-**Project**: [Project Name]  
-**Blueprint Phase**: Approved  
-**RFC Reference**: `genesis/v{N}/02_ARCHITECTURE_OVERVIEW.md`
-
----
-
-## 📋 Task List
-
-### Legend
-- **ID**: Unique task identifier (T001, T002...)
-- **[P]**: Parallelizable (can run independently)
-- **[Verification]**: Checkpoint task (manual/E2E validation)
-- **User Story**: Maps to PRD (US01, US02...)
-- **Done When**: Verification criterion
+**项目**: [项目名称]  
+**蓝图阶段**: 已批准  
+**RFC 参考**: `.anws/v{N}/02_ARCHITECTURE_OVERVIEW.md`
 
 ---
 
-### Phase 1: Foundation
+## 📋 任务清单
 
-#### T001 - Database Schema Setup
-- **User Story**: US01
-- **Description**: Create `users` table with fields: `id`, `email`, `password_hash`, `created_at`.
-- **Dependencies**: None
-- **Done When**: `psql -c "\d users"` shows correct schema.
+### 图例说明
+- **ID**: 唯一任务标识符（T001, T002...）
+- **[P]**: 可并行（可独立执行）
+- **[验证]**: 检查点任务（人工 / E2E 验证）
+- **用户故事**: 映射到 PRD（US01, US02...）
+- **验收成立**: 验收成立条件
+
+---
+
+### 阶段 1：基础阶段
+
+#### T001 - 数据库 Schema 初始化
+- **用户故事**: US01
+- **描述**: 创建 `users` 表，包含 `id`、`email`、`password_hash`、`created_at` 字段。
+- **依赖**: 无
+- **验收成立**: `psql -c "\d users"` 显示正确的表结构。
   
-#### T002 - [P] Environment Configuration
-- **User Story**: US01
-- **Description**: Add `.env` file with `DATABASE_URL`, `JWT_SECRET`.
-- **Dependencies**: None
-- **Done When**: `docker-compose up` starts DB without errors.
+#### T002 - [P] 环境配置
+- **用户故事**: US01
+- **描述**: 添加包含 `DATABASE_URL`、`JWT_SECRET` 的 `.env` 文件。
+- **依赖**: 无
+- **验收成立**: `docker-compose up` 可以无报错启动数据库。
 
 
 ---
 
-### Phase 2: Core Logic
+### 阶段 2：核心逻辑
 
-#### T003 - User Registration Endpoint
-- **User Story**: US01
-- **Description**: Implement `POST /api/register` that hashes password and stores user.
-- **Dependencies**: T001 (DB Schema)
-- **Done When**: `curl -X POST /api
+#### T003 - 用户注册接口
+- **用户故事**: US01
+- **描述**: 实现 `POST /api/register`，对密码做哈希并保存用户。
+- **依赖**: T001（数据库 Schema）
+- **验收成立**: `curl -X POST /api
 
-#### T004 - [P] JWT Token Generation
-- **User Story**: US01
-- **Description**: Create `generate_token(user_id)` helper function.
-- **Dependencies**: T002 (JWT_SECRET configured)
-- **Done When**: Unit test `test_generate_token()` passes.
-
----
-
-## 📊 Sprint 路线图
-
-| Sprint | 代号 | 核心任务 | 退出标准 | 预估 |
-|--------|------|---------|---------|------|
-| S1 | Foundation | T001-T002 | DB 可连接 + 环境变量生效 | 1d |
-| S2 | Core Logic | T003-T005 | 完整认证流程可运行 | 2d |
+#### T004 - [P] JWT Token 生成
+- **用户故事**: US01
+- **描述**: 创建 `generate_token(user_id)` 辅助函数。
+- **依赖**: T002（JWT_SECRET 已配置）
+- **验收成立**: 单元测试 `test_generate_token()` 通过。
 
 ---
 
-### Phase 3: Integration
+## 📊 迭代路线图
 
-#### T005 - Login Endpoint
-- **User Story**: US01
-- **Description**: Implement `POST /api/login` that validates credentials and returns JWT.
-- **Dependencies**: T003 (User table populated), T004 (JWT generator ready)
-- **Input**: T003 产出的 `users` 表 + T004 产出的 `generate_token()` 函数
-- **Output**: `/api/login` 端点 (`src/routes/auth.js`)
-- **Done When**: 
-  1. Valid login returns `{token: "..."}`.
-  2. Invalid login returns 401.
-
-#### INT-S2 - [MILESTONE] S2 集成验证 — Core Logic
-- **User Story**: US01
-- **Type**: Integration Verification (Sprint Gate)
-- **Description**: 验证 S2 退出标准：完整认证流程可运行
-- **Dependencies**: All S2 tasks (T003-T005)
-- **Done When**:
-  1. Run `npm run dev` or equivalent
-  2. Register a new user via `/api/register`
-  3. Login with valid credentials → receives JWT token
-  4. Login with invalid credentials → receives 401 error
-  5. All unit tests pass (`npm test`)
-  6. No linter errors (`npm run lint`)
+| 迭代 | 代号 | 核心任务 | 退出标准 | 预估 |
+|------|------|---------|---------|------|
+| S1 | 基础阶段 | T001-T002 | DB 可连接 + 环境变量生效 | 1d |
+| S2 | 核心逻辑 | T003-T005 | 完整认证流程可运行 | 2d |
 
 ---
 
-## 🔗 Dependency Graph
+### 阶段 3：集成阶段
+
+#### T005 - 登录接口
+- **用户故事**: US01
+- **描述**: 实现 `POST /api/login`，校验凭证并返回 JWT。
+- **依赖**: T003（用户表已有数据）、T004（JWT 生成器就绪）
+- **输入**: T003 产出的 `users` 表 + T004 产出的 `generate_token()` 函数
+- **输出**: `/api/login` 端点 (`src/routes/auth.js`)
+- **验收成立**: 
+  1. 合法登录返回 `{token: "..."}`。
+  2. 非法登录返回 401。
+
+#### INT-S2 - [MILESTONE] S2 集成验证 — 核心逻辑
+- **用户故事**: US01
+- **类型**: 集成验证（迭代关卡）
+- **描述**: 验证 S2 退出标准：完整认证流程可运行
+- **依赖**: S2 的所有任务（T003-T005）
+- **验收成立**:
+  1. 运行 `npm run dev` 或等价命令
+  2. 通过 `/api/register` 注册新用户
+  3. 使用合法凭证登录 → 收到 JWT 令牌
+  4. 使用非法凭证登录 → 收到 401 错误
+  5. 所有单元测试通过（`npm test`）
+  6. 无 Linter 错误（`npm run lint`）
+
+---
+
+## 🔗 依赖图
 
 ```
-T001 (DB Schema)
-  → T003 (Register)
-      → T005 (Login)
+T001 (数据库 Schema)
+  → T003 (注册)
+      → T005 (登录)
 
-T002 (Env Config) [P]
-  → T004 (JWT Helper) [P]
-      → T005 (Login)
-```
-
----
-
-## 📊 Summary
-
-| Phase | Total Tasks | Parallelizable |
-|-------|-------------|----------------|
-| 1     | 2           | 1              | 
-| 2     | 2           | 1              | 
-| 3     | 1           | 0              | 
-| **Total** | **5**   | **2**          |
-
----
-
-## ✅ Acceptance Criteria
-
-Before marking Blueprint as complete:
-- [ ] All tasks have unique IDs
-- [ ] Dependencies are explicit (→ notation)
-- [ ] Each task has "Done When" criterion
-- [ ] No task contains actual code (only descriptions <10 lines)
-- [ ] Total estimated time is realistic
-- [ ] User has approved this task list
-
----
-
-## 🚫 Anti-Patterns to Avoid
-
-❌ **Bad Task**:
-```
-T001 - Build Authentication System
-- Implement everything related to auth
-- Make it secure and fast
-```
-
-✅ **Good Task**:
-```
-T001 - Database Schema Setup
-- Description: Create `users` table with `id`, `email`, `password_hash`.
-- Done When: `psql -c "\d users"` shows correct schema.
+T002 (环境配置) [P]
+  → T004 (JWT 辅助函数) [P]
+      → T005 (登录)
 ```
 
 ---
 
-**Next Step**: Proceed to `/build` workflow to implement tasks sequentially.
+## 📊 汇总
+
+| 阶段 | 任务总数 | 可并行数 |
+|-------|---------|---------|
+| 1     | 2       | 1       | 
+| 2     | 2       | 1       | 
+| 3     | 1       | 0       | 
+| **总计** | **5** | **2** |
+
+---
+
+## ✅ 验收标准
+
+在将蓝图标记为完成前：
+- [ ] 所有任务都有唯一 ID
+- [ ] 依赖关系明确（使用 `→` 表示）
+- [ ] 每个任务都有 `验收成立` 条件
+- [ ] 任务中不包含实际代码（仅保留 <10 行描述）
+- [ ] 总体估时合理
+- [ ] 用户已确认该任务清单
+
+---
+
+## 🚫 需要避免的反模式
+
+❌ **坏任务示例**：
+```
+T001 - 构建认证系统
+- 把认证相关的一切都做完
+- 让它安全又快速
+```
+
+✅ **好任务示例**：
+```
+T001 - 数据库 Schema 初始化
+- 描述: 创建包含 `id`、`email`、`password_hash` 的 `users` 表。
+- 验收成立: `psql -c "\d users"` 显示正确表结构。
+```
+
+---
+
+**下一步**：进入 `/build` workflow，按顺序实现这些任务。
