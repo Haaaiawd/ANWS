@@ -79,3 +79,22 @@ test('anws init dedupes already selected targets in install-lock', async () => {
     assert.equal(lock.targets[0].targetId, 'windsurf');
   });
 });
+
+test('anws init reports partial success and only writes successful targets into install-lock', async () => {
+  await withTempDir(async (tempDir) => {
+    await fs.mkdir(path.join(tempDir, '.windsurf', 'workflows'), { recursive: true });
+    await fs.writeFile(path.join(tempDir, '.windsurf', 'workflows', 'genesis.md'), 'user-owned conflict', 'utf8');
+
+    const result = runCliInDir(tempDir, ['init', '--target', 'windsurf,codex']);
+
+    assert.equal(result.status, 0, result.stderr || result.stdout);
+    assert.match(result.stdout, /Target summary:/);
+    assert.match(result.stdout, /Windsurf \(windsurf\)/);
+    assert.match(result.stdout, /Codex \(codex\)/);
+
+    const lock = JSON.parse(await fs.readFile(path.join(tempDir, '.anws', 'install-lock.json'), 'utf8'));
+    assert.deepEqual(lock.targets.map((item) => item.targetId), ['codex']);
+    assert.deepEqual(lock.lastUpdateSummary.failedTargets, ['windsurf']);
+    assert.equal(await exists(path.join(tempDir, '.codex', 'prompts', 'genesis.md')), true);
+  });
+});

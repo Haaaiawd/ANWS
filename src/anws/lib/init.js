@@ -33,6 +33,7 @@ async function init() {
   const written = [];
   const skipped = [];
   const successfulTargets = [];
+  const failedTargets = [];
 
   for (const targetPlan of targetPlans) {
     const target = getTarget(targetPlan.targetId);
@@ -52,6 +53,11 @@ async function init() {
       const confirmed = await askOverwrite(conflicting.length, target.label);
       if (!confirmed) {
         skipped.push(...targetPlan.managedFiles);
+        failedTargets.push({
+          targetId: target.id,
+          targetLabel: target.label,
+          reason: `Skipped ${conflicting.length} conflicting managed file(s)`
+        });
         continue;
       }
     }
@@ -85,10 +91,12 @@ async function init() {
     ]),
     lastUpdateSummary: {
       successfulTargets: successfulTargets.map((item) => item.targetId),
-      failedTargets: targetIds.filter((targetId) => !successfulTargets.some((item) => item.targetId === targetId)),
+      failedTargets: failedTargets.map((item) => item.targetId),
       updatedAt: generatedAt
     }
   }));
+
+  printTargetSummary(successfulTargets, failedTargets);
 
   for (const rel of written) {
     fileLine(rel.replace(/\\/g, '/'));
@@ -247,6 +255,17 @@ function printNextSteps(targets) {
     info('  1. Review files written under the selected target directories');
   }
   info('  2. Run /quickstart in your AI assistant to analyze and start the workflow');
+}
+
+function printTargetSummary(successfulTargets, failedTargets) {
+  blank();
+  info('Target summary:');
+  for (const target of successfulTargets) {
+    info(`  ✔ ${target.targetLabel} (${target.targetId})`);
+  }
+  for (const target of failedTargets) {
+    info(`  ✖ ${target.targetLabel} (${target.targetId}) — ${target.reason}`);
+  }
 }
 
 module.exports = init;

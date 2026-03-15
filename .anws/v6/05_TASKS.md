@@ -62,7 +62,7 @@ graph TD
   - **估时**: 6h
   - **依赖**: T2.2.1, T4.1.1, T5.1.1
 
-- [ ] **T1.1.2** [REQ-001]: 为 `init` 实现部分成功语义与按 target 摘要输出
+- [x] **T1.1.2** [REQ-001]: 为 `init` 实现部分成功语义与按 target 摘要输出
   - **描述**: 为多目标初始化补齐 per-target 成功/失败收集、终端摘要、next steps 和失败 reporting，确保成功 target 的状态与落盘结果一致，失败 target 不污染状态。
   - **输入**: T1.1.1 产出的多目标 init 编排流程；T4.1.1 的 install-lock 回写接口；T5.1.1 的 per-target 写入结果对象。
   - **输出**: `src/anws/lib/init.js` 中的结果汇总逻辑；按 target 分组的安装摘要输出。
