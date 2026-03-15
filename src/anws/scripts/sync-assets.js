@@ -13,8 +13,7 @@ const PACKAGE_DIR = path.resolve(__dirname, '..');
 
 const SYNC_CONFIG = [
   { from: 'README.md', to: 'README.md' },
-  { from: 'README_CN.md', to: 'README_CN.md' },
-  { from: '.agents', to: 'templates/.agents' }
+  { from: 'README_CN.md', to: 'README_CN.md' }
 ];
 
 console.log('🔄 Starting assets synchronization...');

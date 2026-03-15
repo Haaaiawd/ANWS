@@ -1,10 +1,10 @@
 <div align="center">
 
-<img src="assets/logo.png" width="200" alt="Anws">
+<img src="assets/logo-cli.png" width="260" alt="Anws">
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Multi-Tool](https://img.shields.io/badge/Support-Claude%20Code%20%7C%20Copilot%20%7C%20Cursor%20%7C%20Windsurf-blueviolet)](https://github.com/Haaaiawd/Anws)
-[![Vibe Coding](https://img.shields.io/badge/Vibe%20Coding-Enabled-ff69b4)](https://github.com/karpathy/vibe-coding)
+[![Version](https://img.shields.io/badge/version-v2.0.0-7FB5B6)](https://github.com/Haaaiawd/Anws/releases)
+[![Targets](https://img.shields.io/badge/Targets-Windsurf%20%7C%20Claude%20Code%20%7C%20Copilot%20%7C%20Cursor%20%7C%20Codex%20Preview%20%7C%20OpenCode-blueviolet)](https://github.com/Haaaiawd/Anws)
 
 [English](./README.md) | [中文](./README_CN.md)
 
@@ -12,35 +12,109 @@
 
 ---
 
-## ⚡ 这是什么？
+# Anws
 
-**Anws** — 专为 **Agentic AI**（智能体AI）设计的**结构化工作流框架**，旨在解决 **Vibe Coding** 时代的核心痛点。
+**Anws** 是一个面向 AI 辅助开发的、以规格与架构为核心的工作流框架。
 
-> 💡 **一句话总结**: 别再让 AI 写“意大利面条代码”了。强迫它先像架构师一样思考，再像工程师一样编码。
+它给编码智能体提供的是一条完整路径，而不是一堆零散提示词：
 
-### ANWS
+`PRD -> Architecture -> ADR -> Tasks -> Review -> Code -> Upgrade`
 
-**Axiom —— 先有原则，再有实现。**  
-**Nexus —— 先理解连接，再拆分系统。**  
-**Weave —— 先形成整体，再展开流程。**  
-**Sovereignty —— 始终由人保有判断与主导权，AI 只是工具，不是权威。**
+Anws 的核心目标不是“让 AI 更快写代码”，而是让 AI **先理解问题、再设计系统、最后执行实现**。
 
-**支持工具**: Claude Code、GitHub Copilot、Cursor、Windsurf。
+> **一句话**：不要把 AI 当补全器，要给它架构、约束和完整生命周期。
 
-### 🎯 我们解决的问题
+## ANWS
 
-| 痛点           | 问题描述                                          | 我们的解决方案                                   |
-| -------------- | ------------------------------------------------- | ------------------------------------------------ |
-| **架构漂移**   | AI 在同一个项目中生成的代码风格不一致，缺乏整体观 | `/genesis` 强制先产出 PRD 和架构设计             |
-| **面条代码**   | AI 缺乏项目上下文，写的代码无法融入现有系统       | 任务包含严格的约束和验收标准                     |
-| **上下文健忘** | 新会话 = AI 忘记了之前所有的决策                  | `AGENTS.md` + 版本化文档 = 持久记忆 |
-| **缺乏规划**   | Vibe Coding 跳过设计直接编码，导致技术债务        | 强制执行“设计优先”的工作流                       |
+- **Axiom** —— 先有原则，再有实现
+- **Nexus** —— 先理解连接，再拆分系统
+- **Weave** —— 先形成整体，再展开流程
+- **Sovereignty** —— 始终由人保有判断与主导权
 
 ---
 
-## 🚀 快速开始
+## 为什么需要 Anws
 
-### 方式 A — npm CLI（推荐）
+今天的 AI 编程常见失败模式非常稳定：
+
+- **架构漂移**
+  - 不同会话写出彼此不兼容的结构
+
+- **上下文健忘**
+  - 新会话丢失系统边界、权衡与任务状态
+
+- **规划塌缩**
+  - 需求和接口还没稳定，代码已经开始堆
+
+- **升级失控**
+  - 工作流模板在演进，但已有项目无法安全更新
+
+Anws 用以下机制应对这些问题：
+
+- **版本化架构文档**
+  - 保存在 `.anws/v{N}/`
+
+- **根锚点文件**
+  - 通过 `AGENTS.md` 作为 AI 恢复上下文的入口
+
+- **工作流优先执行**
+  - 不再依赖 prompt 即兴发挥
+
+- **受控更新语义**
+  - 对 `AGENTS.md`、已安装 targets、升级历史进行显式管理
+
+---
+
+## v2.0.0 有什么变化
+
+`v2.0.0` 是一次 **Major Release**，不是简单的模板刷新，而是协议级升级。
+
+- **统一架构根目录**
+  - 从历史拆分根目录收束到 `.anws/`
+  - 统一版本文档与升级记录的存放方式
+
+- **`AGENTS.md` 进入受控更新**
+  - 带标识文件走 merge
+  - 可识别 legacy 文件自动 migrate
+  - 不可识别 legacy 文件安全保留
+
+- **多目标 IDE 投放模型落地**
+  - 一份 canonical source
+  - 多个目标 IDE 原生目录布局
+  - 各 target 拥有自己独立的物理文件
+
+- **Codex 投放策略调整**
+  - Codex 现在标记为 **Preview**
+  - 由于 Codex 已取消 prompts，Anws 改为将工作流指导聚合到 `.codex/skills/anws-system/`
+  - `/quickstart` 对应 `SKILL.md`
+  - 其他 workflow 文档作为同一聚合 skill 下的 `references/*.md`
+
+- **OpenCode 支持**
+  - 新增 `.opencode/commands/` 与 `.opencode/skills/` 原生投放
+  - `init`、`update`、manifest 归属、drift detection 与 diff 流程已一并适配
+
+- **`anws update` 语义增强**
+  - 感知 install-lock
+  - 支持目录扫描 fallback
+  - 支持 drift detection
+  - 支持按 target 输出更新摘要
+
+- **内置生态集成**
+  - 集成 `nexus-skills`
+  - 以 `nexus-mapper` 作为 `/probe` 的结构分析骨干
+  - 完成从 legacy `/scout` 到 `/probe` 的工作流语义切换
+
+- **CLI 品牌体验升级**
+  - 统一 logo
+  - 品牌化确认框
+  - changelog 生成
+  - 更完整的交互反馈
+
+---
+
+## 快速开始
+
+### 通过 npm 安装
 
 ```bash
 npm install -g @haaaiawd/anws
@@ -48,221 +122,177 @@ cd your-project
 anws init
 ```
 
-> 需要 Node.js ≥ 18。
-> `anws init` 支持显式安装一个或多个目标 AI IDE 投影。
-> 示例：`anws init --target windsurf,codex`
-> 每个已选择 target 都会落到自己的原生目录中，目标之间不会共享物理文件。
+- **要求**
+  - Node.js `>= 18`
 
-### 方式 B — GitHub Release
+- **安装行为**
+  - `anws init` 会把工作流投影安装到一个或多个目标 IDE 的原生目录
+  - 示例：`anws init --target windsurf,opencode`
 
-从 [Releases](https://github.com/Haaaiawd/Anws/releases) 下载最新 `.zip`，再按你的目标 AI IDE 复制对应目录。更推荐使用 npm CLI，因为它会帮你选择正确的目标布局。
-
-### 📦 更新已有安装
+### 更新已有项目
 
 ```bash
 cd your-project
 anws update
 ```
 
-> `anws update --check` 会按 target 分组输出 diff 预览，**不会写入任何文件，也不会更新 `.anws/install-lock.json`**。
-> `anws update` 会优先读取 `.anws/install-lock.json` 来确定当前已安装 targets；如果 lock 缺失或损坏，则回退为目录扫描。
-> 当项目中存在多个 targets 时，`anws update` 会统一调度全部命中 targets，并输出按 target 分组的成功 / 失败摘要。成功 target 会回写到 lock，失败 target 会被单独报告，不会误记为已更新。
-> 当命中目标中包含 `Antigravity` 时，`AGENTS.md` 仍按以下规则处理：
-> - 带标识的 `AGENTS.md` → 更新稳定区，保留 `AUTO` 运行态区块
-> - 可识别的 legacy `AGENTS.md` → 迁移到新的带标识结构
-> - 不可识别的 legacy `AGENTS.md` → 警告并原样保留
-> 如果项目里仍有旧版 `.agent/` 目录，CLI 会询问你是否迁移到 `.agents/`。
-> legacy 迁移成功后，在交互模式下 CLI 还会进一步询问你是否删除旧 `.agent/` 目录。
-> 每次成功的 `update` 也会刷新 `.anws/changelog/` 并更新 `.anws/install-lock.json` 中的目标状态。
+- **预览模式**
+  - `anws update --check` 会按 target 分组预览 diff，不写入文件
 
-### 你的第一个项目 🐣
+- **状态来源**
+  - `anws update` 优先读取 `.anws/install-lock.json`
+  - 若 lock 缺失或损坏，则回退为目录扫描
 
-> **最简单的上手方式**: 直接运行 `/quickstart` 命令！AI 会自动检测你的项目状态，并一步步引导你完成从需求 (`/genesis`) 到编码 (`/forge`) 的全生命周期。新手只用这一个命令就够了！
+- **`AGENTS.md` 更新规则**
+  - 带标识文件 -> 更新稳定区，保留 `AUTO` 区块
+  - 可识别 legacy 文件 -> 自动迁移到新结构
+  - 不可识别 legacy 文件 -> 警告并原样保留
 
-**需要灵感？备选示例提示词**: "我想做一个 Web 版的 macOS 系统模拟器，包含 Dock、顶栏和几个系统应用，请你根据开发流程从0开启这个新项目吧"
+- **legacy 迁移**
+  - 若项目仍有 `.agent/`，CLI 可引导迁移到 `.agents/`
+  - 迁移成功后，交互模式下还可继续确认是否删除旧 `.agent/`
 
-### 🔁 用自己写自己 (Dogfooding)
-
-有趣的事实：**这个 CLI 工具（`anws`）本身就是用它自己的工作流构建的！**
-我们使用了 `/genesis` 工作流来设计 CLI 的架构，并用 `/forge` 工作流来实现代码。此项目本身就是 Anws 能力的最佳证明。
-
-**深度思考与架构设计**：AI 将会自动执行 `/genesis` 工作流，深度思考项目需求并产出 PRD 与架构设计。
-<img src="assets/genesis工作流演示.jpg" width="800" alt="Genesis Workflow">
-
-**交互式需求对齐**：AI 会针对模糊需求进行追问，确保设计符合你的直觉。
-<img src="assets/与人类交互确认细节.jpg" width="800" alt="Human Interaction">
-
-**自主任务拆解与执行**：AI 会自主调用必要的 Skills（如 `spec-writer`, `task-planner` 等）来完成文档建设与任务拆解。
-<img src="assets/自主调用skills.jpg" width="800" alt="Skills Execution">
+- **升级记录**
+  - 每次成功更新都会刷新 `.anws/changelog/`
+  - target 状态会回写到 `.anws/install-lock.json`
 
 ---
 
-## 🗺️ 决策流程图
+## 给老用户的迁移说明
 
-```
-                    ┌─────────────────┐
-                    │     你目前在哪?    │
-                    └────────┬────────┘
-           ┌─────────────────┼─────────────────┐
-           ▼                 ▼                 ▼
-    ┌──────────┐      ┌──────────┐      ┌──────────┐
-    │   新项目  │     │ 接手旧代码 │     │  现有项目 │
-    │   (New)  │      │  (Legacy) │     │  变更    │
-    └────┬─────┘      └────┬─────┘      └────┬─────┘
-         │                 │                 │
-         ▼                 ▼                 ▼
-    /genesis          /probe         微调已有任务?
-         │                 │            /       \
-         │                 │           /         \
-         └────────┬────────┘     /change      /genesis
-                  │            (仅修改)    (新任务/新功能)
-                  ▼                │            │
-           /design-system <--------+------------+
-           (可选，强烈建议)
-                  |
-                  v
-            /challenge
-            (设计审查)
-                  |
-                  v
-             /blueprint
-                  |
-                  v
-            /challenge
-            (任务审查)
-                  |
-                  v
-               /forge
-              (代码交付)
-```
+如果你使用过旧版 Anws / Antigravity 布局，那么 `v2.0.0` 主要意味着：
+
+- **目录协议变化**
+  - 历史里的 `genesis/` 与 `anws/changelog/` 叙述应统一替换为 `.anws/`
+
+- **`AGENTS.md` 不再是“永远 skip”**
+  - 它现在是一个受控托管文件，具有 merge / migrate / preserve 语义
+
+- **target 安装成为一等模型**
+  - Anws 现在显式建模不同 IDE 目标
+
+如果你还维护旧模板、旧 Release 文案或旧文档截图，发布前建议一起完成术语收口。
 
 ---
 
-## 🔑 核心理念
+## 兼容性
 
-### 1. 版本化架构 (Versioned Architecture)
-> 不要“修补”架构文档，要**演进**它们。
+Anws 维护一份统一的工作流 / 技能源，然后将其投影到各个 AI 工具要求的原生目录结构中。
 
-- 发生重大变更时，从 `.anws/v1` 复制到 `.anws/v2`。
-- 完整的决策可追溯性。
-- 拒绝“本来就是这样”的玄学代码。
-
-### 2. 深度思考优先 (Deep Thinking First)
-> AI 必须先思考，再动笔。
-
-- 工作流通过内置的 `sequential-thinking` skill 强制进行多步推理。
-- 使用 `[!IMPORTANT]` 块作为护栏。
-- 拒绝肤浅的、扫描式的快速回答。
-
-### 3. 文件即记忆 (Filesystem as Memory)
-> 聊天是短暂的，文件是永恒的。
-
-- `AGENTS.md` 是 AI 的锚点。
-- 架构文档是持久化的决策记录。
-- 新会话可迅速恢复完整上下文。
+| 环境 | 状态 | 目录布局 |
+| --- | --- | --- |
+| **Windsurf** | ✅ 完整支持 | `.windsurf/workflows/` + `.windsurf/skills/` |
+| **Antigravity** | ✅ 完整支持 | `.agents/workflows/` + `.agents/skills/` + `AGENTS.md` |
+| **Claude Code** | ✅ 完整支持 | `.claude/commands/` |
+| **GitHub Copilot** | ✅ 完整支持 | `.github/agents/` + `.github/prompts/` |
+| **Cursor** | ✅ 支持 | `.cursor/commands/` |
+| **Codex** | ⚠️ Preview | `.codex/skills/anws-system/` + `.codex/skills/<skill>/` |
+| **OpenCode** | ✅ 支持 | `.opencode/commands/` + `.opencode/skills/` |
 
 ---
 
-## 📋 工作流一览
+## 推荐工作流
 
-| 命令              | 用途                                       | 输入               | 输出                                 |
-| ----------------- | ------------------------------------------ | ------------------ | ------------------------------------ |
-| **`/quickstart`** | **统一入口：智能感知状态并编排全生命周期** | 无                 | 全推工作流引导与自动化调度           |
-| `/genesis`        | 从零开始，创建 PRD 和架构                  | 模糊的想法         | PRD, 架构文档, ADRs                  |
-| `/probe`         | 分析遗留代码的风险                         | 现有代码           | 风险报告, 差距分析                   |
-| `/design-system`  | 单个系统的详细设计                         | 架构概览           | System Design 文档                   |
-| `/challenge`      | 智能判定审查模式（设计审查与任务清单审查） | 完整设计文档       | 质疑报告 (分级)                      |
-| `/blueprint`      | 将架构拆解为任务清单                       | PRD + 架构         | TASKS.md (WBS)                       |
-| `/forge`          | 执行任务 — 将架构锻造为代码                | TASKS.md           | 可运行的代码，已验证                 |
-| `/change`         | 微调已有任务（禁止新增）                   | 已有任务的微调需求 | 更新后的任务清单 + 设计文件 (仅修改) |
-| `/explore`        | 深度调研与头脑风暴                         | 话题/问题          | 探索报告                             |
-| `/craft`          | 创建工作流/技能/提示词                     | 创建需求           | Workflow / Skill / Prompt 文档       |
+使用 Anws 时，推荐把它当成一个完整生命周期，而不是单纯的目录模板包。
 
----
-
-## 🛠️ 兼容性与前置要求
-
-> ⚠️ **重要**: 本框架支持能消费 `anws` 目标目录投放的 AI 编程工具，例如 `.windsurf/`、`.agents/`、`.cursor/`、`.claude/`、`.github/`、`.codex/`。
-
-| 环境            |        状态        | 说明                  |
-| --------------- | :----------------: | --------------------- |
-| **Windsurf**       |     ✅ 完美支持     | `.windsurf/workflows/` + `.windsurf/skills/` |
-| **Antigravity**    |     ✅ 完美支持     | `.agents/workflows/` + `.agents/skills/` + `AGENTS.md` |
-| **Claude Code**    |     ✅ 完美支持     | `.claude/commands/` |
-| **GitHub Copilot** |     ✅ 完美支持     | `.github/agents/` + `.github/prompts/` |
-| **Cursor**         |     ✅ 支持        | `.cursor/commands/` |
-| **Codex**          |     ✅ 支持        | `.codex/prompts/` + `.codex/skills/` |
-
-**工作原理**: Anws 维护一套统一的工作流 / 技能源，再把它投影到你选择的目标 IDE 所需目录中。`AGENTS.md` 仍是 Antigravity 兼容目标的根锚点，其他目标则使用各自的原生目录布局。
-
-### ✅ 内置深度推理支持
-
-本框架已内置 `sequential-thinking` skill，用于结构化深度推理。
-
-- 默认推理主链路**不再依赖**额外的 MCP 安装
-- 所有工作流和 skills 统一使用 `sequential-thinking` 调用口径
-- 内置示例覆盖修正推理、分支推理与结构化影响分析
-
-> 💡 框架默认推理流程已不再依赖旧版 Sequential Thinking MCP Server。
+| 命令 | 用途 | 输入 | 输出 |
+| --- | --- | --- | --- |
+| **`/quickstart`** | 智能分流到正确工作流路径 | 自动识别状态 | 全流程编排 |
+| `/genesis` | 从零开始建立 PRD 与架构 | 模糊想法 | PRD、架构、ADR |
+| `/probe` | 在变更前分析遗留系统 | 现有代码 | 风险报告 |
+| `/design-system` | 为单个系统做深入设计 | 架构概览 | 系统设计文档 |
+| `/challenge` | 对设计或任务清单做对抗式审查 | 文档 / 任务 | 质疑报告 |
+| `/blueprint` | 将架构拆成可执行任务 | PRD + 架构 | `05_TASKS.md` |
+| `/forge` | 将批准的任务锻造成代码 | 任务清单 | 可运行实现 |
+| `/change` | 只修改既有任务，不新增能力 | 小范围变更 | 更新后的任务 / 设计文档 |
+| `/explore` | 深度调研不确定问题 | 主题 | 探索报告 |
+| `/craft` | 创建工作流、技能、提示词 | 创建需求 | 可复用资产 |
+| `/upgrade` | 在 update 后路由升级编排 | 更新记录 | `/change` 或 `/genesis` 路径 |
 
 ---
 
-## ⚡ 调用工作流
+## 核心原则
 
-你的 AI 工具会自动识别你的意图并触发相应的工作流。你有两种使用方式：
+### 1. 版本化架构
 
-#### ⚡ 方式 A: 斜杠协议 (显式)
-直接在聊天或编辑器中输入命令：
-- `/genesis` - 启动项目创建
-- `/probe` - 分析现有代码库
-- `/blueprint` - 将架构拆解为任务
+- 架构应该被**演进**，而不是被悄悄改写
+- 重大结构调整从 `.anws/v1` 进入 `.anws/v2`
+- ADR 保存的是“为什么要这样设计”
 
-#### 🧠 方式 B: 意图协议 (隐式)
-像平常说话一样即可。你的 AI 工具会自动选择并运行正确的工作流。
-- *"我想做一个全新的待办事项 App"* → 触发 `/genesis`
-- *"帮我看看这段老代码有什么风险"* → 触发 `/probe`
-- *"我觉得这个设计有漏洞，帮我找找茬"* → 触发 `/challenge`
-- *"架构设计好了，我们来规划一下任务"* → 触发 `/blueprint`
-- *"把登录页的错误提示改一下"* → 触发 `/change` (微调已有任务)
-- *"我需要加一个返回顶部按钮"* → 触发 `/genesis` (需要新任务)
+### 2. 文件即记忆
+
+- `AGENTS.md` 是恢复入口
+- `.anws/v{N}/` 保存长期架构上下文
+- `.anws/changelog/` 保存升级历史
+
+### 3. 先思考，再编码
+
+- 工作流会强制经历阶段化推理
+- 内置 `sequential-thinking` skill 统一深度分析路径
+- 通过 review 节点在代码落地前拦截漂移
 
 ---
 
-## 📁 项目结构
+## 项目结构
 
 ```bash
 your-project/
 ├── .anws/
-│   ├── install-lock.json      # 已安装 target 的权威状态
-│   ├── changelog/             # `anws update` 生成的升级记录
-│   └── v6/                    # 当前版本化架构文档
-│
-├── .windsurf/                 # Windsurf 投影
+│   ├── install-lock.json
+│   ├── changelog/
+│   └── v{N}/
+├── .windsurf/
 │   ├── workflows/
 │   └── skills/
-├── .agents/                   # Antigravity 投影
+├── .agents/
 │   ├── workflows/
 │   └── skills/
-├── AGENTS.md                  # 仅 Antigravity 使用的根锚点
-├── .cursor/commands/          # Cursor 投影
-├── .claude/commands/          # Claude Code 投影
+├── AGENTS.md
+├── .cursor/commands/
+├── .claude/commands/
 ├── .github/
-│   ├── agents/                # GitHub Copilot 投影
+│   ├── agents/
 │   └── prompts/
 └── .codex/
-    ├── prompts/               # Codex 投影
+    ├── prompts/
     └── skills/
 ```
 
-> Anws 维护统一的 canonical source，再把它投影到多个 target 目录；但每个 target 仍拥有各自独立的物理文件。
-
-## 🙌 Contributing
-
-Contributions are welcome! Please read our contributing guidelines before submitting PRs.
+> 一份统一源模型，多套目标布局，磁盘上显式归属。
 
 ---
 
-## 📜 许可证
+## 用自己构建自己
+
+Anws 本身就是用 Anws 的工作流构建出来的。
+
+- **架构设计**
+  - CLI 本身通过 `/genesis` 设计
+
+- **任务拆解**
+  - 实施工作通过 `/blueprint` 规划
+
+- **执行落地**
+  - 代码与文档通过 `/forge` 推进
+
+这个仓库本身就是产品，同时也是一份参考实现。
+
+**深度思考与架构设计**  
+<img src="assets/genesis工作流演示.jpg" width="800" alt="Genesis Workflow">
+
+**交互式需求对齐**  
+<img src="assets/与人类交互确认细节.jpg" width="800" alt="Human Interaction">
+
+**自主调用技能执行**  
+<img src="assets/自主调用skills.jpg" width="800" alt="Skills Execution">
+
+## Contributing
+
+欢迎贡献。在提交 PR 前，请确保改动遵循 spec-driven workflow 与 target projection 模型。
+
+---
+
+## License
 
 [MIT](LICENSE) © 2026
 
@@ -272,17 +302,6 @@ Contributions are welcome! Please read our contributing guidelines before submit
 
 **为懂代码的架构师，和会思考的 AI 而生。**
 
-🧠 *"好的架构不是写出来的，是设计出来的。"*
-
----
-
-## 📦 集成: nexus-skills
-
-Anws 集成了 **[nexus-skills](https://github.com/Haaaiawd/nexus-skills)** 用于代码库知识映射:
-
-- **nexus-mapper**: 分析仓库并生成 `.nexus-map/` 知识库，用于 AI 冷启动
-- **nexus-query**: 开发过程中的即时结构查询
-
-`/probe` 工作流利用 nexus-mapper 的 PROBE 协议进行深度代码库分析，检测隐藏风险、耦合热点和架构漂移。
+*好的架构不是写出来的，而是设计出来的。*
 
 </div>

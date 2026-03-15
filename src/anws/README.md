@@ -1,10 +1,10 @@
 <div align="center">
 
-<img src="assets/logo.png" width="200" alt="Anws">
+<img src="assets/logo-cli.png" width="260" alt="Anws">
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Multi-Tool](https://img.shields.io/badge/Support-Claude%20Code%20%7C%20Copilot%20%7C%20Cursor%20%7C%20Windsurf-blueviolet)](https://github.com/Haaaiawd/Anws)
-[![Vibe Coding](https://img.shields.io/badge/Vibe%20Coding-Enabled-ff69b4)](https://github.com/karpathy/vibe-coding)
+[![Version](https://img.shields.io/badge/version-v2.0.0-7FB5B6)](https://github.com/Haaaiawd/Anws/releases)
+[![Targets](https://img.shields.io/badge/Targets-Windsurf%20%7C%20Claude%20Code%20%7C%20Copilot%20%7C%20Cursor%20%7C%20Codex%20Preview%20%7C%20OpenCode-blueviolet)](https://github.com/Haaaiawd/Anws)
 
 [English](./README.md) | [中文](./README_CN.md)
 
@@ -12,35 +12,102 @@
 
 ---
 
-## ⚡ What is this?
+# Anws
 
-**Anws** — A **structured workflow framework** for Agentic AI assistants, designed to solve the core pain points of the Vibe Coding era.
+**Anws** is a spec-driven workflow framework for AI-assisted software development.
 
-> 💡 **TL;DR**: Stop letting AI write spaghetti code. Force it to think like an architect first.
+It gives coding agents a disciplined path:
 
-### ANWS
+`PRD -> Architecture -> ADR -> Tasks -> Review -> Code -> Upgrade`
 
-**Axiom — principle before implementation.**  
-**Nexus — connection before fragmentation.**  
-**Weave — coherence before accumulation.**  
-**Sovereignty — human judgment before automation.**
+Instead of letting AI jump straight into implementation, Anws forces design, preserves context in files, and projects the right workflow assets into the native layout of your target AI IDE.
 
-**Works with**: Claude Code, GitHub Copilot, Cursor, Windsurf.
+> **TL;DR**: stop treating AI like an autocomplete toy. Give it architecture, constraints, and a lifecycle.
 
-### 🎯 Problems We Solve
+## ANWS
 
-| Pain Point             | The Problem                                                 | Our Solution                                                   |
-| ---------------------- | ----------------------------------------------------------- | -------------------------------------------------------------- |
-| **Architecture Drift** | AI generates inconsistent patterns across the same codebase | `/genesis` forces PRD & architecture design first              |
-| **Spaghetti Code**     | AI lacks project context, writes code that doesn't fit      | Tasks include constraints & acceptance criteria                |
-| **Context Amnesia**    | New session = AI forgets all previous decisions             | `AGENTS.md` + versioned docs as persistent memory |
-| **Lack of Planning**   | Vibe Coding skips design, creates tech debt                 | Mandatory design-first workflow                                |
+- **Axiom** — principle before implementation
+- **Nexus** — connection before fragmentation
+- **Weave** — coherence before accumulation
+- **Sovereignty** — human judgment before automation
 
 ---
 
-## 🚀 Quick Start
+## Why Anws Exists
 
-### Option A — npm CLI (Recommended)
+Modern AI coding sessions fail in predictable ways:
+
+- **Architecture drift**
+  - different sessions generate incompatible structures
+
+- **Context amnesia**
+  - a fresh chat loses system decisions, trade-offs, and task state
+
+- **Planning collapse**
+  - code gets written before requirements and interfaces are stabilized
+
+- **Unsafe upgrades**
+  - workflow files change over time, but existing projects cannot be updated cleanly
+
+Anws addresses those problems with:
+
+- **Versioned architecture docs** under `.anws/v{N}/`
+- **A root anchor file** via `AGENTS.md`
+- **Workflow-first execution** instead of prompt-only improvisation
+- **Controlled update semantics** for `AGENTS.md`, installed targets, and upgrade history
+
+---
+
+## What's New in v2.0.0
+
+`v2.0.0` is a **major release**. It is not just a template refresh; it upgrades the project protocol.
+
+- **Unified architecture root**
+  - move from split legacy roots to `.anws/`
+  - standardize versioned docs and changelog storage
+
+- **Controlled `AGENTS.md` updates**
+  - marker-based merge for modern files
+  - automatic migration for recognized legacy files
+  - safe preservation for unrecognized legacy files
+
+- **Multi-target projection model**
+  - one canonical source
+  - multiple target IDE layouts
+  - no fake sharing of physical files across targets
+
+- **Codex projection strategy update**
+  - Codex is now treated as **Preview**
+  - because Codex prompts are no longer available, Anws now packages workflow guidance into `.codex/skills/anws-system/`
+  - `/quickstart` maps to `SKILL.md`
+  - the rest of the workflow docs are exposed as `references/*.md` under the same aggregated skill
+
+- **OpenCode support**
+  - adds native projection support for `.opencode/commands/` and `.opencode/skills/`
+  - `init`, `update`, manifest ownership, drift detection, and diff flows all understand OpenCode
+
+- **Stronger `anws update` semantics**
+  - install-lock aware
+  - directory-scan fallback
+  - drift detection
+  - target-by-target update summary
+
+- **Built-in ecosystem integration**
+  - integrates `nexus-skills`
+  - adopts `nexus-mapper` as the structural analysis backbone for `/probe`
+  - completes the workflow rename from legacy `/scout` to `/probe`
+
+- **Branded CLI experience**
+  - unified logo
+  - confirmation UI
+  - changelog generation
+  - release-oriented terminal output
+
+---
+
+## Quick Start
+
+### Install via npm
 
 ```bash
 npm install -g @haaaiawd/anws
@@ -48,219 +115,177 @@ cd your-project
 anws init
 ```
 
-> Requires Node.js ≥ 18.
-> `anws init` lets you explicitly install one or more target AI IDE projections.
-> Example: `anws init --target windsurf,codex`
-> Each selected target receives its own managed files under its native layout. Files are not physically shared across targets.
+- **Requirement**
+  - Node.js `>= 18`
 
-### Option B — GitHub Release
+- **Install behavior**
+  - `anws init` installs one or more target projections into their native folders
+  - example: `anws init --target windsurf,opencode`
 
-Download the latest `.zip` from [Releases](https://github.com/Haaaiawd/Anws/releases), then copy the folders required by your target AI IDE into your project root. The npm CLI is recommended because it chooses the correct target layout automatically.
-
-### 📦 Update Existing Installation
+### Update an Existing Project
 
 ```bash
 cd your-project
 anws update
 ```
 
-> `anws update --check` previews grouped per-target diffs without writing files or `.anws/install-lock.json`.
-> `anws update` first reads `.anws/install-lock.json` to determine the selected targets. If the lock is missing or unreadable, it falls back to scanning the directory layout.
-> When multiple targets are installed, `anws update` updates every matched target in one run and prints a per-target success / failure summary. Successful targets are written back to the lock; failed targets are reported separately and are not marked as updated.
-> When the matched target set includes `Antigravity`, `AGENTS.md` is still handled via merge / migrate / skip rules:
-> - marker-based `AGENTS.md` → update stable sections while preserving the `AUTO` block
-> - recognized legacy `AGENTS.md` → migrate into the new marker-based structure
-> - unrecognized legacy `AGENTS.md` → warn and preserve unchanged
-> If your project still has a legacy `.agent/` directory, the CLI will ask whether to migrate to `.agents/`.
-> After a successful legacy migration in interactive mode, the CLI can also ask whether to delete the old `.agent/` directory.
-> Every successful `update` also refreshes `.anws/changelog/` and records the latest target state in `.anws/install-lock.json`.
+- **Preview mode**
+  - `anws update --check` previews grouped diffs without writing files
 
-### Your First Project 🐣
+- **State source**
+  - `anws update` reads `.anws/install-lock.json`
+  - if the lock is missing or invalid, it falls back to directory scan
 
-> **The easiest way to start**: Just run the `/quickstart` command! The AI will automatically analyze your project state and guide you step-by-step through the entire lifecycle (from `/genesis` to `/forge`).
+- **`AGENTS.md` behavior**
+  - marker-based file -> update stable sections, preserve `AUTO` block
+  - recognized legacy file -> migrate into new marker-based structure
+  - unrecognized legacy file -> warn and preserve unchanged
 
-**Looking for inspiration? Alternative prompt**: "I want to build a web-based macOS simulator, including Dock, top bar, and several system apps. Please start this new project from scratch according to the development process."
+- **Legacy migration**
+  - if a project still has `.agent/`, the CLI can guide migration to `.agents/`
+  - after successful migration, interactive mode can also ask whether to delete the old `.agent/`
 
-### 🔁 Built with Itself (Dogfooding)
-
-Fun fact: **This very CLI tool (`anws`) was built using its own workflows!**
-We used the `/genesis` workflow to design the CLI's architecture, and the `/forge` workflow to implement the code. This project serves as a live demonstration of what Anws can achieve.
-
-**Deep Thinking & Architecture Design**: The AI will automatically execute the `/genesis` workflow, thinking deeply about project requirements and producing the PRD and architecture design.
-<img src="assets/genesis工作流演示.jpg" width="800" alt="Genesis Workflow">
-
-**Interactive Requirement Alignment**: The AI will ask follow-up questions for ambiguous requirements to ensure the design matches your intuition.
-<img src="assets/与人类交互确认细节.jpg" width="800" alt="Human Interaction">
-
-**Autonomous Task Breakdown & Execution**: The AI will autonomously call necessary Skills (e.g., `spec-writer`, `task-planner`, etc.) to complete documentation and task decomposition.
-<img src="assets/自主调用skills.jpg" width="800" alt="Skills Execution">
+- **Upgrade record**
+  - every successful update refreshes `.anws/changelog/`
+  - target state is written back to `.anws/install-lock.json`
 
 ---
 
-## 🗺️ Decision Flowchart
+## Migration Notes for Existing Users
 
-```
-                    ┌─────────────────┐
-                    │  Where are you? │
-                    └────────┬────────┘
-           ┌─────────────────┼─────────────────┐
-           ▼                 ▼                 ▼
-    ┌──────────┐      ┌──────────┐      ┌──────────┐
-    │   New    │      │  Legacy  │      │ Existing │
-    │ Project  │      │ Takeover │      │  Change  │
-    └────┬─────┘      └────┬─────┘      └────┬─────┘
-         │                 │                 │
-         ▼                 ▼                 ▼
-    /genesis          /probe         Tweak existing task?
-         │                 │              /         \
-         │                 │             /           \
-         └────────┬────────┘     /change       /genesis
-                  │            (modify only)  (new tasks)
-                  ▼                │            │
-           /design-system <--------+------------+
-          (optional, recommended)
-                  |
-                  v
-            /challenge
-         (design review)
-                  |
-                  v
-             /blueprint
-                  |
-                  v
-            /challenge
-          (task review)
-                  |
-                  v
-               /forge
-          (code delivery)
-```
+If you used older Anws / Antigravity layouts, `v2.0.0` matters because:
+
+- **Directory protocol changed**
+  - old references to `genesis/` and `anws/changelog/` are replaced by `.anws/`
+
+- **`AGENTS.md` is no longer “always skip”**
+  - it is now a controlled managed file with merge / migrate / preserve semantics
+
+- **Target installation is explicit**
+  - Anws now models target IDEs as first-class projections
+
+If you maintain old docs or release notes, update those references before publishing new project templates.
 
 ---
 
-## 🔑 Core Principles
+## Compatibility
+
+Anws keeps a **single canonical workflow / skill source**, then projects it into the native directory structure expected by each tool.
+
+| Environment | Status | Layout |
+| --- | --- | --- |
+| **Windsurf** | ✅ Full Support | `.windsurf/workflows/` + `.windsurf/skills/` |
+| **Antigravity** | ✅ Full Support | `.agents/workflows/` + `.agents/skills/` + `AGENTS.md` |
+| **Claude Code** | ✅ Full Support | `.claude/commands/` |
+| **GitHub Copilot** | ✅ Full Support | `.github/agents/` + `.github/prompts/` |
+| **Cursor** | ✅ Supported | `.cursor/commands/` |
+| **Codex** | ⚠️ Preview | `.codex/skills/anws-system/` + `.codex/skills/<skill>/` |
+| **OpenCode** | ✅ Supported | `.opencode/commands/` + `.opencode/skills/` |
+
+---
+
+## Recommended Workflow
+
+Use Anws as a lifecycle, not just a folder pack.
+
+| Command | Purpose | Input | Output |
+| --- | --- | --- | --- |
+| **`/quickstart`** | Route the user through the correct workflow path | Auto-detected state | Full orchestration |
+| `/genesis` | Start from zero with PRD and architecture | Vague idea | PRD, architecture, ADRs |
+| `/probe` | Analyze a legacy codebase before change | Existing code | Risk report |
+| `/design-system` | Design one system in depth | Architecture overview | System design doc |
+| `/challenge` | Review design or tasks with adversarial pressure | Docs / tasks | Challenge report |
+| `/blueprint` | Break architecture into executable work | PRD + architecture | `05_TASKS.md` |
+| `/forge` | Turn approved tasks into code | Tasks | Working implementation |
+| `/change` | Modify an existing task only | Small scoped change | Updated task/design docs |
+| `/explore` | Research ambiguous or strategic topics | Topic | Exploration report |
+| `/craft` | Create workflows, skills, and prompts | Creation request | Reusable assets |
+| `/upgrade` | Route post-update upgrade work | Update changelog | Change or genesis path |
+
+---
+
+## Core Principles
 
 ### 1. Versioned Architecture
-> Don't "fix" architecture docs. **Evolve** them.
 
-- `.anws/v1` → `.anws/v2` on major changes
-- Full traceability of decisions
-- No "it was always like this" mystery
+- architecture is **evolved**, not silently edited
+- major structural changes move from `.anws/v1` to `.anws/v2`
+- ADRs preserve the reason behind the shape of the system
 
-### 2. Deep Thinking First
-> AI must think before it writes.
+### 2. Filesystem as Memory
 
-- Workflows force multi-step reasoning via the built-in `sequential-thinking` skill
-- `[!IMPORTANT]` blocks as guardrails
-- No shallow, scan-and-output responses
+- `AGENTS.md` is the recovery anchor
+- `.anws/v{N}/` stores durable architecture context
+- `.anws/changelog/` records upgrade history for future sessions
 
-### 3. Filesystem as Memory
-> Chat is ephemeral. Files are eternal.
+### 3. Thinking Before Coding
 
-- `AGENTS.md` = AI's anchor
-- Architecture docs = persistent decisions
-- New session recovery in 30 seconds
+- workflows force staged reasoning before implementation
+- the built-in `sequential-thinking` skill standardizes deep analysis
+- review steps exist to catch drift before code lands
 
 ---
 
-## 📋 Workflows
-
-| Command           | Purpose                                                 | Input             | Output                                     |
-| ----------------- | ------------------------------------------------------- | ----------------- | ------------------------------------------ |
-| **`/quickstart`** | **One-command entry: orchestrates the whole lifecycle** | Auto-detected     | Full pipeline orchestration                |
-| `/genesis`        | Start from zero, create PRD & architecture              | Vague idea        | PRD, Architecture, ADRs                    |
-| `/probe`         | Analyze legacy codebase risks                           | Existing code     | Risk report, Gap analysis                  |
-| `/design-system`  | Detailed design for a system                            | Architecture      | System Design doc                          |
-| `/challenge`      | Review Design & Tasks (intelligent detection)           | Full Docs / TASKS | Challenge Report (Graded)                  |
-| `/blueprint`      | Break architecture into tasks                           | PRD + Arch        | TASKS.md (WBS)                             |
-| `/forge`          | Execute tasks — architecture to code                    | TASKS.md          | Working code, verified                     |
-| `/change`         | Tweak existing tasks (no new tasks)                     | Minor tweak       | Updated TASKS + Design files (modify only) |
-| `/explore`        | Deep research & brainstorm                              | Topic/Question    | Exploration report                         |
-| `/craft`          | Create workflows/skills/prompts                         | Creation request  | Workflow / Skill / Prompt docs             |
-
----
-
-## 🛠️ Compatibility & Prerequisites
-
-> ⚠️ **Important**: This framework works with AI coding tools that can consume `anws` target layouts such as `.windsurf/`, `.agents/`, `.cursor/`, `.claude/`, `.github/`, or `.codex/`.
-
-| Environment     |            Status            | Notes                          |
-| --------------- | :--------------------------: | ------------------------------ |
-| **Windsurf**       |     ✅ Full Support      | `.windsurf/workflows/` + `.windsurf/skills/` |
-| **Antigravity**    |     ✅ Full Support      | `.agents/workflows/` + `.agents/skills/` + `AGENTS.md` |
-| **Claude Code**    |     ✅ Full Support      | `.claude/commands/` |
-| **GitHub Copilot** |     ✅ Full Support      | `.github/agents/` + `.github/prompts/` |
-| **Cursor**         |     ✅ Supported        | `.cursor/commands/` |
-| **Codex**          |     ✅ Supported        | `.codex/prompts/` + `.codex/skills/` |
-
-**How it works**: Anws keeps one canonical workflow / skill source, then projects it into the folder layout required by your selected target IDE. `AGENTS.md` remains the root anchor only for the Antigravity-compatible target.
-
-### ✅ Built-in Deep Reasoning Support
-
-This framework includes a built-in `sequential-thinking` skill for structured deep reasoning.
-
-- No separate MCP installation is required for the core reasoning path
-- Workflows and skills now use a unified `sequential-thinking` calling convention
-- The built-in examples cover revision, branching, and structured impact analysis
-
-> 💡 The framework no longer depends on the legacy Sequential Thinking MCP server for its default reasoning flow.
-
----
-
-## ⚡ Invoke Workflows
-
-Your AI tool will automatically recognize the intent and trigger the appropriate workflow. You can use it in two ways:
-
-#### ⚡ Method A: Slash Protocol (Explicit)
-Directly type the command in the chat or editor to trigger the workflow.
-- `/genesis` - Start project creation
-- `/probe` - Analyze existing codebase risks
-- `/blueprint` - Break down architecture into tasks
-
-#### 🧠 Method B: Intent Protocol (Implicit)
-Just speak naturally. Your AI tool will automatically select and run the right workflow.
-- *"I want to start a new project for a todo app"* → Triggers `/genesis`
-- *"Help me understand this legacy code and its risks"* → Triggers `/probe`
-- *"I think there are gaps in this design, challenge it"* → Triggers `/challenge`
-- *"The architecture is ready, let's plan the tasks"* → Triggers `/blueprint`
-- *"Change the error message on the login page"* → Triggers `/change` (tweak existing task)
-- *"I need to add a back-to-top button"* → Triggers `/genesis` (requires new task)
-
----
-
-## 📁 Project Structure
+## Project Layout
 
 ```bash
 your-project/
 ├── .anws/
-│   ├── install-lock.json      # Authoritative installed target state
-│   ├── changelog/             # Update records generated by `anws update`
-│   └── v6/                    # Current versioned architecture docs
-│
-├── .agents/                   # Antigravity projection
+│   ├── install-lock.json
+│   ├── changelog/
+│   └── v{N}/
+├── .windsurf/
 │   ├── workflows/
 │   └── skills/
-├── AGENTS.md                  # Root anchor used only by Antigravity
-├── .windsurf/                 # Windsurf projection
-├── .cursor/commands/          # Cursor projection
-├── .claude/commands/          # Claude Code projection
+├── .agents/
+│   ├── workflows/
+│   └── skills/
+├── AGENTS.md
+├── .cursor/commands/
+├── .claude/commands/
 ├── .github/
-│   ├── agents/                # GitHub Copilot projection
+│   ├── agents/
 │   └── prompts/
 └── .codex/
-    ├── prompts/               # Codex projection
+    ├── prompts/
     └── skills/
 ```
 
-> One canonical source can be projected into multiple target layouts, but each target still owns its own physical files on disk.
-
-## 🙌 Contributing
-
-Contributions are welcome! Please read our contributing guidelines before submitting PRs.
+> One source model. Multiple target layouts. Explicit ownership on disk.
 
 ---
 
-## 📜 License
+## Built with Itself
+
+Anws is dogfooded on its own development.
+
+- **Architecture design**
+  - the CLI itself was designed through `/genesis`
+
+- **Task decomposition**
+  - implementation work was planned through `/blueprint`
+
+- **Execution**
+  - code and doc changes were driven through `/forge`
+
+This repository is both the product and a working reference implementation.
+
+**Deep Thinking & Architecture Design**  
+<img src="assets/genesis工作流演示.jpg" width="800" alt="Genesis Workflow">
+
+**Interactive Requirement Alignment**  
+<img src="assets/与人类交互确认细节.jpg" width="800" alt="Human Interaction">
+
+**Autonomous Skill Invocation**  
+<img src="assets/自主调用skills.jpg" width="800" alt="Skills Execution">
+
+## Contributing
+
+Contributions are welcome. Before opening a PR, make sure changes align with the spec-driven workflow and the target projection model.
+
+---
+
+## License
 
 [MIT](LICENSE) © 2026
 
@@ -270,17 +295,6 @@ Contributions are welcome! Please read our contributing guidelines before submit
 
 **Made for architects who code, and AIs who think.**
 
-🧠 *"Good architecture isn't written. It's designed."*
-
----
-
-## 📦 Integrated: nexus-skills
-
-Anws integrates **[nexus-skills](https://github.com/Haaaiawd/nexus-skills)** for codebase knowledge mapping:
-
-- **nexus-mapper**: Analyzes repositories and generates `.nexus-map/` knowledge bases for AI cold-start
-- **nexus-query**: Instant structural queries during active development
-
-The `/probe` workflow leverages nexus-mapper's PROBE protocol for deep codebase analysis, detecting hidden risks, coupling hotspots, and architectural drift.
+*Good architecture isn't written. It's designed.*
 
 </div>
