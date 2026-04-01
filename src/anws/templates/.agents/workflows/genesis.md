@@ -16,13 +16,59 @@ description: "从 0 到代码的项目启动全流程。适用于新项目立项
 - **产品优先** - 先PRD后技术，先需求后方案
 - **系统拆解** - 识别独立系统，关注点分离
 
-**Output Goal (Versioned)**: 
+**Output Goal (Versioned)**:
 - `.anws/v{N}/00_MANIFEST.md` ← 版本元数据
 - `.anws/v{N}/01_PRD.md`
 - `.anws/v{N}/02_ARCHITECTURE_OVERVIEW.md`
 - `.anws/v{N}/03_ADR/*`
 - `.anws/v{N}/06_CHANGELOG.md` ← 变更日志
 </phase_context>
+
+---
+
+## 🚀 Pre-Check: 自动初始化 (Auto-Init)
+
+> **目的**: 确保项目已正确初始化，无 AGENTS.md 则自动创建。
+
+### 自动检测流程
+
+1. **检测项目状态**:
+   - 检查项目根目录是否存在 `AGENTS.md`
+   - 检查项目根目录是否存在 `.anws/` 目录
+
+2. **状态判断**:
+   ```
+   ├── ✅ 有 AGENTS.md 且有 .anws/
+   │   └── 项目已初始化 → 直接进入 Step 0
+   │
+   ├── ⚠️ 有 AGENTS.md 但无 .anws/
+   │   └── 异常状态 → 创建 .anws/ 目录结构
+   │
+   └── ❌ 无 AGENTS.md
+       └── 全新项目 → 执行自动初始化
+   ```
+
+3. **自动初始化流程** (仅当无 AGENTS.md 时):
+
+   **3.1 调用 CLI 初始化**:
+   执行以下命令完成项目初始化:
+   ```bash
+   anws init --target <Your IDE>
+   ```
+
+   **3.2 输出初始化确认**:
+   告知用户已完成初始化:
+   ```
+   ✅ anws 环境初始化完成！
+
+   已通过 anws init 完成初始化。
+
+   即将开始 /genesis 流程...
+   ```
+
+
+4. **进入 Step 0**:
+   初始化完成后，自动进入 Step 0: 版本管理。
 
 ---
 
@@ -116,7 +162,7 @@ description: "从 0 到代码的项目启动全流程。适用于新项目立项
 > - Step 1 (`concept-modeler`): 可能追问领域术语
 > - Step 2 (`spec-writer`): **会追问模糊需求**，这是预期行为，不要跳过
 > - Step 3 (`tech-evaluator`): 可能需要用户提供团队/预算信息
-> 
+>
 > 每个 Skill 的追问都是必要的交互，应当执行而非绕过。
 
 **目标**: 从用户的模糊想法中提取**领域概念**。
@@ -185,7 +231,7 @@ description: "从 0 到代码的项目启动全流程。适用于新项目立项
 > 以下步骤中，Skill 可能需要向用户追问信息：
 > - Step 2 (`spec-writer`): **会追问模糊需求**，这是预期行为，不要跳过
 > - Step 3 (`tech-evaluator`): 可能需要用户提供团队/预算信息
-> 
+>
 > 每个 Skill 的追问都是必要的交互，应当执行而非绕过。
 
  **目标**: 评估技术栈候选方案,为 Step 5 的 ADR 决策提供依据。
@@ -353,4 +399,3 @@ description: "从 0 到代码的项目启动全流程。适用于新项目立项
 - ✅ 更新了 AGENTS.md AUTO:BEGIN 区块 (技术栈、系统边界、活跃 ADR)
 - ✅ 用户已在人类检查点确认
 </completion_criteria>
-
