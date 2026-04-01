@@ -53,7 +53,7 @@ description: "从 0 到代码的项目启动全流程。适用于新项目立项
    **3.1 调用 CLI 初始化**:
    执行以下命令完成项目初始化:
    ```bash
-   anws init --target windsurf
+   anws init --target <Your IDE>
    ```
 
    **3.2 输出初始化确认**:
