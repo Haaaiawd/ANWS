@@ -321,6 +321,30 @@ description: "为单个系统设计详细的技术文档。适用于架构拆解
 
 ---
 
+### 3.1 可选 Skills 与参考资源 (Optional Skills & Reference Resources)
+
+> [!IMPORTANT]
+> **这些资源是辅助输入，不是强制依赖，也不是系统事实来源。**
+
+使用原则:
+- 可以按系统类型选择已有 skills、方法论或外部参考资源辅助设计
+- 这些输入只能作为启发、校验或补充，不得替代当前项目的 PRD、ADR 和 Architecture Overview
+- 最终方案必须收敛为当前系统自己的边界、约束、组件分层和 Trade-offs
+- 禁止直接复制第三方模式而不做本地化说明
+
+**前端系统示例**:
+- 工程实践类 skill: `vercel-react-best-practices`
+- 视觉与体验类 skill: `frontend-design`
+- 组件与交互参考: `shadcn/ui`、`Aceternity UI`、`Magic UI`、其他 Tailwind-first 资源
+
+**如何使用这些资源**:
+- 用 `vercel-react-best-practices` 校验 React 组件边界、渲染策略、性能模式是否合理
+- 用 `frontend-design` 辅助配色、排版、层级、动效和整体体验方向
+- 用 `shadcn/ui`、`Aceternity UI` 等资源获取组件模式或视觉灵感
+- 在最终文档中明确写出: 哪些做法被采纳、哪些被舍弃、为什么
+
+---
+
 ## Step 4: 设计 (Design via sequential-thinking)
 
 **目标**: 基于调研和上下文，深度设计系统架构
