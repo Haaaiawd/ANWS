@@ -50,7 +50,7 @@
 | `/probe` | 变更前 / 接手项目 | `.anws/v{N}/00_PROBE_REPORT.md` |
 | `/design-system` | genesis 后 | 04_SYSTEM_DESIGN/*.md |
 | `/blueprint` | genesis 后 | 05_TASKS.md + AGENTS.md 初始 Wave |
-| `/change` | 微调已有任务 | 更新 TASKS + SYSTEM_DESIGN (仅修改) + CHANGELOG |
+| `/change` | 进入 forge 编码后的任务局部修订 | 更新 TASKS + SYSTEM_DESIGN (仅修改) + CHANGELOG |
 | `/explore` | 调研时 | 探索报告 |
 | `/challenge` | 决策前质疑 | 07_CHALLENGE_REPORT.md (含问题总览目录) |
 | `/forge` | 编码执行 | 代码 + 更新 AGENTS.md Wave 块 |
