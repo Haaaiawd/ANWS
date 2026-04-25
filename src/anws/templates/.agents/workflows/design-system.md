@@ -530,14 +530,16 @@ description: "为单个系统设计详细的技术文档。适用于架构拆解
 
 ---
 
-## Step 6: 审核 (Review via /challenge) - 可选
+## Step 6: 审核 (Review via /challenge)
 
 **目标**: 质疑设计决策，识别盲点
 
 > [!IMPORTANT]
-> 这是**可选步骤**，但强烈建议执行。
+> 当系统设计定义了公共接口、CLI 参数语义、配置结构、文件格式、错误语义或跨系统协议时，**此步骤为必需**。
 >
-> **为什么？** 第三方视角能发现设计盲点。
+> **为什么？** 这些契约会直接进入 Blueprint、Change、Forge 和 Challenge 的闭环，缺少审查容易让后续任务和执行漂移。
+>
+> 对这类系统，`11.5 Contract Verification Matrix` 也视为必填内容，不得留空。
 
 **调用方式**:
 ```

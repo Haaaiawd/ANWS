@@ -16,8 +16,17 @@
 - **验收标准**: Given / When / Then 或 Done When 形式的完成条件
 - **验证类型**: 单元测试 / 集成测试 / E2E测试 / 冒烟测试 / 回归测试 / 手动验证 / 编译检查 / Lint检查
 - **验证说明**: 如何验证任务完成、需要什么证据
+- **契约承接**: 本任务实现或验证的公共契约（如接口、CLI 语义、配置结构、文件格式、错误语义）
 - **📎 ADR**: 关联的架构决策记录
 - **📎 System**: 关联的系统设计文档
+
+### 生成提醒
+- 公共契约至少要有一个实现任务承接
+- 高风险公共契约至少要有一个验证承接点
+- 基础层、共享层、纯逻辑层默认优先单元测试
+- registry / manifest / parser / planner / schema / diff / merge / normalizer / selector 等基础逻辑，主要分支、边界情况和错误路径应尽量由单元测试覆盖
+- 冒烟测试默认收敛到 `INT-S{N}` 或极少数里程碑任务，不要扩散到普通开发任务
+- 任务粒度默认控制在 2h-2d；纯技术性基础任务可使用 Done When，其余任务优先 Given / When / Then
 
 ---
 
@@ -28,6 +37,7 @@
 - **描述**: 创建 `users` 表，包含 `id`、`email`、`password_hash`、`created_at` 字段。
 - **输入**: `04_SYSTEM_DESIGN/database.md` §用户表设计
 - **输出**: `migrations/001_create_users.sql`
+- **契约承接**: 数据库 schema 契约（`users` 表结构）
 - **依赖**: 无
 - **验收标准**:
   - Given 数据库已启动
@@ -42,6 +52,7 @@
 - **描述**: 添加包含 `DATABASE_URL`、`JWT_SECRET` 的 `.env` 文件。
 - **输入**: `02_ARCHITECTURE_OVERVIEW.md` §环境配置
 - **输出**: `.env.example`, `docker-compose.yml`
+- **契约承接**: 环境配置结构契约
 - **依赖**: 无
 - **验收标准**:
   - Given 环境变量模板与容器配置已写入
@@ -59,6 +70,7 @@
 - **描述**: 实现 `POST /api/register`，对密码做哈希并保存用户。
 - **输入**: `04_SYSTEM_DESIGN/auth.md` §注册流程, T3.1.1 产出的 `users` 表
 - **输出**: `src/routes/auth.js`, `src/services/user.service.js`
+- **契约承接**: `POST /api/register` HTTP API 契约
 - **依赖**: T3.1.1
 - **验收标准**:
   - Given 注册接口已实现
@@ -73,6 +85,7 @@
 - **描述**: 创建 `generate_token(user_id)` 辅助函数。
 - **输入**: `04_SYSTEM_DESIGN/auth.md` §JWT 签发, T1.1.1 产出的 `JWT_SECRET` 配置
 - **输出**: `src/utils/jwt.js`
+- **契约承接**: JWT 生成规则契约（基础逻辑）
 - **依赖**: T1.1.1
 - **验收标准**:
   - Given JWT 辅助函数已实现
@@ -100,6 +113,7 @@
 - **描述**: 实现 `POST /api/login`，校验凭证并返回 JWT。
 - **输入**: `04_SYSTEM_DESIGN/auth.md` §登录流程, T2.1.1 产出的 `users` 表, T2.1.2 产出的 `generate_token()` 函数
 - **输出**: `/api/login` 端点 (`src/routes/auth.js`)
+- **契约承接**: `POST /api/login` HTTP API 契约；401 错误语义
 - **依赖**: T2.1.1, T2.1.2
 - **验收标准**:
   - Given 登录接口已实现
@@ -117,14 +131,18 @@
 - **描述**: 验证 S2 退出标准：完整认证流程可运行
 - **输入**: `02_ARCHITECTURE_OVERVIEW.md` §认证流程, S2 所有任务的产出
 - **输出**: 集成验证报告
+- **契约承接**: 注册/登录主链路契约；关键路径最小冒烟验证
 - **依赖**: T2.1.1, T2.1.2, T2.2.1
 - **验收标准**:
-  1. 运行 `npm run dev` 或等价命令
-  2. 通过 `/api/register` 注册新用户
-  3. 使用合法凭证登录 → 收到 JWT 令牌
-  4. 使用非法凭证登录 → 收到 401 错误
-  5. 所有单元测试通过（`npm test`）
-  6. 无 Linter 错误（`npm run lint`）
+  - Given S2 所有任务已完成且服务已启动
+  - When 通过 `/api/register` 注册新用户并使用合法凭证登录
+  - Then 收到 JWT 令牌且主链路可运行
+  - Given 非法凭证
+  - When 请求 `/api/login`
+  - Then 返回 401 且错误语义符合契约
+  - Given 本 Sprint 相关自动验证已执行
+  - When 查看测试与 lint 结果
+  - Then 单元测试通过且无 Linter 错误
 - **验证类型**: 集成测试 / 冒烟测试
 - **验证说明**: 按退出标准逐条执行；使用真实注册与登录链路作为最小冒烟检查，并保留日志或截图
 
@@ -162,6 +180,8 @@ T1.1.1 (环境配置) [P]
 - [ ] 依赖关系明确（使用 `→` 表示）
 - [ ] 每个任务都有 `验收标准`
 - [ ] 每个任务都有 `验证类型` 与 `验证说明`
+- [ ] 每个公共契约都有实现承接，且高风险公共契约有明确验证承接
+- [ ] 基础层低依赖逻辑默认获得单元测试承接，并覆盖主要分支/边界/错误路径
 - [ ] **每个任务的「输入」都引用了设计文档**（ADR/System Design/PRD/Architecture）
 - [ ] 任务中不包含实际代码（仅保留 <10 行描述）
 - [ ] 总体估时合理
@@ -183,6 +203,7 @@ T001 - 构建认证系统
 T3.1.1 - 数据库 Schema 初始化
 - 输入: `04_SYSTEM_DESIGN/database.md` §用户表设计
 - 描述: 创建包含 `id`、`email`、`password_hash` 的 `users` 表。
+- 契约承接: 数据库 schema 契约
 - 验收标准: Given 迁移完成, When 查看表结构, Then 字段与设计一致。
 - 验证类型: 集成测试
 - 📎 ADR: ADR-003 (密码存储方案)

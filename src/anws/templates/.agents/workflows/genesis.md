@@ -15,6 +15,7 @@ description: "从 0 到代码的项目启动全流程。适用于新项目立项
 - **文档先行** - 代码是文档的实现，而非相反
 - **产品优先** - 先PRD后技术，先需求后方案
 - **系统拆解** - 识别独立系统，关注点分离
+- **Git 分支换轨** - `/genesis` 代表版本前提变化；旧 `feature/*` 应冻结，新版本应从最新 `main` 重新开一条新的 `feature/*`
 
 **Output Goal (Versioned)**:
 - `.anws/v{N}/00_MANIFEST.md` ← 版本元数据
@@ -29,6 +30,10 @@ description: "从 0 到代码的项目启动全流程。适用于新项目立项
 ## 🚀 Pre-Check: 自动初始化 (Auto-Init)
 
 > **目的**: 确保项目已正确初始化，无 AGENTS.md 则自动创建。
+
+> [!IMPORTANT]
+> **Git 换轨前置规则**：
+> 如果 `/genesis` 是从一个正在开发中的 `feature/*` 分支升级而来，先冻结旧分支；必要时创建 checkpoint / freeze commit。随后从最新 `main` 重新开一条新的 `feature/*` 承接新版本，不要把旧分支上的实现和新版本文档混在一起。
 
 ### 自动检测流程
 

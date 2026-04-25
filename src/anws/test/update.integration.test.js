@@ -8,6 +8,7 @@ const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 
 const cliPath = path.join(__dirname, '..', 'bin', 'cli.js');
+const packageJson = require('../package.json');
 
 async function withTempDir(run) {
   const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'anws-update-'));
@@ -141,7 +142,7 @@ test('anws update changelog merges semantically duplicated multi-target changes 
 
     assert.equal(updateResult.status, 0, updateResult.stderr || updateResult.stdout);
 
-    const changelog = await fs.readFile(path.join(tempDir, '.anws', 'changelog', 'v2.1.0.md'), 'utf8');
+    const changelog = await fs.readFile(path.join(tempDir, '.anws', 'changelog', `v${packageJson.version}.md`), 'utf8');
     const headingMatches = changelog.match(/### `\.agents\/workflows\/change\.md`/g) || [];
 
     assert.equal(headingMatches.length, 1);
