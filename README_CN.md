@@ -3,8 +3,8 @@
 <img src="assets/logo-cli.png" width="260" alt="Anws">
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-v2.0.3-7FB5B6)](https://github.com/Haaaiawd/Anws/releases)
-[![Targets](https://img.shields.io/badge/Targets-Windsurf%20%7C%20Claude%20Code%20%7C%20Copilot%20%7C%20Cursor%20%7C%20Codex%20Preview%20%7C%20OpenCode%20%7C%20Trae%20%7C%20Qoder%20%7C%20Kilo%20Code-blueviolet)](https://github.com/Haaaiawd/Anws)
+[![Version](https://img.shields.io/badge/version-v2.2.0-7FB5B6)](https://github.com/Haaaiawd/ANWS/releases)
+[![Targets](https://img.shields.io/badge/Targets-Windsurf%20%7C%20Claude%20Code%20%7C%20Copilot%20%7C%20Cursor%20%7C%20Codex%20Preview%20%7C%20OpenCode%20%7C%20Trae%20%7C%20Qoder%20%7C%20Kilo%20Code-blueviolet)](https://github.com/Haaaiawd/ANWS)
 
 [English](./README.md) | [中文](./README_CN.md)
 
@@ -62,6 +62,30 @@ Anws 用以下机制应对这些问题：
 
 - **受控更新语义**
   - 对 `AGENTS.md`、已安装 targets、升级历史进行显式管理
+
+---
+
+## v2.2.0 有什么变化
+
+`v2.2.0` 把设计审查、任务审查、代码实现与升级安全连成闭环。
+
+- **闭环 challenge 审查**
+  - `/challenge` 现在组合 `design-reviewer`、`task-reviewer` 与 `code-reviewer`
+  - 实现代码会对照 PRD、Architecture、ADR、System Design 与 `05_TASKS.md` 检查漂移
+  - 发现会写入 `07_CHALLENGE_REPORT.md`，并使用契约优先的严重度语义
+
+- **代码忠实度证据层**
+  - 新增 `code-reviewer` skill，用于检查 Contract Drift、Task Drift、Test Drift、Missing Change Backflow 与基础逻辑测试缺口
+  - 它只做静态、证据驱动的审查，不伪装成运行时验证已经通过
+
+- **跨工作流契约闭合**
+  - `blueprint`、`task-planner`、`task-reviewer`、`challenge`、`change` 与 `forge` 显式承接公共契约覆盖
+  - API、CLI、配置、文件格式、错误语义、持久化结构与验证责任都会作为一等工作流关注点处理
+
+- **Forge 验证门禁**
+  - `/forge` 在继续实现前会读取最新 `07_CHALLENGE_REPORT.md`
+  - 未解决 Critical 阻塞 forge；未解决 High 需要明确的人类确认
+  - 高风险实现波次可在人工验证前运行 `code-reviewer`
 
 ---
 
@@ -220,9 +244,9 @@ Anws 维护一份统一的工作流 / 技能源，然后将其投影到各个 AI
 | `/genesis` | 从零开始建立 PRD 与架构 | 模糊想法 | PRD、架构、ADR |
 | `/probe` | 在变更前分析遗留系统 | 现有代码 | 风险报告 |
 | `/design-system` | 为单个系统做深入设计 | 架构概览 | 系统设计文档 |
-| `/challenge` | 对设计或任务清单做对抗式审查 | 文档 / 任务 | 质疑报告 |
+| `/challenge` | 对设计、任务与实现忠实度做对抗式审查 | 文档 / 任务 / 代码 | 质疑报告 |
 | `/blueprint` | 将架构拆成可执行任务 | PRD + 架构 | `05_TASKS.md` |
-| `/forge` | 将批准的任务锻造成代码 | 任务清单 | 可运行实现 |
+| `/forge` | 在 challenge 报告与契约门禁下将任务锻造成代码 | 任务清单 + 审查状态 | 可运行实现 |
 | `/change` | 只修改既有任务，不新增能力 | 小范围变更 | 更新后的任务 / 设计文档 |
 | `/explore` | 深度调研不确定问题 | 主题 | 探索报告 |
 | `/craft` | 创建工作流、技能、提示词 | 创建需求 | 可复用资产 |

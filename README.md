@@ -3,8 +3,8 @@
 <img src="assets/logo-cli.png" width="260" alt="Anws">
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-v2.0.3-7FB5B6)](https://github.com/Haaaiawd/Anws/releases)
-[![Targets](https://img.shields.io/badge/Targets-Windsurf%20%7C%20Claude%20Code%20%7C%20Copilot%20%7C%20Cursor%20%7C%20Codex%20Preview%20%7C%20OpenCode%20%7C%20Trae%20%7C%20Qoder%20%7C%20Kilo%20Code-blueviolet)](https://github.com/Haaaiawd/Anws)
+[![Version](https://img.shields.io/badge/version-v2.2.0-7FB5B6)](https://github.com/Haaaiawd/ANWS/releases)
+[![Targets](https://img.shields.io/badge/Targets-Windsurf%20%7C%20Claude%20Code%20%7C%20Copilot%20%7C%20Cursor%20%7C%20Codex%20Preview%20%7C%20OpenCode%20%7C%20Trae%20%7C%20Qoder%20%7C%20Kilo%20Code-blueviolet)](https://github.com/Haaaiawd/ANWS)
 
 [English](./README.md) | [中文](./README_CN.md)
 
@@ -55,6 +55,30 @@ Anws addresses those problems with:
 - **A root anchor file** via `AGENTS.md`
 - **Workflow-first execution** instead of prompt-only improvisation
 - **Controlled update semantics** for `AGENTS.md`, installed targets, and upgrade history
+
+---
+
+## What's New in v2.2.0
+
+`v2.2.0` closes the loop between design review, task review, implementation, and upgrade safety.
+
+- **Closed-loop challenge review**
+  - `/challenge` now combines `design-reviewer`, `task-reviewer`, and `code-reviewer`
+  - implementation drift is reviewed against PRD, Architecture, ADR, System Design, and `05_TASKS.md`
+  - findings are written into `07_CHALLENGE_REPORT.md` with contract-first severity semantics
+
+- **Code fidelity evidence layer**
+  - new `code-reviewer` skill checks Contract Drift, Task Drift, Test Drift, Missing Change Backflow, and foundational test gaps
+  - the review is static and evidence-based, so it does not pretend runtime validation has passed
+
+- **Contract closure across workflows**
+  - `blueprint`, `task-planner`, `task-reviewer`, `challenge`, `change`, and `forge` now carry public contract coverage explicitly
+  - API, CLI, config, file format, error, persistence, and verification responsibilities are tracked as first-class workflow concerns
+
+- **Forge verification gate**
+  - `/forge` reads the latest `07_CHALLENGE_REPORT.md` before implementation work continues
+  - unresolved Critical findings block forge; unresolved High findings require explicit human sign-off
+  - high-risk implementation waves can run `code-reviewer` before manual verification
 
 ---
 
@@ -213,9 +237,9 @@ Use Anws as a lifecycle, not just a folder pack.
 | `/genesis` | Start from zero with PRD and architecture | Vague idea | PRD, architecture, ADRs |
 | `/probe` | Analyze a legacy codebase before change | Existing code | Risk report |
 | `/design-system` | Design one system in depth | Architecture overview | System design doc |
-| `/challenge` | Review design or tasks with adversarial pressure | Docs / tasks | Challenge report |
+| `/challenge` | Review design, tasks, and implementation fidelity with adversarial pressure | Docs / tasks / code | Challenge report |
 | `/blueprint` | Break architecture into executable work | PRD + architecture | `05_TASKS.md` |
-| `/forge` | Turn approved tasks into code | Tasks | Working implementation |
+| `/forge` | Turn approved tasks into code with challenge-report and contract gates | Tasks + review state | Working implementation |
 | `/change` | Modify an existing task only | Small scoped change | Updated task/design docs |
 | `/explore` | Research ambiguous or strategic topics | Topic | Exploration report |
 | `/craft` | Create workflows, skills, and prompts | Creation request | Reusable assets |

@@ -17,10 +17,10 @@
     "cursor",
     "windsurf"
   ],
-  "homepage": "https://github.com/Haaaiawd/Anws",
+  "homepage": "https://github.com/Haaaiawd/ANWS",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Haaaiawd/Anws.git"
+    "url": "git+https://github.com/Haaaiawd/ANWS.git"
   },
   "author": "haaaiawd <1134180104@qq.com>",
   "license": "MIT",
