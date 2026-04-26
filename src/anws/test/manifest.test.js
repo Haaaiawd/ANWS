@@ -24,6 +24,7 @@ test('windsurf managed files map workflows and skills into .windsurf', () => {
   assert(files.includes('AGENTS.md'));
   assert(files.includes('.windsurf/workflows/genesis.md'));
   assert(files.includes('.windsurf/skills/spec-writer/SKILL.md'));
+  assert(files.includes('.windsurf/skills/code-reviewer/SKILL.md'));
 });
 
 test('codex managed files fold workflows into anws-system skill and keep standalone skills', () => {
@@ -34,6 +35,7 @@ test('codex managed files fold workflows into anws-system skill and keep standal
   assert(files.includes('.codex/skills/anws-system/references/quickstart.md'));
   assert(files.includes('.codex/skills/anws-system/references/genesis.md'));
   assert(files.includes('.codex/skills/spec-writer/SKILL.md'));
+  assert(files.includes('.codex/skills/code-reviewer/SKILL.md'));
 });
 
 test('opencode managed files include commands and skills', () => {
@@ -42,6 +44,7 @@ test('opencode managed files include commands and skills', () => {
   assert(files.includes('AGENTS.md'));
   assert(files.includes('.opencode/commands/genesis.md'));
   assert(files.includes('.opencode/skills/spec-writer/SKILL.md'));
+  assert(files.includes('.opencode/skills/code-reviewer/SKILL.md'));
 });
 
 test('copilot managed files include prompt files and sibling skills', () => {
@@ -50,6 +53,7 @@ test('copilot managed files include prompt files and sibling skills', () => {
   assert(files.includes('.github/prompts/genesis.prompt.md'));
   assert(!files.includes('.github/agents/genesis.md'));
   assert(files.includes('.github/skills/spec-writer/SKILL.md'));
+  assert(files.includes('.github/skills/code-reviewer/SKILL.md'));
 });
 
 test('buildProjectionEntries uses target projection metadata for cursor commands and skills', () => {
@@ -57,6 +61,7 @@ test('buildProjectionEntries uses target projection metadata for cursor commands
 
   assert(entries.some((item) => item.outputPath === '.cursor/commands/genesis.md'));
   assert(entries.some((item) => item.outputPath === '.cursor/skills/spec-writer/SKILL.md'));
+  assert(entries.some((item) => item.outputPath === '.cursor/skills/code-reviewer/SKILL.md'));
 });
 
 test('buildManagedManifest groups ownership by target and preserves root agent file entries', () => {
@@ -88,20 +93,21 @@ test('resource registry exposes workflows and skills', () => {
 
   assert(workflows.some((item) => item.id === 'genesis'));
   assert(skills.some((item) => item.id === 'spec-writer'));
+  assert(skills.some((item) => item.id === 'code-reviewer'));
 });
 
 test('all supported targets expose the expected projection shapes', () => {
   const expectedByTarget = {
-    windsurf: ['AGENTS.md', '.windsurf/workflows/genesis.md', '.windsurf/skills/spec-writer/SKILL.md'],
-    antigravity: ['AGENTS.md', '.agents/workflows/genesis.md', '.agents/skills/spec-writer/SKILL.md'],
-    cursor: ['AGENTS.md', '.cursor/commands/genesis.md', '.cursor/skills/spec-writer/SKILL.md'],
-    claude: ['AGENTS.md', '.claude/commands/genesis.md', '.claude/skills/spec-writer/SKILL.md'],
-    copilot: ['AGENTS.md', '.github/prompts/genesis.prompt.md', '.github/skills/spec-writer/SKILL.md'],
-    codex: ['AGENTS.md', '.codex/skills/anws-system/SKILL.md', '.codex/skills/anws-system/references/quickstart.md', '.codex/skills/anws-system/references/genesis.md', '.codex/skills/spec-writer/SKILL.md'],
-    trae: ['AGENTS.md', '.trae/skills/anws-system/SKILL.md', '.trae/skills/anws-system/references/quickstart.md', '.trae/skills/anws-system/references/genesis.md', '.trae/skills/spec-writer/SKILL.md'],
-    qoder: ['AGENTS.md', '.qoder/commands/genesis.md', '.qoder/skills/spec-writer/SKILL.md'],
-    kilo: ['AGENTS.md', '.kilocode/workflows/genesis.md', '.kilocode/skills/spec-writer/SKILL.md'],
-    opencode: ['AGENTS.md', '.opencode/commands/genesis.md', '.opencode/skills/spec-writer/SKILL.md']
+    windsurf: ['AGENTS.md', '.windsurf/workflows/genesis.md', '.windsurf/skills/spec-writer/SKILL.md', '.windsurf/skills/code-reviewer/SKILL.md'],
+    antigravity: ['AGENTS.md', '.agents/workflows/genesis.md', '.agents/skills/spec-writer/SKILL.md', '.agents/skills/code-reviewer/SKILL.md'],
+    cursor: ['AGENTS.md', '.cursor/commands/genesis.md', '.cursor/skills/spec-writer/SKILL.md', '.cursor/skills/code-reviewer/SKILL.md'],
+    claude: ['AGENTS.md', '.claude/commands/genesis.md', '.claude/skills/spec-writer/SKILL.md', '.claude/skills/code-reviewer/SKILL.md'],
+    copilot: ['AGENTS.md', '.github/prompts/genesis.prompt.md', '.github/skills/spec-writer/SKILL.md', '.github/skills/code-reviewer/SKILL.md'],
+    codex: ['AGENTS.md', '.codex/skills/anws-system/SKILL.md', '.codex/skills/anws-system/references/quickstart.md', '.codex/skills/anws-system/references/genesis.md', '.codex/skills/spec-writer/SKILL.md', '.codex/skills/code-reviewer/SKILL.md'],
+    trae: ['AGENTS.md', '.trae/skills/anws-system/SKILL.md', '.trae/skills/anws-system/references/quickstart.md', '.trae/skills/anws-system/references/genesis.md', '.trae/skills/spec-writer/SKILL.md', '.trae/skills/code-reviewer/SKILL.md'],
+    qoder: ['AGENTS.md', '.qoder/commands/genesis.md', '.qoder/skills/spec-writer/SKILL.md', '.qoder/skills/code-reviewer/SKILL.md'],
+    kilo: ['AGENTS.md', '.kilocode/workflows/genesis.md', '.kilocode/skills/spec-writer/SKILL.md', '.kilocode/skills/code-reviewer/SKILL.md'],
+    opencode: ['AGENTS.md', '.opencode/commands/genesis.md', '.opencode/skills/spec-writer/SKILL.md', '.opencode/skills/code-reviewer/SKILL.md']
   };
 
   for (const target of listTargets()) {

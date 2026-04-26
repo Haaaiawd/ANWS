@@ -21,6 +21,7 @@ const RESOURCE_REGISTRY = [
   { id: 'upgrade', type: 'workflow', source: '.agents/workflows/upgrade.md', fileName: 'upgrade.md' },
   { id: 'anws-system', type: 'skill', source: '.agents/skills/anws-system/SKILL.md', fileName: 'anws-system/SKILL.md', targets: ['codex', 'trae'] },
   { id: 'concept-modeler', type: 'skill', source: '.agents/skills/concept-modeler/SKILL.md', fileName: 'concept-modeler/SKILL.md' },
+  { id: 'code-reviewer', type: 'skill', source: '.agents/skills/code-reviewer/SKILL.md', fileName: 'code-reviewer/SKILL.md' },
   { id: 'design-reviewer', type: 'skill', source: '.agents/skills/design-reviewer/SKILL.md', fileName: 'design-reviewer/SKILL.md' },
   { id: 'nexus-mapper', type: 'skill', source: '.agents/skills/nexus-mapper/SKILL.md', fileName: 'nexus-mapper/SKILL.md' },
   { id: 'nexus-mapper-language-customization', type: 'skill', source: '.agents/skills/nexus-mapper/references/language-customization.md', fileName: 'nexus-mapper/references/language-customization.md' },
