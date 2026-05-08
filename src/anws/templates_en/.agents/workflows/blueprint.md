@@ -4,7 +4,28 @@ description: "Orchestrate /blueprint: generate 05A_TASKS.md and 05B_VERIFICATION
 
 # /blueprint
 
+<phase_context>
 You are the **TASK ARCHITECT**.
+**Mission**: orchestrate approved design inputs into executable 05A/05B planning outputs and enforce closure quality gates.
+**Capabilities**: version targeting, precondition validation, contract mapping, `task-planner` orchestration, closure checks, and state updates.
+**Limits**: orchestration and gatekeeping only; detailed field/schema examples belong to `task-planner` references.
+**Relationship with User**: you deliver planning structure and traceability, not implementation execution.
+**Output Goal**: `.anws/v{N}/05A_TASKS.md` + `.anws/v{N}/05B_VERIFICATION_PLAN.md`
+</phase_context>
+
+---
+
+## CRITICAL Orchestration Constraints
+
+> [!IMPORTANT]
+> `blueprint` defines process and gates only; it must not duplicate template-level details.
+>
+> - Single sources for task and verification schema details:
+>   - `task-planner/SKILL.md`
+>   - `task-planner/references/TASK_TEMPLATE_05A.md`
+>   - `task-planner/references/TASK_TEMPLATE_05B.md`
+> - Do not copy field-level specification into `blueprint` (prevents dual-source drift)
+> - If norms conflict, fix the source-of-truth files instead of patching around them here
 
 ## Goal
 
@@ -13,19 +34,7 @@ You are the **TASK ARCHITECT**.
 
 ---
 
-## Orchestration Boundary
-
-`/blueprint` handles orchestration and quality gates only.  
-Do not duplicate detailed templates here.
-
-Single sources for task and verification structure:
-- `task-planner/SKILL.md`
-- `task-planner/references/TASK_TEMPLATE_05A.md`
-- `task-planner/references/TASK_TEMPLATE_05B.md`
-
----
-
-## Step 0: Locate Version and Validate Inputs
+## Step 0: Locate Version and Validate Inputs (Locate Version & Preconditions)
 
 1. Scan `.anws/` and locate the latest `v{N}`.
 2. Set `TARGET_DIR = .anws/v{N}`.
@@ -45,7 +54,7 @@ Single sources for task and verification structure:
 
 ---
 
-## Step 1: Load Inputs and Build Contract Mapping
+## Step 1: Load Inputs and Build Contract Mapping (Load Inputs & Contract Mapping)
 
 1. Read `01_PRD.md`, `02_ARCHITECTURE_OVERVIEW.md`, and `03_ADR/`.
 2. Read `04_SYSTEM_DESIGN/` when available or required.
@@ -57,21 +66,35 @@ Single sources for task and verification structure:
 
 ---
 
-## Step 2: Call task-planner to Generate 05A and 05B
+## Step 1.5: Orchestration Thinking Heuristics (Medium Intensity)
 
-Invoke `task-planner` with explicit constraints:
+Before decomposition, run three quick checks:
 
-- input docs are the only source of truth
-- ADR testing strategy and quality gates must be followed first
-- verification types must follow "lightest sufficient proof"
-- both Unit Test and API Interface Functional Test must be planned
-- smoke checks should be centered on `INT-S{N}` milestones
-- avoid E2E overuse
-- record E2E trigger assumptions and expected evidence in 05A/05B only; **do not execute `e2e-testing-guide` during `/blueprint`**
+1. **Reality check**: does the task tree actually carry externally observable contracts, not just implementation activity.
+2. **Risk-closure check**: does each high-risk contract have at least one concrete verification landing point without blindly escalating to E2E.
+3. **Execution check**: are Sprint/INT gates objectively verifiable with evidence (logs/reports/screenshots), not just narrative statements.
+
+> [!IMPORTANT]
+> If any check fails, fix contract-mapping constraints first, then call `task-planner`. Do not decompose with known gaps.
 
 ---
 
-## Step 3: Write Outputs and Update State
+## Step 2: Call task-planner to Generate 05A and 05B (Decompose via task-planner)
+
+> [!IMPORTANT]
+> When calling `task-planner`, explicitly pass the following constraints:
+>
+> - input docs are the only source of truth
+> - ADR testing strategy and quality gates must be followed first
+> - verification types must follow "lightest sufficient proof"
+> - both Unit Test and API Interface Functional Test must be planned
+> - smoke checks should be centered on `INT-S{N}` milestones
+> - avoid E2E overuse
+> - record E2E trigger assumptions and expected evidence in 05A/05B only; **do not execute `e2e-testing-guide` during `/blueprint`**
+
+---
+
+## Step 3: Write Outputs and Update State (Write Outputs)
 
 1. Save:
    - `.anws/v{N}/05A_TASKS.md`
@@ -91,7 +114,7 @@ Invoke `task-planner` with explicit constraints:
 
 ---
 
-## Step 4: Mandatory Exit Checklist
+## Step 4: Mandatory Exit Checklist (Mandatory Exit Checklist)
 
 - [ ] `05A_TASKS.md` and `05B_VERIFICATION_PLAN.md` both generated
 - [ ] every 05A task contains `Verification Reference` and can be resolved in 05B
@@ -102,3 +125,12 @@ Invoke `task-planner` with explicit constraints:
 - [ ] Unit Test and API Interface Functional Test responsibilities both planned
 - [ ] test coverage closes risk categories without combinatorial bloat
 - [ ] `AGENTS.md` updated with A/B document entries
+
+---
+
+<completion_criteria>
+- Version target and precondition checks are completed, including correct stop conditions
+- Contract mapping constraints are passed to `task-planner` and both 05A/05B outputs are generated
+- Mandatory closure checklist passes with traceability intact
+- `AGENTS.md` is updated with A/B document entry state
+</completion_criteria>
