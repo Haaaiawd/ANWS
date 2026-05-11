@@ -4,7 +4,7 @@
 <img src="assets/logo-cli.png" width="260" alt="Anws">
 
 [![License: MIT](https://opensource.org/licenses/MIT)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-v2.3.0--WIP-7FB5B6)](https://github.com/Haaaiawd/ANWS/releases)
+[![Version](https://img.shields.io/badge/version-v2.3.1-7FB5B6)](https://github.com/Haaaiawd/ANWS/releases)
 [![Targets](https://img.shields.io/badge/Targets-Windsurf%20%7C%20Claude%20Code%20%7C%20Copilot%20%7C%20Cursor%20%7C%20Codex%20Preview%20%7C%20OpenCode%20%7C%20Trae%20%7C%20Qoder%20%7C%20Kilo%20Code-blueviolet)](https://github.com/Haaaiawd/ANWS)
 
 [English](./README.md) | [中文](./README_CN.md)
@@ -157,6 +157,25 @@ Use Anws as a lifecycle, not just a folder pack.
 ## Contributing
 
 Contributions are welcome. Before opening a PR, make sure changes align with the spec-driven workflow and the target projection model.
+
+---
+
+## Maintainer notes: npm “channels” (stable vs experimental)
+
+npm does **not** mirror Git branches inside a single package version. Use **dist-tags** instead:
+
+| Goal | What users run | Typical setup |
+|------|----------------|---------------|
+| **Default / stable** (e.g. `2.3.1`, canonical `templates/`) | `npm install -g @haaaiawd/anws` | Tag **`latest`** points at the stable release. |
+| **Experimental / alpha bundle** (`templates_alpha/`, etc.) | `npm install -g @haaaiawd/anws@alpha` | Publish a prerelease **semver** (e.g. `2.4.0-alpha.1`) with **`npm publish --tag alpha`**. Do **not** rely on the default tag for prereleases—otherwise **`latest`** may move and casual installs pull alpha. |
+
+After publishing alpha, keep **`latest`** on stable if needed:
+
+```bash
+npm dist-tag add @haaaiawd/anws@2.3.1 latest
+```
+
+The published tarball contents are controlled by **`package.json` → `files`**. Today the npm package ships **`templates/`** only; adding **`templates_alpha/`** for alpha builds should stay **off** the default `files` list until you intentionally publish an alpha artifact (separate version + `--tag alpha`).
 
 ---
 

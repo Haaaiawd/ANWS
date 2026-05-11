@@ -346,6 +346,8 @@ Follow **`code-reviewer`** end-to-end (static boundaries, inputs, lenses, output
 > [!IMPORTANT]
 > **If unresolved High issues exist, only allow explicit user sign-off to accept risk; AUTO mode cannot auto-pass.**
 
+> **Next-workflow routing (user-facing guidance)**: Before recommending the implementation chain, **check** whether `{TARGET_DIR}/05A_TASKS.md` exists and contains a **real task breakdown** usable as `/forge` input (normally produced by `/blueprint`). **If there is no task list yet, the file is missing, or it is still placeholder/empty** (common right after `/genesis` or design work without `/blueprint`) → **recommend `/blueprint`**, **do not** default to `/forge`. Only recommend `/forge` once the task list is ready **and** the Critical/High gates above allow it.
+
 **Gate check logic**:
 1. Read latest `07_CHALLENGE_REPORT.md`
 2. Check for unresolved Critical issues

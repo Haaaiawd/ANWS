@@ -430,7 +430,8 @@ T{X.Y.Z}, T{X.Y.Z}, T{X.Y.Z}
    - **不读 skill 直接动手 = 跑空壳，等同未执行。**
 
 2. **执行审查（Invoke）**：
-   - 在当前会话中按 skill 完整执行：扫读 `src/`、对照 PRD / ADR / 04_SYSTEM_DESIGN / 05A / 05B、运行 Lens 1–6。
+   - **若宿主提供 AGENT / Task / 子代理等委派工具**：**优先**通过 AGENT 专职执行 `code-reviewer` skill（完整传入 skill 与必读输入）；编排会话负责触发、回收审查正文并写入 §3.6 第 3 步规定路径，**不得**在可用 AGENT 时改由当前会话完整代跑以省步骤。
+   - **若无委派工具**：在当前会话中按 skill 完整执行：扫读 `src/`、对照 PRD / ADR / 04_SYSTEM_DESIGN / 05A / 05B、运行 Lens 1–6。
    - Critical / High 结论必须带 `path:line` 证据；无证据则降级。
 
 3. **强制落盘（Persist）**：
@@ -457,7 +458,7 @@ T{X.Y.Z}, T{X.Y.Z}, T{X.Y.Z}
      ```
      CODE_REVIEW_DISABLED_BY_USER — wave {N} — {YYYY-MM-DD} — "{用户原话引用}"
      ```
-   - **AI 禁止**以「改动不大」「时间紧」「上下文不够」「没有子代理」等理由自行省略。任何自行豁免视为违反工作流契约。
+   - **AI 禁止**以「改动不大」「时间紧」「上下文不够」「有 AGENT 工具却不用」等理由自行省略或绕过 §3.6。任何自行豁免视为违反工作流契约。
 
 ### 3.7 波末 E2E (Wave-end E2E)
 

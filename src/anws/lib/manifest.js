@@ -32,6 +32,7 @@ const RESOURCE_REGISTRY = [
   { id: 'nexus-mapper-languages', type: 'skill', source: '.agents/skills/nexus-mapper/scripts/languages.json', fileName: 'nexus-mapper/scripts/languages.json' },
   { id: 'nexus-mapper-query-graph', type: 'skill', source: '.agents/skills/nexus-mapper/scripts/query_graph.py', fileName: 'nexus-mapper/scripts/query_graph.py' },
   { id: 'nexus-mapper-requirements', type: 'skill', source: '.agents/skills/nexus-mapper/scripts/requirements.txt', fileName: 'nexus-mapper/scripts/requirements.txt' },
+  { id: 'output-contract', type: 'skill', source: '.agents/skills/output-contract/SKILL.md', fileName: 'output-contract/SKILL.md' },
   { id: 'report-template', type: 'skill', source: '.agents/skills/report-template/SKILL.md', fileName: 'report-template/SKILL.md' },
   { id: 'report-template-reference', type: 'skill', source: '.agents/skills/report-template/references/REPORT_TEMPLATE.md', fileName: 'report-template/references/REPORT_TEMPLATE.md' },
   { id: 'runtime-inspector', type: 'skill', source: '.agents/skills/runtime-inspector/SKILL.md', fileName: 'runtime-inspector/SKILL.md' },

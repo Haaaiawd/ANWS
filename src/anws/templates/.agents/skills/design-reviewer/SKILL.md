@@ -1,8 +1,7 @@
 ---
-
-## name: design-reviewer
-
+name: design-reviewer
 description: 使用三维框架（系统设计、运行模拟、工程实现）系统性审查架构和系统设计文档，作为 challenge 工作流中的规范契约设计证据层。产出按严重度分级的发现，关联到具体文档段落。
+---
 
 # 设计审查大师手册
 
@@ -187,4 +186,3 @@ description: 使用三维框架（系统设计、运行模拟、工程实现）�
 - Critical/High 发现经过 `sequential-thinking` 验证
 - ADR 中已记录的权衡被尊重（没有在无新证据的情况下重复质疑）
 - 发现可操作（审查者能根据建议进行修复）
-

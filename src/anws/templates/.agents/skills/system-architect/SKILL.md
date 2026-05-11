@@ -1,8 +1,7 @@
 ---
-
-## name: system-architect
-
+name: system-architect
 description: 识别项目中的独立系统，定义系统边界。产出系统架构总览，为后续系统设计奠定基础。
+---
 
 # 系统拆解手册 (System Decomposition Manual)
 

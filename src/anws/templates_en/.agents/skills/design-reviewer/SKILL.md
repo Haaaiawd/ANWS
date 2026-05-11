@@ -1,7 +1,7 @@
 ---
-
-## name: design-reviewer
+name: design-reviewer
 description: Systematically review architecture and system design documents using a three-dimensional framework (system design, runtime simulation, engineering implementation), serving as the specification contract design evidence layer in the challenge workflow. Output findings graded by severity, linked to specific document sections.
+---
 
 # Design Reviewer Handbook
 
@@ -186,4 +186,3 @@ Before delivering findings, confirm:
 - Critical/High findings verified through `sequential-thinking`
 - Trade-offs recorded in ADR are respected (not re-questioned without new evidence)
 - Findings are actionable (reviewers can fix based on suggestions)
-

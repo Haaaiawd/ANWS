@@ -1,8 +1,7 @@
 ---
-
-## name: task-reviewer
-
+name: task-reviewer
 description: 系统性审查 05A_TASKS.md 与 05B_VERIFICATION_PLAN.md 的质量与完备性，作为 challenge 工作流中的任务契约与验证契约证据层。通过 7 大检测 Pass 在语义模型上运行，检测重复、歧义、欠详述、不一致、覆盖缺口和质量问题。
+---
 
 # 任务审查大师手册
 
@@ -385,4 +384,3 @@ graph LR
 4. **尊重 ADR**: 如果 ADR 明确选择了某个权衡并有文档记录，不要重新翻旧账。
 5. **增量价值**: 哪怕只找到 3 条 CRITICAL，审查就物有所值。完美不是目标。
 ```
-

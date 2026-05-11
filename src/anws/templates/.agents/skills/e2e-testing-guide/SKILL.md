@@ -1,8 +1,7 @@
 ---
-
-## name: e2e-testing-guide
-
+name: e2e-testing-guide
 description: 规定如何撰写面向真人的 E2E / 手动验证《测试指南》及《E2E Verification》报告格式（PRD 对照、功能面、旅程与步骤）；不含实机浏览器编排——实机顺序由 `/forge` §3.7 写死。
+---
 
 # E2E Testing Guide
 

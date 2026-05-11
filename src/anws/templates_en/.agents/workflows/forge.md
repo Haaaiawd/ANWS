@@ -430,7 +430,8 @@ Run checks according to task `**Validation Type**` and `**Validation Instruction
    - **Acting without reading the skill = running an empty shell, equivalent to not executing.**
 
 2. **Invoke the review (Invoke)**:
-   - Execute the skill in full in the current session: scan `src/`, cross-check against PRD / ADR / 04_SYSTEM_DESIGN / 05A / 05B, and run Lens 1–6.
+   - **If the host provides delegatable Agent / Task / subagent tools**: **Prefer** running the `code-reviewer` skill **via an AGENT** (pass the full skill + required inputs). The orchestrating session launches it, retrieves the review body, and writes it per step 3 below—**do not** run the full review in the current session just to save steps when delegation is available.
+   - **If no delegation tools exist**: execute the skill in full in the current session—scan `src/`, cross-check against PRD / ADR / 04_SYSTEM_DESIGN / 05A / 05B, and run Lens 1–6.
    - Critical / High conclusions must carry `path:line` evidence; without evidence, downgrade.
 
 3. **Mandatory persistence (Persist)**:
@@ -457,7 +458,7 @@ Run checks according to task `**Validation Type**` and `**Validation Instruction
      ```
      CODE_REVIEW_DISABLED_BY_USER — wave {N} — {YYYY-MM-DD} — "{verbatim user quote}"
      ```
-   - The AI **must not** self-waive on grounds like "small change", "time pressure", "low context", or "no subagent". Any self-waiver violates the workflow contract.
+   - The AI **must not** self-waive or bypass §3.6 on grounds like "small change", "time pressure", "low context", or "delegation tools exist but I ran the review in-session anyway". Any self-waiver violates the workflow contract.
 
 ### 3.7 Wave-end E2E
 

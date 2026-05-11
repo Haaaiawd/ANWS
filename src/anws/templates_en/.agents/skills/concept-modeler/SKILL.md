@@ -1,7 +1,7 @@
 ---
-
-## name: concept-modeler
+name: concept-modeler
 description: Use when user requirements are fuzzy and terminology is unclear. Clarify domain concepts through interactive follow-up questions, extracting entities, flows, and dark matter. Invoked by /genesis Step 1.
+---
 
 # Domain Modeler
 
@@ -175,4 +175,3 @@ Stop asking when:
 - **Before**: Fuzzy requirement description provided by user
 - **After**: `spec-writer` generates PRD based on clarified requirements
 - **Synergy**: Your domain model provides clear terminology foundation for subsequent architecture design
-

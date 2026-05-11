@@ -1,8 +1,7 @@
 ---
-
-## name: concept-modeler
-
+name: concept-modeler
 description: 当用户需求模糊、术语不清晰时使用。通过交互式追问澄清领域概念，提取实体、流程和暗物质。由 /genesis Step 1 调用。
+---
 
 # 领域建模师 (Domain Modeler)
 
@@ -176,4 +175,3 @@ description: 当用户需求模糊、术语不清晰时使用。通过交互式�
 - **Before**: 用户提供的模糊需求描述
 - **After**: `spec-writer` 基于澄清后的需求生成 PRD
 - **Synergy**: 你的领域模型为后续架构设计提供清晰的术语基础
-

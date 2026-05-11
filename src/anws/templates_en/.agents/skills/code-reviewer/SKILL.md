@@ -1,7 +1,7 @@
 ---
-
-## name: code-reviewer
+name: code-reviewer
 description: Pure static fidelity / implementation-side evidence review against PRD, ADR, System Design, and 05_TASKS—cover contract closure, task fulfillment, architecture fit, safety boundaries, verification evidence, and backflow/handoff consistency with traceable findings; shared by /challenge (CODE/FULL) and /forge (Step 3 §3.6 wave-end).
+---
 
 # Code Reviewer — implementation-side evidence layer
 
@@ -25,11 +25,11 @@ Use **Critical / High / Medium / Low** (same as `/challenge`). **Critical** = sh
 - **`/challenge`**: `REVIEW_MODE` = `CODE` / `FULL`, or **adaptive escalation** from design/task review to implementation-side evidence.
 - **`/forge`**: **Step 3 §3.6 wave-end** gate (mandatory after the last task's §3.5 commit; default **once per wave**). `/forge` also requires the **§3.8 delivery index** after §3.7 (see `forge` workflow)—**not** part of this skill's report body; never substitute the index for the full review.
 
-## Execution model (default: full execution in current session)
+## Execution model (prefer AGENT delegation when available)
 
-- **Default path**: Execute this skill in full **in the current session**—Lens 1–6 covered, output the full review per the "Output shape (compact)" six sections. This is baseline; no preconditions.
-- **Optional optimization**: If the host explicitly offers subagent / Task / parallel-session capabilities, you **may** delegate this skill to a subagent for context isolation. The subagent is just an execution container; **output shape, lenses, and evidence rules remain exactly this skill**—subagents must not silently trim scope.
-- **Forbidden excuses**: **Do not** weaken evidence requirements, skip lenses, or skip execution on grounds like "no subagent available", "low context", "small change", or "time pressure". Waivers under `/forge` may **only** be issued by the user at wave sign-off.
+- **Preferred path**: If the host provides delegatable **Agent / Task / subagent** tools (collectively **AGENT tools**), you **must** run this skill **via an AGENT** (hand the AGENT the full skill constraints, required inputs, and output shape) to isolate implementation detail from the orchestrating context. The orchestrator prepares inputs, launches the AGENT, and **persists the AGENT-produced review body verbatim** to the `/forge` persistence path (or has the AGENT write that path directly). **Output shape, lenses, and evidence rules remain exactly this skill**—the AGENT must not silently trim scope.
+- **Fallback path**: Only when **no** AGENT delegation capability exists, execute this skill in full **in the current session**—Lens 1–6 covered, full review per the "Output shape (compact)" six sections.
+- **Forbidden excuses**: **Do not** run the full review in the current session to save steps when AGENT tools exist. **Do not** weaken evidence requirements, skip lenses, or skip execution on grounds like "low context", "small change", or "time pressure". Running in-session when no AGENT tools exist is normal fallback—not an excuse. Waivers under `/forge` may **only** be issued by the user at wave sign-off.
 
 ## Persistence requirement (mandatory under `/forge`)
 

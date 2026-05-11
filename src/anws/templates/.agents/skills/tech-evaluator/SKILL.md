@@ -1,8 +1,7 @@
 ---
-
-## name: tech-evaluator
-
+name: tech-evaluator
 description: 评估技术栈选项，使用加权决策矩阵和 ATAM 方法论产出架构决策记录 (ADR)。
+---
 
 # 技术评估师手册 (The Tech Evaluator's Manual)
 
@@ -141,4 +140,3 @@ Accepted / Proposed / Deprecated
 
 - `references/ADR_TEMPLATE.md`: ADR 模板
 - `references/TECH_RADAR_2025.md`: 2025 技术雷达参考
-
