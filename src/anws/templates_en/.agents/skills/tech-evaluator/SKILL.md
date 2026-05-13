@@ -1,135 +1,252 @@
 ---
 name: tech-evaluator
-description: Evaluate tech-stack options and produce Architecture Decision Records (ADR) using weighted decision matrix and ATAM methodology.
+description: [ALPHA] Serves `/genesis` Step 3 "Technical selection": evaluates candidate stacks with ATAM and a 12-dimension weighted matrix, producing traceable comparison conclusions and ADR promotion material; does not author formal ADR files (persisted in Step 5). Same lineage as the same-named skill in shipped `templates/`; prefer references at the same relative path inside this bundle.
 ---
 
-# The Tech Evaluator's Manual
+# Technical Evaluator Handbook — [ALPHA] Genesis Step 3
 
-> "There is no best tech stack, only the most suitable one." -- ThoughtWorks Technology Radar
+> "There is no best technology stack—only the most suitable stack." — ThoughtWorks Technology Radar
 
-This skill is based on **SEI ATAM (Architecture Tradeoff Analysis Method)** and a **weighted decision matrix**.
+This skill is grounded in **SEI ATAM (Architecture Tradeoff Analysis Method)** and **weighted decision matrices**. In **`templates_alpha/`** / **`templates_alpha_en/`** ALPHA workflows it binds to **`/genesis`** as **Step 3**; formal **ADR authoring** and numbering are governed by **Step 5** and `genesis.md`.
 
 ---
 
-## Mandatory Deep Thinking
+## CRITICAL /genesis gates (difference from shipped skill)
 
 > [!IMPORTANT]
-> Before evaluation, you **must** use `sequential-thinking` skill with **3-7 thoughts** depending on complexity.
-> Example prompts:
-> 1. "What are the user's core requirements? Which scenarios must be supported?"
-> 2. "What technologies is the team currently familiar with? What is the learning-time budget?"
-> 3. "What are budget constraints? Are cloud costs sensitive?"
-> 4. "What scale is expected for this project? How many concurrent users are needed?"
-> 5. "Are there compliance requirements (GDPR, etc.) affecting technology choice?"
+>
+> - **`/genesis` Step 3**: **Only** output evaluation results and Markdown comparison material; **must not** in this step create or modify any ADR file under `.anws/v{N}/03_ADR/`. Rationale is in `genesis.md` Step 3 / Step 5: ADRs are formal decision records and must land after full review in Step 5.
+> - **Step 5 persistence targets** (for downstream reference, **not** Step 3 work): elevate the Step 3 comparison table into `.anws/v{N}/03_ADR/ADR_001_TECH_STACK.md` (and sibling ADRs); **section structure is authoritative in `references/ADR_TEMPLATE.md` only**.
+> - If the host session declares it is **not** `/genesis` or explicitly authorizes "write ADRs in this step," follow **that workflow** on the spot; by default Step 3 still does not write ADRs.
+
+> [!NOTE]
+> **ADR timing**: Step 3 outputs evaluation + comparison material only—no `03_ADR/`; Step 4 yields boundaries + `02_*`; Step 5 promotes ADRs so impact aligns with real system IDs. Full table and four-point rationale: **`genesis.md`** Step 3 NOTE. Non-`/genesis` or explicit “write ADR in this step” overrides defaults.
 
 ---
 
-## Task Goal
+## CRITICAL spec delivery contract (Step 3 artifacts)
 
-Produce an **ADR (Architecture Decision Record)** documenting tech-stack decisions and rationale.
+> [!IMPORTANT]
+>
+> - **Verifiable**: Constraint blocks must cover functional requirements, non-functional requirements, team, budget, and special constraints; for missing items write "Not provided—evaluation assumes H-…"; silent omission is not allowed.
+> - **Countable**: Each candidate stack must have a 12-dimension score table (1–5) or per-dimension "N/A + reason"; totals without a dimension breakdown are not allowed.
+> - **Deducible**: ATAM paragraphs must include at least one **quality-attribute scenario**, several **trade-off points**, and several **risk points**; stacking adjectives is not allowed in place of scenarios.
+> - **Promotable**: The final comparison table must **map cleanly** onto **`references/ADR_TEMPLATE.md`** sections and required fields for paste and polish in Step 5.
+> - **Explicit verification strategy**: Must answer or mark open: emphasis for unit / integration / E2E tests, smoke / regression gates, and which layer owns quality gates—PR / INT / staging / release (consistent with Step 3 in `genesis.md`).
+> - **Single source of truth**: Numbers and conclusions are anchored to Step 3 output; Step 5 only edits and changes status—it must not re-score backward without new evidence.
 
 ---
 
-## Evaluation Flow
+## Mandatory deep thinking
 
-### Step 1: Gather Constraints
+> [!IMPORTANT]
+> Before evaluating you **must** invoke the `sequential-thinking` skill and organize **3–7 thoughts** by complexity—for example:
+>
+> 1. What are the user's core scenarios and must-support use-case boundaries?
+> 2. Team familiarity and acceptable learning cost?
+> 3. Budget and sensitivity to cloud / license TCO?
+> 4. Expected scale and concurrency / data volume?
+> 5. Do compliance regimes (GDPR, classified protection, etc.) veto certain stacks?
 
-**Must obtain from user**:
-- **Functional requirements**: list of core functions
-- **Non-functional requirements**: performance targets, availability requirements, security level
-- **Team context**: team size, skill stack, willingness to learn
-- **Budget**: development budget, operations budget, timeline budget
-- **Special constraints**: compliance, existing-system integration, customer-mandated technologies
+---
 
-### Step 2: Identify Candidate Stacks
+## Goals (Step 3)
 
-**2025 mainstream stack reference**:
+Without **writing ADR files**, produce:
 
-| Scenario | Recommended Stack | Alternatives |
-|------|--------|------|
-| **Web full stack** | Next.js + TypeScript | Nuxt, SvelteKit |
+1. Structured **constraint summary** and **candidate stack list**.
+2. **12-dimension scoring matrix** and weighted aggregate explanation (declare weights or use the suggestions here and justify).
+3. Short **ATAM trade-offs and risks** narrative.
+4. A **Markdown master comparison table** of candidates usable directly in Step 5.
+
+---
+
+## Evaluation flow (the evaluation)
+
+### Step 1: Gather constraints
+
+**Must obtain from the user or loaded artifacts** (label assumptions per spec when incomplete):
+
+- **Functional requirements**: core capability list (may cite `01_PRD.md`).
+- **Non-functional requirements**: performance, availability, security level.
+- **Team**: headcount, skills, appetite to learn.
+- **Budget**: dev, ops, time.
+- **Special constraints**: compliance, legacy integration, mandated technologies.
+- (If Step 2.5 ran) Evidence and alternatives from `/explore` research.
+
+#### What to do
+
+Fix input boundaries and list gaps with hypothesis IDs.
+
+#### Why
+
+Avoid preference scoring without constraints and unreproducible conclusions.
+
+#### How to validate
+
+Outputs may include a "hypothesis H-xx" cross-reference table; no silent gaps.
+
+---
+
+### Step 2: Identify candidates
+
+**Mainstream stack reference** (replace or extend per project):
+
+
+| Scenario | Recommended stack | Alternatives |
+| -------- | ----------------- | ------------ |
+| **Web full-stack** | Next.js + TypeScript | Nuxt, SvelteKit |
 | **Backend API** | Go / Rust / Node.js | Python FastAPI, Java Spring |
-| **Desktop app** | Tauri (Rust + Web) | Electron, Flutter Desktop |
-| **Mobile app** | React Native / Flutter | Native Swift/Kotlin |
+| **Desktop** | Tauri (Rust + Web) | Electron, Flutter Desktop |
+| **Mobile** | React Native / Flutter | Swift/Kotlin native |
 | **AI/ML** | Python + PyTorch/TensorFlow | Rust (Candle), Julia |
-| **Data-intensive** | PostgreSQL + TimescaleDB | ClickHouse, DuckDB |
+| **Data-heavy** | PostgreSQL + TimescaleDB | ClickHouse, DuckDB |
 
-### Step 3: 12-Dimension Evaluation
 
-Score each candidate (1-5) with this matrix:
+#### What to do
 
-| Dimension | Suggested Weight | Evaluation Question |
-|------|:--------:|---------|
-| **Requirements fit** | — | Can it implement all core features? |
-| **Scalability** | — | Can it support 10x growth? |
-| **Performance** | — | Can it meet latency/throughput targets? |
-| **Security** | — | Built-in security features? Compliance support? |
-| **Team skill fit** | — | Team familiarity? Learning curve? |
-| **Talent market** | — | Is hiring easy? |
-| **Development velocity** | — | Can iteration be fast? |
-| **TCO** | — | Dev + ops + license cost? |
-| **Ecosystem** | — | Library/tool richness? Problem-solving speed? |
-| **Long-term maintenance** | — | Tech lifespan? LTS support? |
-| **Integration capability** | — | Integration with existing/third-party systems? |
-| **AI readiness** | — | Ease of AI/LLM integration? |
+List **two or more named** candidates (language / framework / key middleware) with one line stating scope.
 
-### Step 4: Trade-off Analysis
+#### Why
 
-Use **ATAM**:
-1. Identify **quality-attribute scenarios** (e.g., "response <200ms at 1000 concurrent users")
-2. Evaluate each candidate's **support level** for scenarios
-3. Identify **trade-off points** (e.g., "Go has strong performance but requires team ramp-up")
-4. Identify **risk points** (e.g., "new framework may introduce unknown pitfalls")
+Single candidate yields no trade-off and cannot satisfy ATAM.
 
-### Step 5: Generate ADR
+#### How to validate
 
-You **must** create `ADR_001_TECH_STACK.md` and write it to `.anws/v{N}/03_ADR/`.
+Each candidate is scored independently; no anonymous "option A/B."
 
 ---
 
-## ADR Output Template
+### Step 3: 12-dimension evaluation
 
-```markdown
-# ADR-001: Tech Stack Selection
+Score each candidate 1–5 per dimension:
 
-## Status
-Accepted / Proposed / Deprecated
 
-## Context
-[Project background and constraints]
+| Dimension | Weight hint | Evaluation question |
+| --------- | ----------- | ------------------- |
+| **Requirement fit** | — | Covers all core functionality? |
+| **Scalability** | — | Supports 10x growth? |
+| **Performance** | — | Meets latency / throughput? |
+| **Security** | — | Built-in security and compliance support? |
+| **Team skill** | — | Familiarity and learning curve? |
+| **Talent market** | — | Hiring and outsource availability? |
+| **Development speed** | — | Iteration and delivery velocity? |
+| **TCO** | — | Dev + ops + licensing? |
+| **Community/ecosystem** | — | Libraries, tools, troubleshooting assets? |
+| **Long-term maintenance** | — | Shelf life and LTS? |
+| **Integration** | — | Legacy and third-party integration? |
+| **AI readiness** | — | Ease of wiring AI / LLMs? |
 
-## Decision
-[Selected stack and core rationale]
 
-## Candidate Comparison
+#### What to do
 
-| Candidate | Total Score | Pros | Cons |
-|------|------|------|------|
-| Option A | 42/60 | ... | ... |
-| Option B | 38/60 | ... | ... |
+Complete the matrix; declare weights (even or weighted) and compute comparable totals or tiers.
 
-## Trade-offs
-- [Trade-off 1]
-- [Trade-off 2]
+#### Why
 
-## Consequences
-- Positive: [...]
-- Negative: [...]
-- Follow-up actions needed: [...]
-```
+Dimensional transparency aids ADR evidence in Step 5.
 
----
+#### How to validate
 
-## Master Rules
-
-1. **Prefer "boring" tech**: choose mature, stable tech unless there is strong reason not to.
-2. **Limited innovation budget**: each project gets only 1-2 innovation points; use boring tech for the rest.
-3. **Team capability first**: great tech is useless if the team cannot use it.
-4. **TCO is not only money**: time and cognitive costs are also costs.
+Tables are recalculable in Markdown; N/A dimensions get a single-line rationale.
 
 ---
 
-## Toolbox
+### Step 4: Trade-off analysis (ATAM)
 
-* `references/ADR_TEMPLATE.md`: ADR template
-* `references/TECH_RADAR_2025.md`: 2025 technology radar reference
+1. Identify **quality-attribute scenarios** (e.g., "Under 1k concurrent users, P95 < 200 ms").
+2. Grade each candidate's **support** for the scenario.
+3. List **trade-offs** (e.g., performance vs team learning cost).
+4. List **risks** (e.g., maturity of a new framework).
+
+#### What to do
+
+Say clearly **why runner-up lost**.
+
+#### Why
+
+ADR value is trade-offs and consequences, not merely declaring a winner.
+
+#### How to validate
+
+At least one scenario plus several trade-offs / risks cross-referenced with candidate tables.
+
+---
+
+### Step 5: Produce ADR promotion material (Step 3—not persisted)
+
+Under **`/genesis` Step 3** you **must not** create or modify `03_ADR/*.md`. Produce full **Markdown** comparison conclusions and promotion material so Step 5 can elevate losslessly against **`references/ADR_TEMPLATE.md`**; sections may read `Proposed` / `TBD`.
+
+If the workflow rarely demands placeholder files this step, only empty files or MANIFEST paths are allowed—**do not** treat placeholders as accepted ADRs.
+
+**Forbidden**: embed another full ADR exemplar in this SKILL that duplicates **`references/ADR_TEMPLATE.md`**; any section question defers to that file.
+
+#### What to do
+
+Produce full comparison + draft Markdown scoped to `references/ADR_TEMPLATE.md` (in memory / session).
+
+#### Why
+
+Align with `genesis` decision checkpoints; avoid early informal ADRs.
+
+#### How to validate
+
+The parent agent can open `references/ADR_TEMPLATE.md` in Step 5 and align sections without information breaks.
+
+---
+
+## Practitioner rules
+
+1. **Prefer "boring" tech**: choose mature stacks unless there is strong reason not to.
+2. **Limited innovation budget**: 1–2 innovation slots per project; keep the rest conservative.
+3. **Team capability wins**: the best technology is zero value if it cannot be wielded.
+4. **TCO is not cash alone**: time and cognitive load count.
+
+---
+
+## references and bundle paths
+
+This bundle includes **`templates_alpha_en/.agents/skills/tech-evaluator/references/ADR_TEMPLATE.md`** mirrored from shipped **`templates/`**. Read **only** `references/` beside this SKILL; **do not** mix-read shipped `templates/.agents/skills/tech-evaluator/` in the same session.
+
+| File | Purpose |
+|------|---------|
+| `references/ADR_TEMPLATE.md` | ADR shape and required sections |
+
+---
+
+## Execution shape and subagent orchestration
+
+### What to do
+
+- **Preferred**: When the host provides **AGENTS / subagents**, you may delegate **candidate discovery**, **per-candidate multidimensional drafts**, or **ATAM risk sketches**; the orchestrator issues this doc's **spec contract + gates + ADR template fields**, then merges into **one consolidated draft**.
+- **Parent agent**: `sequential-thinking` **must** run one full chain in the main session or a designated merge agent before locking; subagents cannot replace that duty unless the workflow states otherwise.
+- **Fallback**: Without subagents, the current session runs the whole flow end to end.
+
+### Why
+
+Parallel discovery and serialized decisions reduce gaps across dimensions.
+
+### How to validate
+
+Merged draft still meets spec; no contradictory scores or duplicate candidate names; `/genesis` Step 3 still performs **no** `03_ADR` writes.
+
+---
+
+## Handoff checklist (orchestration / subagents / Step 5)
+
+- [ ] Constraints and hypotheses H-xx are listed or explicit gaps declared.
+- [ ] 12-dimension matrix + weight explanation complete.
+- [ ] ATAM: scenarios, trade-offs, risks complete.
+- [ ] Markdown comparison maps to `references/ADR_TEMPLATE.md`.
+- [ ] Verification strategy and test-tier gates answered or flagged "TBD Step 5 / design-system".
+- [ ] **`/genesis` Step 3**: confirm no create / edit of `03_ADR/*.md`.
+
+---
+
+<completion_criteria>
+- `sequential-thinking` completed with 3–7 thoughts visible in output and absorbed by the evaluation.
+- Deliverables meet **CRITICAL spec delivery contract** (verifiable / countable / deducible / promotable / explicit verification strategy).
+- On the default `/genesis` Step 3 path, **no** ADR persisted under `.anws/v{N}/03_ADR/`.
+- Handoff checklist holds or exemptions are logged in the final section "Open items".
+- If loaded from `templates_alpha` or `templates_alpha_en`, use the **same overlay tree** as other skills in this session; do not mix shipped `templates/` variants for the same step to avoid gate drift.
+</completion_criteria>

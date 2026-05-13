@@ -10,7 +10,7 @@ const { detectUpgrade, generateChangelog } = require('./changelog');
 const { writeTargetFiles } = require('./copy');
 const { createInstallLock, dedupeTargets, detectInstallState, summarizeTargetState, writeInstallLock } = require('./install-state');
 const { confirm } = require('./prompt');
-const { ROOT_AGENTS_FILE, resolveCanonicalSource } = require('./resources');
+const { resolveCanonicalPath, resolveRootAgentsPath } = require('./resources');
 const { warn, error, info, fileLine, skippedLine, blank, logo, section } = require('./output');
 
 async function update() {
@@ -32,7 +32,9 @@ async function update() {
   const targetPlans = buildProjectionPlan(detectedTargetIds);
   const detectedTargetPlans = buildProjectionPlan(detectedTargetIds);
 
-  const srcAgents = ROOT_AGENTS_FILE;
+  const templateLocale = installState.lockResult.lock?.templateLocale ?? 'zh';
+  const srcAgents = resolveRootAgentsPath(templateLocale);
+  const resolveCanonicalSource = (relPath) => resolveCanonicalPath(relPath, templateLocale);
 
   if (isLegacyMigration) {
     logo();
@@ -82,7 +84,8 @@ async function update() {
       projectionPlan: [targetPlan],
       srcAgents,
       shouldWriteRootAgents: agentsDecision.shouldWriteRootAgents,
-      agentsUpdatePlan
+      agentsUpdatePlan,
+      resolveCanonicalPath: resolveCanonicalSource
     });
     const changes = rawChanges.filter((item) => {
       if (item.file !== 'AGENTS.md') return true;
@@ -106,12 +109,13 @@ async function update() {
       logo();
       blank();
     }
-    printTargetSelection(installState, targetContexts.map((context) => context.target));
+    printTargetSelection(installState, targetContexts.map((context) => context.target), templateLocale);
     if (installState.canRebuildLock && detectedTargetIds.length > 0) {
       const generatedAt = new Date().toISOString();
       await writeInstallLock(cwd, createInstallLock({
         cliVersion: version,
         generatedAt,
+        templateLocale,
         targets: dedupeTargets(detectedTargetPlans.map((targetPlan) => summarizeTargetState(targetPlan, version))),
         lastUpdateSummary: {
           successfulTargets: [],
@@ -130,7 +134,7 @@ async function update() {
     blank();
   }
 
-  printTargetSelection(installState, targetContexts.map((context) => context.target));
+  printTargetSelection(installState, targetContexts.map((context) => context.target), templateLocale);
 
   const updated = [];
   const skipped = [];
@@ -199,6 +203,7 @@ async function update() {
   await writeInstallLock(cwd, createInstallLock({
     cliVersion: version,
     generatedAt,
+    templateLocale,
     targets: dedupeTargets([
       ...existingLockTargets,
       ...retainedDetectedTargets,
@@ -280,10 +285,11 @@ function printLegacyMigrationNotice() {
   ], { minWidth: 60 });
 }
 
-function printTargetSelection(installState, targets) {
+function printTargetSelection(installState, targets, templateLocale = 'zh') {
   blank();
   section('Target selection', [
     buildSelectionModeLine(),
+    `Template locale: ${templateLocale} (${templateLocale === 'en' ? 'templates_en/' : 'templates/'})`,
     `Matched targets: ${targets.map((target) => `${target.label} (${target.id})`).join(', ') || 'none'}`,
     installState.needsFallback ? 'State source: directory scan fallback' : 'State source: install-lock + directory scan',
     ...(installState.drift.hasDrift

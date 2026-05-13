@@ -125,6 +125,72 @@ async function confirm({ message, messageLines = [], contextLines = [], confirmL
   });
 }
 
+async function selectRadio({ message, options, initialIndex = 0 }) {
+  const normalizedInitial = Math.min(Math.max(0, initialIndex), options.length - 1);
+
+  if (!process.stdin.isTTY || !process.stdout.isTTY) {
+    return options[normalizedInitial].value;
+  }
+
+  let cursorIndex = normalizedInitial;
+
+  blank();
+
+  return runPrompt({
+    render() {
+      return renderRadioSelect({ message, options, cursorIndex });
+    },
+    onKey(key) {
+      if (key === KEY.CTRL_C) {
+        return 'abort';
+      }
+
+      if (key === KEY.ARROW_UP || key === KEY.ARROW_LEFT) {
+        cursorIndex = (cursorIndex - 1 + options.length) % options.length;
+        return 'render';
+      }
+
+      if (key === KEY.ARROW_DOWN || key === KEY.ARROW_RIGHT) {
+        cursorIndex = (cursorIndex + 1) % options.length;
+        return 'render';
+      }
+
+      if (key === KEY.ENTER || key === KEY.NEWLINE) {
+        return options[cursorIndex].value;
+      }
+
+      return null;
+    }
+  });
+}
+
+function renderRadioSelect({ message, options, cursorIndex }) {
+  const optionLines = options.map((option, index) => {
+    const isActive = index === cursorIndex;
+    const cursor = isActive ? colorize('❯', PALETTE.brand) : ' ';
+    const mark = isActive ? colorize('●', PALETTE.brand) : colorize('○', PALETTE.muted);
+    const label = isActive ? colorize(option.label, PALETTE.ink) : option.label;
+    return `${cursor} ${mark} ${label}`;
+  });
+
+  return centerFrame([
+    drawBox({
+      title: 'Select option',
+      lines: [
+        message,
+        '',
+        ...optionLines,
+        '',
+        colorize('↑/↓ Move   Enter Confirm', PALETTE.muted)
+      ],
+      accent: PALETTE.brand,
+      borderTone: PALETTE.muted,
+      minWidth: 60
+    }),
+    colorize('  ←/→ Move   Enter Confirm', PALETTE.muted)
+  ].join('\n'));
+}
+
 function renderMultiSelect({ message, options, selected, cursorIndex, errorMessage = '' }) {
   const optionLines = options.map((option, index) => {
     const isActive = index === cursorIndex;
@@ -287,8 +353,10 @@ function centerFrame(frame) {
 
 module.exports = {
   selectMultiple,
+  selectRadio,
   confirm,
   renderMultiSelect,
+  renderRadioSelect,
   renderConfirm
 };
 

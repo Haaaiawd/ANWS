@@ -3,7 +3,7 @@
 <img src="assets/logo-cli.png" width="260" alt="Anws">
 
 [![License: MIT](https://opensource.org/licenses/MIT)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-v2.3.1-7FB5B6)](https://github.com/Haaaiawd/ANWS/releases)
+[![Version](https://img.shields.io/badge/version-v2.4.0-7FB5B6)](https://github.com/Haaaiawd/ANWS/releases)
 [![Targets](https://img.shields.io/badge/Targets-Windsurf%20%7C%20Claude%20Code%20%7C%20Copilot%20%7C%20Cursor%20%7C%20Codex%20Preview%20%7C%20OpenCode%20%7C%20Trae%20%7C%20Qoder%20%7C%20Kilo%20Code-blueviolet)](https://github.com/Haaaiawd/ANWS)
 
 [English](./README.md) | [中文](./README_CN.md)
@@ -100,6 +100,51 @@ anws update
 - **升级记录**
   - 每次成功更新都会刷新 `.anws/changelog/`
   - target 状态会回写到 `.anws/install-lock.json`
+
+## CLI 参考
+
+### `anws init` 与 `anws update` 的区别
+
+| 命令 | 何时使用 | 核心行为 |
+|------|---------|---------|
+| `anws init` | 首次安装，或添加新的 target IDE | 选择 target，写入 `install-lock.json`。若该 target 的 `installedVersion` 已等于当前 CLI 版本，则直接跳过（v2.4.0+）。 |
+| `anws update` | CLI 升级后刷新模板 | 读取 `install-lock.json`，检测漂移，重写模板，生成 changelog。保留 lock 中记录的 `templateLocale`。 |
+
+> **经验法则**：一个 target 用 `init` 装一次；新版本发布后用 `update` 刷新。
+
+### Target 选择
+
+```bash
+# 交互式（首次使用推荐）
+anws init
+
+# 非交互式，预选 target
+anws init --target windsurf,opencode
+
+# 预选 target + 语言
+anws init --target windsurf --locale zh
+```
+
+### 语言 / 模板 bundle
+
+- `--locale zh`（默认）— 中文模板，来源 `templates/`
+- `--locale en` — 英文模板，来源 `templates_en/`
+
+语言记录在 `install-lock.json` 的 `templateLocale` 字段中。`anws update` 会保持已记录的语言；如需切换语言，重新执行 `anws init` 并带上 `--locale`。
+
+> 自 v2.4.0 起，`templates_en/` 已纳入 npm 发布 bundle，`--locale en` 无需回退到中文源即可正常工作。
+
+### 重复安装保护（v2.4.0+）
+
+`anws init` 在覆盖前会先检查 `install-lock.json`：
+
+- 若该 target 已安装 **且** `installedVersion` 等于当前 CLI 版本，则直接跳过并提示：
+  ```
+  Windsurf already installed at v2.4.0. Skipping — run `anws update` to refresh templates.
+  ```
+- 若 lock 中记录的是旧版本，则正常执行（相当于重新安装 / 升级）。
+
+这避免了因误操作重复安装而导致的版本追踪混乱。
 
 ---
 

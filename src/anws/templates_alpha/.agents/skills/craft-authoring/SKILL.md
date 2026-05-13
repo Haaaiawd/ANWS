@@ -21,7 +21,8 @@ description: 执行 /craft 时必读。提供 Workflow / Skill / Prompt 骨架�
 - 好文档让执行者更清醒、更稳定、更可复现。
 - 坏文档让执行者更兴奋，却更依赖临场发挥。
 
-> **与 `output-contract` 的分工**：本节只定义 Workflow / Skill / Prompt **撰写脚手架**；持久化报告的共用 spec、父子委派与单写者规则见 **`.agents/skills/output-contract/SKILL.md`**。
+> **与 `output-contract` 的分工**：本节只定义 Workflow / Skill / Prompt **撰写脚手架**；持久化报告的共用 spec、父子委派与单写者规则见 **`.agents/skills/output-contract/SKILL.md`**。  
+> **与 CLI 安装清单的分工**：哪些路径会随 `anws init` 复制、canonical 与 **`templates_alpha*`** overlay 边界、合并前检查项见 **`references/BUNDLE_POLICY.md`**。
 
 ---
 

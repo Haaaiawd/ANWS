@@ -33,6 +33,39 @@ function assertFilesExist(sources, errors) {
   }
 }
 
+function scanWorkflowYamlFrontmatter(errors) {
+  const wfDir = path.join(TEMPLATE_ROOT, '.agents', 'workflows');
+  if (!fs.existsSync(wfDir)) {
+    return;
+  }
+  for (const name of fs.readdirSync(wfDir)) {
+    if (!name.endsWith('.md')) {
+      continue;
+    }
+    const full = path.join(wfDir, name);
+    let text;
+    try {
+      text = fs.readFileSync(full, 'utf8');
+    } catch {
+      errors.push(`Unreadable workflow: .agents/workflows/${name}`);
+      continue;
+    }
+    if (/^##\s+description:/m.test(text)) {
+      errors.push(
+        `.agents/workflows/${name}: use YAML \`description:\` inside frontmatter, not markdown \`## description:\``
+      );
+    }
+    const fm = text.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n/);
+    if (!fm) {
+      errors.push(`.agents/workflows/${name}: missing YAML frontmatter (--- ... ---)`);
+      continue;
+    }
+    if (!/^description:\s/m.test(fm[1])) {
+      errors.push(`.agents/workflows/${name}: frontmatter must include a \`description:\` key`);
+    }
+  }
+}
+
 function scanTemplatesForForbiddenStrings(errors) {
   function walk(dir) {
     const entries = fs.readdirSync(dir, { withFileTypes: true });
@@ -68,13 +101,14 @@ function main() {
 
   assertFilesExist(sources, errors);
   scanTemplatesForForbiddenStrings(errors);
+  scanWorkflowYamlFrontmatter(errors);
 
   if (errors.length) {
     console.error('check-canonical-templates failed:\n' + errors.join('\n'));
     process.exit(1);
   }
   console.log(
-    `check-canonical-templates: OK (${sources.size} paths under templates/, forbidden-pattern scan)`
+    `check-canonical-templates: OK (${sources.size} paths under templates/, workflow YAML + forbidden-pattern scan)`
   );
 }
 

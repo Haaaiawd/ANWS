@@ -1,57 +1,339 @@
-'use strict';
+"use strict";
 
-const { getTarget } = require('./adapters');
+const { getTarget } = require("./adapters");
 
 /**
- * MANAGED_FILES — anws 托管文件清单
+ * RESOURCE_REGISTRY — CLI `anws init` / `anws update` 的唯一「复制来源清单」
  *
- * 此数组列出 anws 包负责管理的所有文件路径（相对于目标项目根目录）。
+ * - 每条 `source` 相对于 canonical **`templates/`**（见 `lib/resources` 的 `TEMPLATE_ROOT`）。
+ * - 默认 `resolveCanonicalSource` / `resolveCanonicalPath(..., 'zh')` 只读该根目录；**不会**自动包含 `templates_alpha*`。英文包见 `resolveCanonicalPath(..., 'en')` + `templates_en/`（由 `anws init --locale` / install-lock `templateLocale` 驱动）。
+ * - **`templates/` 磁盘上可能存在未在此登记的路径**（遗留或备用）；未登记则 **不会** 投影到用户项目。
+ * - **Alpha overlay**（`templates_alpha/`、`templates_alpha_en/`）整树 **默认不在登记范围内**；语义与合并决策见
+ *   **`templates/.agents/skills/craft-authoring/references/BUNDLE_POLICY.md`**（及 EN 镜像）。
  */
 const RESOURCE_REGISTRY = [
-  { id: 'blueprint', type: 'workflow', source: '.agents/workflows/blueprint.md', fileName: 'blueprint.md' },
-  { id: 'challenge', type: 'workflow', source: '.agents/workflows/challenge.md', fileName: 'challenge.md' },
-  { id: 'change', type: 'workflow', source: '.agents/workflows/change.md', fileName: 'change.md' },
-  { id: 'craft', type: 'workflow', source: '.agents/workflows/craft.md', fileName: 'craft.md' },
-  { id: 'design-system', type: 'workflow', source: '.agents/workflows/design-system.md', fileName: 'design-system.md' },
-  { id: 'explore', type: 'workflow', source: '.agents/workflows/explore.md', fileName: 'explore.md' },
-  { id: 'forge', type: 'workflow', source: '.agents/workflows/forge.md', fileName: 'forge.md' },
-  { id: 'genesis', type: 'workflow', source: '.agents/workflows/genesis.md', fileName: 'genesis.md' },
-  { id: 'probe', type: 'workflow', source: '.agents/workflows/probe.md', fileName: 'probe.md' },
-  { id: 'quickstart', type: 'workflow', source: '.agents/workflows/quickstart.md', fileName: 'quickstart.md' },
-  { id: 'upgrade', type: 'workflow', source: '.agents/workflows/upgrade.md', fileName: 'upgrade.md' },
-  { id: 'anws-system', type: 'skill', source: '.agents/skills/anws-system/SKILL.md', fileName: 'anws-system/SKILL.md', targets: ['codex', 'trae'] },
-  { id: 'concept-modeler', type: 'skill', source: '.agents/skills/concept-modeler/SKILL.md', fileName: 'concept-modeler/SKILL.md' },
-  { id: 'code-reviewer', type: 'skill', source: '.agents/skills/code-reviewer/SKILL.md', fileName: 'code-reviewer/SKILL.md' },
-  { id: 'design-reviewer', type: 'skill', source: '.agents/skills/design-reviewer/SKILL.md', fileName: 'design-reviewer/SKILL.md' },
-  { id: 'nexus-mapper', type: 'skill', source: '.agents/skills/nexus-mapper/SKILL.md', fileName: 'nexus-mapper/SKILL.md' },
-  { id: 'nexus-mapper-language-customization', type: 'skill', source: '.agents/skills/nexus-mapper/references/language-customization.md', fileName: 'nexus-mapper/references/language-customization.md' },
-  { id: 'nexus-mapper-output-schema', type: 'skill', source: '.agents/skills/nexus-mapper/references/output-schema.md', fileName: 'nexus-mapper/references/output-schema.md' },
-  { id: 'nexus-mapper-probe-protocol', type: 'skill', source: '.agents/skills/nexus-mapper/references/probe-protocol.md', fileName: 'nexus-mapper/references/probe-protocol.md' },
-  { id: 'nexus-mapper-extract-ast', type: 'skill', source: '.agents/skills/nexus-mapper/scripts/extract_ast.py', fileName: 'nexus-mapper/scripts/extract_ast.py' },
-  { id: 'nexus-mapper-git-detective', type: 'skill', source: '.agents/skills/nexus-mapper/scripts/git_detective.py', fileName: 'nexus-mapper/scripts/git_detective.py' },
-  { id: 'nexus-mapper-languages', type: 'skill', source: '.agents/skills/nexus-mapper/scripts/languages.json', fileName: 'nexus-mapper/scripts/languages.json' },
-  { id: 'nexus-mapper-query-graph', type: 'skill', source: '.agents/skills/nexus-mapper/scripts/query_graph.py', fileName: 'nexus-mapper/scripts/query_graph.py' },
-  { id: 'nexus-mapper-requirements', type: 'skill', source: '.agents/skills/nexus-mapper/scripts/requirements.txt', fileName: 'nexus-mapper/scripts/requirements.txt' },
-  { id: 'output-contract', type: 'skill', source: '.agents/skills/output-contract/SKILL.md', fileName: 'output-contract/SKILL.md' },
-  { id: 'report-template', type: 'skill', source: '.agents/skills/report-template/SKILL.md', fileName: 'report-template/SKILL.md' },
-  { id: 'report-template-reference', type: 'skill', source: '.agents/skills/report-template/references/REPORT_TEMPLATE.md', fileName: 'report-template/references/REPORT_TEMPLATE.md' },
-  { id: 'runtime-inspector', type: 'skill', source: '.agents/skills/runtime-inspector/SKILL.md', fileName: 'runtime-inspector/SKILL.md' },
-  { id: 'sequential-thinking', type: 'skill', source: '.agents/skills/sequential-thinking/SKILL.md', fileName: 'sequential-thinking/SKILL.md' },
-  { id: 'spec-writer', type: 'skill', source: '.agents/skills/spec-writer/SKILL.md', fileName: 'spec-writer/SKILL.md' },
-  { id: 'spec-writer-prd-template', type: 'skill', source: '.agents/skills/spec-writer/references/prd_template.md', fileName: 'spec-writer/references/prd_template.md' },
-  { id: 'system-architect', type: 'skill', source: '.agents/skills/system-architect/SKILL.md', fileName: 'system-architect/SKILL.md' },
-  { id: 'system-architect-rfc-template', type: 'skill', source: '.agents/skills/system-architect/references/rfc_template.md', fileName: 'system-architect/references/rfc_template.md' },
-  { id: 'system-designer', type: 'skill', source: '.agents/skills/system-designer/SKILL.md', fileName: 'system-designer/SKILL.md' },
-  { id: 'system-designer-detail-template', type: 'skill', source: '.agents/skills/system-designer/references/system-design-detail-template.md', fileName: 'system-designer/references/system-design-detail-template.md' },
-  { id: 'system-designer-template', type: 'skill', source: '.agents/skills/system-designer/references/system-design-template.md', fileName: 'system-designer/references/system-design-template.md' },
-  { id: 'task-planner', type: 'skill', source: '.agents/skills/task-planner/SKILL.md', fileName: 'task-planner/SKILL.md' },
-  { id: 'task-planner-template-05a', type: 'skill', source: '.agents/skills/task-planner/references/TASK_TEMPLATE_05A.md', fileName: 'task-planner/references/TASK_TEMPLATE_05A.md' },
-  { id: 'task-planner-template-05b', type: 'skill', source: '.agents/skills/task-planner/references/TASK_TEMPLATE_05B.md', fileName: 'task-planner/references/TASK_TEMPLATE_05B.md' },
-  { id: 'task-reviewer', type: 'skill', source: '.agents/skills/task-reviewer/SKILL.md', fileName: 'task-reviewer/SKILL.md' },
-  { id: 'tech-evaluator', type: 'skill', source: '.agents/skills/tech-evaluator/SKILL.md', fileName: 'tech-evaluator/SKILL.md' },
-  { id: 'tech-evaluator-adr-template', type: 'skill', source: '.agents/skills/tech-evaluator/references/ADR_TEMPLATE.md', fileName: 'tech-evaluator/references/ADR_TEMPLATE.md' },
-  { id: 'e2e-testing-guide', type: 'skill', source: '.agents/skills/e2e-testing-guide/SKILL.md', fileName: 'e2e-testing-guide/SKILL.md' },
-  { id: 'craft-authoring', type: 'skill', source: '.agents/skills/craft-authoring/SKILL.md', fileName: 'craft-authoring/SKILL.md' }
+  {
+    id: "blueprint",
+    type: "workflow",
+    source: ".agents/workflows/blueprint.md",
+    fileName: "blueprint.md",
+  },
+  {
+    id: "challenge",
+    type: "workflow",
+    source: ".agents/workflows/challenge.md",
+    fileName: "challenge.md",
+  },
+  {
+    id: "change",
+    type: "workflow",
+    source: ".agents/workflows/change.md",
+    fileName: "change.md",
+  },
+  {
+    id: "craft",
+    type: "workflow",
+    source: ".agents/workflows/craft.md",
+    fileName: "craft.md",
+  },
+  {
+    id: "design-system",
+    type: "workflow",
+    source: ".agents/workflows/design-system.md",
+    fileName: "design-system.md",
+  },
+  {
+    id: "explore",
+    type: "workflow",
+    source: ".agents/workflows/explore.md",
+    fileName: "explore.md",
+  },
+  {
+    id: "forge",
+    type: "workflow",
+    source: ".agents/workflows/forge.md",
+    fileName: "forge.md",
+  },
+  {
+    id: "genesis",
+    type: "workflow",
+    source: ".agents/workflows/genesis.md",
+    fileName: "genesis.md",
+  },
+  {
+    id: "probe",
+    type: "workflow",
+    source: ".agents/workflows/probe.md",
+    fileName: "probe.md",
+  },
+  {
+    id: "quickstart",
+    type: "workflow",
+    source: ".agents/workflows/quickstart.md",
+    fileName: "quickstart.md",
+  },
+  {
+    id: "upgrade",
+    type: "workflow",
+    source: ".agents/workflows/upgrade.md",
+    fileName: "upgrade.md",
+  },
+  {
+    id: "anws-system",
+    type: "skill",
+    source: ".agents/skills/anws-system/SKILL.md",
+    fileName: "anws-system/SKILL.md",
+    targets: ["codex", "trae"],
+  },
+  {
+    id: "concept-modeler",
+    type: "skill",
+    source: ".agents/skills/concept-modeler/SKILL.md",
+    fileName: "concept-modeler/SKILL.md",
+  },
+  {
+    id: "code-reviewer",
+    type: "skill",
+    source: ".agents/skills/code-reviewer/SKILL.md",
+    fileName: "code-reviewer/SKILL.md",
+  },
+  {
+    id: "design-reviewer",
+    type: "skill",
+    source: ".agents/skills/design-reviewer/SKILL.md",
+    fileName: "design-reviewer/SKILL.md",
+  },
+  {
+    id: "nexus-mapper",
+    type: "skill",
+    source: ".agents/skills/nexus-mapper/SKILL.md",
+    fileName: "nexus-mapper/SKILL.md",
+  },
+  {
+    id: "nexus-mapper-language-customization",
+    type: "skill",
+    source: ".agents/skills/nexus-mapper/references/language-customization.md",
+    fileName: "nexus-mapper/references/language-customization.md",
+  },
+  {
+    id: "nexus-mapper-output-schema",
+    type: "skill",
+    source: ".agents/skills/nexus-mapper/references/output-schema.md",
+    fileName: "nexus-mapper/references/output-schema.md",
+  },
+  {
+    id: "nexus-mapper-probe-protocol",
+    type: "skill",
+    source: ".agents/skills/nexus-mapper/references/probe-protocol.md",
+    fileName: "nexus-mapper/references/probe-protocol.md",
+  },
+  {
+    id: "nexus-mapper-extract-ast",
+    type: "skill",
+    source: ".agents/skills/nexus-mapper/scripts/extract_ast.py",
+    fileName: "nexus-mapper/scripts/extract_ast.py",
+  },
+  {
+    id: "nexus-mapper-git-detective",
+    type: "skill",
+    source: ".agents/skills/nexus-mapper/scripts/git_detective.py",
+    fileName: "nexus-mapper/scripts/git_detective.py",
+  },
+  {
+    id: "nexus-mapper-languages",
+    type: "skill",
+    source: ".agents/skills/nexus-mapper/scripts/languages.json",
+    fileName: "nexus-mapper/scripts/languages.json",
+  },
+  {
+    id: "nexus-mapper-query-graph",
+    type: "skill",
+    source: ".agents/skills/nexus-mapper/scripts/query_graph.py",
+    fileName: "nexus-mapper/scripts/query_graph.py",
+  },
+  {
+    id: "nexus-mapper-requirements",
+    type: "skill",
+    source: ".agents/skills/nexus-mapper/scripts/requirements.txt",
+    fileName: "nexus-mapper/scripts/requirements.txt",
+  },
+  {
+    id: "output-contract",
+    type: "skill",
+    source: ".agents/skills/output-contract/SKILL.md",
+    fileName: "output-contract/SKILL.md",
+  },
+  {
+    id: "report-template",
+    type: "skill",
+    source: ".agents/skills/report-template/SKILL.md",
+    fileName: "report-template/SKILL.md",
+  },
+  {
+    id: "report-template-reference",
+    type: "skill",
+    source: ".agents/skills/report-template/references/REPORT_TEMPLATE.md",
+    fileName: "report-template/references/REPORT_TEMPLATE.md",
+  },
+  {
+    id: "runtime-inspector",
+    type: "skill",
+    source: ".agents/skills/runtime-inspector/SKILL.md",
+    fileName: "runtime-inspector/SKILL.md",
+  },
+  {
+    id: "sequential-thinking",
+    type: "skill",
+    source: ".agents/skills/sequential-thinking/SKILL.md",
+    fileName: "sequential-thinking/SKILL.md",
+  },
+  {
+    id: "spec-writer",
+    type: "skill",
+    source: ".agents/skills/spec-writer/SKILL.md",
+    fileName: "spec-writer/SKILL.md",
+  },
+  {
+    id: "spec-writer-prd-template",
+    type: "skill",
+    source: ".agents/skills/spec-writer/references/prd_template.md",
+    fileName: "spec-writer/references/prd_template.md",
+  },
+  {
+    id: "system-architect",
+    type: "skill",
+    source: ".agents/skills/system-architect/SKILL.md",
+    fileName: "system-architect/SKILL.md",
+  },
+  {
+    id: "system-architect-rfc-template",
+    type: "skill",
+    source: ".agents/skills/system-architect/references/rfc_template.md",
+    fileName: "system-architect/references/rfc_template.md",
+  },
+  {
+    id: "system-designer",
+    type: "skill",
+    source: ".agents/skills/system-designer/SKILL.md",
+    fileName: "system-designer/SKILL.md",
+  },
+  {
+    id: "system-designer-detail-template",
+    type: "skill",
+    source:
+      ".agents/skills/system-designer/references/system-design-detail-template.md",
+    fileName: "system-designer/references/system-design-detail-template.md",
+  },
+  {
+    id: "system-designer-template",
+    type: "skill",
+    source:
+      ".agents/skills/system-designer/references/system-design-template.md",
+    fileName: "system-designer/references/system-design-template.md",
+  },
+  {
+    id: "task-planner",
+    type: "skill",
+    source: ".agents/skills/task-planner/SKILL.md",
+    fileName: "task-planner/SKILL.md",
+  },
+  {
+    id: "task-planner-template-05a",
+    type: "skill",
+    source: ".agents/skills/task-planner/references/TASK_TEMPLATE_05A.md",
+    fileName: "task-planner/references/TASK_TEMPLATE_05A.md",
+  },
+  {
+    id: "task-planner-template-05b",
+    type: "skill",
+    source: ".agents/skills/task-planner/references/TASK_TEMPLATE_05B.md",
+    fileName: "task-planner/references/TASK_TEMPLATE_05B.md",
+  },
+  {
+    id: "task-reviewer",
+    type: "skill",
+    source: ".agents/skills/task-reviewer/SKILL.md",
+    fileName: "task-reviewer/SKILL.md",
+  },
+  {
+    id: "tech-evaluator",
+    type: "skill",
+    source: ".agents/skills/tech-evaluator/SKILL.md",
+    fileName: "tech-evaluator/SKILL.md",
+  },
+  {
+    id: "tech-evaluator-adr-template",
+    type: "skill",
+    source: ".agents/skills/tech-evaluator/references/ADR_TEMPLATE.md",
+    fileName: "tech-evaluator/references/ADR_TEMPLATE.md",
+  },
+  {
+    id: "e2e-testing-guide",
+    type: "skill",
+    source: ".agents/skills/e2e-testing-guide/SKILL.md",
+    fileName: "e2e-testing-guide/SKILL.md",
+  },
+  {
+    id: "craft-authoring",
+    type: "skill",
+    source: ".agents/skills/craft-authoring/SKILL.md",
+    fileName: "craft-authoring/SKILL.md",
+  },
+  {
+    id: "craft-authoring-bundle-policy",
+    type: "skill",
+    source: ".agents/skills/craft-authoring/references/BUNDLE_POLICY.md",
+    fileName: "craft-authoring/references/BUNDLE_POLICY.md",
+  },
+  {
+    id: "craft-authoring-prompt-quality-rubric",
+    type: "skill",
+    source:
+      ".agents/skills/craft-authoring/references/PROMPT_QUALITY_RUBRIC.md",
+    fileName: "craft-authoring/references/PROMPT_QUALITY_RUBRIC.md",
+  },
+  {
+    id: "craft-authoring-scorecard-template",
+    type: "skill",
+    source: ".agents/skills/craft-authoring/references/SCORECARD_TEMPLATE.md",
+    fileName: "craft-authoring/references/SCORECARD_TEMPLATE.md",
+  },
+  {
+    id: "nexus-query",
+    type: "skill",
+    source: ".agents/skills/nexus-query/SKILL.md",
+    fileName: "nexus-query/SKILL.md",
+  },
+  {
+    id: "nexus-query-extract-ast",
+    type: "skill",
+    source: ".agents/skills/nexus-query/scripts/extract_ast.py",
+    fileName: "nexus-query/scripts/extract_ast.py",
+  },
+  {
+    id: "nexus-query-git-detective",
+    type: "skill",
+    source: ".agents/skills/nexus-query/scripts/git_detective.py",
+    fileName: "nexus-query/scripts/git_detective.py",
+  },
+  {
+    id: "nexus-query-languages",
+    type: "skill",
+    source: ".agents/skills/nexus-query/scripts/languages.json",
+    fileName: "nexus-query/scripts/languages.json",
+  },
+  {
+    id: "nexus-query-query-graph",
+    type: "skill",
+    source: ".agents/skills/nexus-query/scripts/query_graph.py",
+    fileName: "nexus-query/scripts/query_graph.py",
+  },
+  {
+    id: "nexus-query-requirements",
+    type: "skill",
+    source: ".agents/skills/nexus-query/scripts/requirements.txt",
+    fileName: "nexus-query/scripts/requirements.txt",
+  },
 ];
 
 function toArray(value) {
@@ -59,16 +341,22 @@ function toArray(value) {
 }
 
 function toProjectionFileName(resource, projectionType, targetId) {
-  if ((targetId === 'codex' || targetId === 'trae') && projectionType === 'skills' && resource.type === 'workflow') {
+  if (
+    (targetId === "codex" || targetId === "trae") &&
+    projectionType === "skills" &&
+    resource.type === "workflow"
+  ) {
     return `anws-system/references/${resource.id}.md`;
   }
-  if (projectionType === 'commands') {
+  if (projectionType === "commands") {
     return `${resource.id}.md`;
   }
-  if (projectionType === 'prompts') {
-    return targetId === 'copilot' ? `${resource.id}.prompt.md` : `${resource.id}.md`;
+  if (projectionType === "prompts") {
+    return targetId === "copilot"
+      ? `${resource.id}.prompt.md`
+      : `${resource.id}.md`;
   }
-  if (projectionType === 'agents') {
+  if (projectionType === "agents") {
     return `${resource.id}.md`;
   }
   return resource.fileName;
@@ -88,25 +376,29 @@ function buildProjectionEntries(targetId) {
     }
 
     return toArray(projectionTypes).map((projectionType) => {
-      const outputFileName = toProjectionFileName(resource, projectionType, target.id);
+      const outputFileName = toProjectionFileName(
+        resource,
+        projectionType,
+        target.id,
+      );
       return {
         ...resource,
         projectionType,
         outputRoot: target.projections[projectionType],
-        outputPath: `${target.projections[projectionType]}/${outputFileName}`
+        outputPath: `${target.projections[projectionType]}/${outputFileName}`,
       };
     });
   });
 }
 
-function buildManagedManifest(targetIds = ['antigravity']) {
+function buildManagedManifest(targetIds = ["antigravity"]) {
   return toArray(targetIds).flatMap((targetId) => {
     const target = getTarget(targetId);
     const entries = buildProjectionEntries(target.id).map((entry) => ({
       ...entry,
       targetId: target.id,
       targetLabel: target.label,
-      ownershipKey: `${target.id}:${entry.outputPath}`
+      ownershipKey: `${target.id}:${entry.outputPath}`,
     }));
 
     if (!target.rootAgentFile) {
@@ -115,23 +407,26 @@ function buildManagedManifest(targetIds = ['antigravity']) {
 
     return [
       {
-        id: 'root-agents',
-        type: 'root',
-        source: 'AGENTS.md',
-        fileName: 'AGENTS.md',
-        projectionType: 'rootAgentFile',
-        outputRoot: '.',
-        outputPath: 'AGENTS.md',
+        id: "root-agents",
+        type: "root",
+        source: "AGENTS.md",
+        fileName: "AGENTS.md",
+        projectionType: "rootAgentFile",
+        outputRoot: ".",
+        outputPath: "AGENTS.md",
         targetId: target.id,
         targetLabel: target.label,
-        ownershipKey: `${target.id}:AGENTS.md`
+        ownershipKey: `${target.id}:AGENTS.md`,
       },
-      ...entries
+      ...entries,
     ];
   });
 }
 
-function buildProjectionPlan(targetIds = ['antigravity'], resources = RESOURCE_REGISTRY) {
+function buildProjectionPlan(
+  targetIds = ["antigravity"],
+  resources = RESOURCE_REGISTRY,
+) {
   return toArray(targetIds).map((targetId) => {
     const target = getTarget(targetId);
     const typeMap = target.projectionTypes;
@@ -145,7 +440,11 @@ function buildProjectionPlan(targetIds = ['antigravity'], resources = RESOURCE_R
       }
 
       return toArray(projectionTypes).map((projectionType) => {
-        const outputFileName = toProjectionFileName(resource, projectionType, target.id);
+        const outputFileName = toProjectionFileName(
+          resource,
+          projectionType,
+          target.id,
+        );
         const outputPath = `${target.projections[projectionType]}/${outputFileName}`;
         return {
           ...resource,
@@ -154,13 +453,13 @@ function buildProjectionPlan(targetIds = ['antigravity'], resources = RESOURCE_R
           outputPath,
           targetId: target.id,
           targetLabel: target.label,
-          ownershipKey: `${target.id}:${outputPath}`
+          ownershipKey: `${target.id}:${outputPath}`,
         };
       });
     });
 
     const managedFiles = target.rootAgentFile
-      ? ['AGENTS.md', ...projectionEntries.map((item) => item.outputPath)]
+      ? ["AGENTS.md", ...projectionEntries.map((item) => item.outputPath)]
       : projectionEntries.map((item) => item.outputPath);
 
     return {
@@ -170,25 +469,25 @@ function buildProjectionPlan(targetIds = ['antigravity'], resources = RESOURCE_R
       managedFiles,
       userProtectedFiles: buildUserProtectedFiles(target.id),
       projectionEntries,
-      ownership: projectionEntries.map((item) => item.ownershipKey)
+      ownership: projectionEntries.map((item) => item.ownershipKey),
     };
   });
 }
 
-function buildManagedFiles(targetId = 'antigravity') {
+function buildManagedFiles(targetId = "antigravity") {
   return buildManagedManifest(targetId).map((item) => item.outputPath);
 }
 
-function buildUserProtectedFiles(targetId = 'antigravity') {
+function buildUserProtectedFiles(targetId = "antigravity") {
   const target = getTarget(targetId);
-  return target.rootAgentFile ? ['AGENTS.md'] : [];
+  return target.rootAgentFile ? ["AGENTS.md"] : [];
 }
 
 function findByType(type) {
   return RESOURCE_REGISTRY.filter((item) => item.type === type);
 }
 
-const MANAGED_FILES = buildManagedFiles('antigravity');
+const MANAGED_FILES = buildManagedFiles("antigravity");
 
 /**
  * USER_PROTECTED_FILES — 用户保护文件
@@ -196,7 +495,7 @@ const MANAGED_FILES = buildManagedFiles('antigravity');
  * 这些文件在项目初始化后通常会包含特定于项目的配置。
  * anws update 默认会跳过这些文件。
  */
-const USER_PROTECTED_FILES = buildUserProtectedFiles('antigravity');
+const USER_PROTECTED_FILES = buildUserProtectedFiles("antigravity");
 
 module.exports = {
   RESOURCE_REGISTRY,
@@ -207,8 +506,5 @@ module.exports = {
   buildUserProtectedFiles,
   findByType,
   MANAGED_FILES,
-  USER_PROTECTED_FILES
+  USER_PROTECTED_FILES,
 };
-
-
-

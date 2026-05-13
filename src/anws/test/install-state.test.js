@@ -52,6 +52,7 @@ test('createInstallLock produces schema-compliant lock payload', () => {
   assert.equal(lock.cliVersion, '1.3.0');
   assert.equal(lock.targets.length, 1);
   assert.equal(lock.targets[0].targetId, 'windsurf');
+  assert.equal(lock.templateLocale, 'zh');
 });
 
 test('dedupeTargets keeps the latest record per target id', () => {
@@ -177,6 +178,33 @@ test('normalizeInstallLock preserves summary and target metadata for valid paylo
   assert.equal(normalized.targets[0].targetId, 'claude');
   assert.deepEqual(normalized.lastUpdateSummary.successfulTargets, ['claude']);
   assert.deepEqual(normalized.lastUpdateSummary.failedTargets, ['codex']);
+  assert.equal(normalized.templateLocale, 'zh');
+});
+
+test('normalizeInstallLock accepts templateLocale en', () => {
+  const normalized = normalizeInstallLock({
+    schemaVersion: INSTALL_LOCK_VERSION,
+    cliVersion: '1.3.0',
+    generatedAt: '2026-03-15T10:18:00.000Z',
+    templateLocale: 'en',
+    targets: []
+  });
+
+  assert.equal(normalized.templateLocale, 'en');
+});
+
+test('normalizeInstallLock rejects invalid templateLocale', () => {
+  assert.throws(
+    () =>
+      normalizeInstallLock({
+        schemaVersion: INSTALL_LOCK_VERSION,
+        cliVersion: '1.3.0',
+        generatedAt: '2026-03-15T10:18:00.000Z',
+        templateLocale: 'fr',
+        targets: []
+      }),
+    /templateLocale must be "zh" or "en"/
+  );
 });
 
 test('detectLockDrift reports missing and untracked targets', () => {

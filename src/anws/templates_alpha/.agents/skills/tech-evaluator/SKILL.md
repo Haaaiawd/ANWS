@@ -16,7 +16,7 @@ description: 【ALPHA】服务于 `/genesis` Step 3「技术选型」：以 ATAM
 > [!IMPORTANT]
 >
 > - **`/genesis` Step 3**：**只输出评估结果与 Markdown 对比素材**，**不得**在本步创建或修改 `.anws/v{N}/03_ADR/` 下任何 ADR 文件。原因见 `genesis.md` Step 3 / Step 5：ADR 为正式决策记录，须在 Step 5 完整审视后落盘。
-> - **Step 5 落盘目标**（供下游引用，非 Step 3 执行项）：将 Step 3 对比表升格为 `.anws/v{N}/03_ADR/ADR_001_TECH_STACK.md`（及姊妹 ADR），**章节结构以 `references/ADR_TEMPLATE.md` 为唯一权威**；本文「ADR 输出模板」节仅供速查，冲突以该文件为准。
+> - **Step 5 落盘目标**（供下游引用，非 Step 3 执行项）：将 Step 3 对比表升格为 `.anws/v{N}/03_ADR/ADR_001_TECH_STACK.md`（及姊妹 ADR），**章节结构以 `references/ADR_TEMPLATE.md` 为唯一权威**。
 > - 若宿主会话声明 **非** `/genesis` 或显式授权「本步即写 ADR」，以**当场工作流**为准；默认仍按 Step 3 不写 ADR。
 
 > [!NOTE]
@@ -31,7 +31,7 @@ description: 【ALPHA】服务于 `/genesis` Step 3「技术选型」：以 ATAM
 > - **可核对**：约束块须覆盖功能需求、非功能需求、团队、预算、特殊约束；缺的项写「未提供—评估基于假设 H-…」，不得静默省略。
 > - **可计算**：每个候选栈须有 12 维得分表（1–5）或逐维「不适用 + 原因」；禁止只给总分不给细表。
 > - **可推演**：ATAM 段落须含至少一个**质量属性场景**、若干**权衡点**、若干**风险点**；不得用形容词堆叠代替场景。
-> - **可升格**：最终对比表须能**无损映射**到 `references/ADR_TEMPLATE.md` 与本文「ADR 输出模板」的小节（背景 / 决策 / 对比 / 权衡 / 后果），供 Step 5 粘贴与润色。
+> - **可升格**：最终对比表须能**无损映射**到 **`references/ADR_TEMPLATE.md`** 的章节与必填节，供 Step 5 粘贴与润色。
 > - **验证策略显式**：须回答或标注待决：单测 / 集成 / E2E 侧重、冒烟 / 回归门禁、质量门禁落在 PR / INT / 预发 / 发布的哪一层（与 `genesis.md` Step 3 要求一致）。
 > - **单一真源**：数值与结论以 Step 3 产出表为准；Step 5 仅做编辑与状态流转，不得在无新证据时反向改分。
 
@@ -175,13 +175,15 @@ ADR 核心价值在取舍与后果，不单是赢家声明。
 
 ### 第五步：产出 ADR 升格素材（Step 3，非落盘）
 
-在 **`/genesis` Step 3** 下，你**不得**新建 `ADR_001_TECH_STACK.md`。改为输出一段 **Markdown**，结构与下文「ADR 输出模板」一致，但章节可标 `Proposed` / `待定`，供 Step 5 复制、`Accepted` 化并写入 `03_ADR/`。
+在 **`/genesis` Step 3** 下，你**不得**新建或修改 `03_ADR/*.md`。产出完整 **Markdown** 对比结论与升格素材，使 Step 5 能对照 **`references/ADR_TEMPLATE.md`** 无损升格；段落与章节可标 `Proposed` / `待定`。
 
 若工作流显式要求本步预创建占位文件（极少见），仅允许空文件或 MANIFEST 约定路径，**不得**将占位等同于已接受 ADR。
 
+**禁止**：在本 SKILL 内再嵌一套与 **`references/ADR_TEMPLATE.md`** 重复的完整 ADR 范文；章节疑问一律以该文件为准。
+
 #### 做什么
 
-生成完整对比与 ADR 形态草稿（内存或会话消息中的 Markdown）。
+生成完整对比与符合 `references/ADR_TEMPLATE.md` 场域的草稿（内存或会话消息中的 Markdown）。
 
 #### 为什么
 
@@ -189,40 +191,7 @@ ADR 核心价值在取舍与后果，不单是赢家声明。
 
 #### 怎么验收
 
-父代理能在 Step 5 打开 `references/ADR_TEMPLATE.md` 并对齐本节字段而无信息断档。
-
----
-
-## ADR 输出模板（升格用，供 Step 5）
-
-```markdown
-# ADR-001: 技术栈选择
-
-## 状态
-Accepted / Proposed / Deprecated
-
-## 背景
-[项目背景和约束描述]
-
-## 决策
-[选择的技术栈及核心理由]
-
-## 候选方案对比
-
-| 候选 | 总分 | 优势 | 劣势 |
-|------|------|------|------|
-| 方案 A | 42/60 | ... | ... |
-| 方案 B | 38/60 | ... | ... |
-
-## 权衡点
-- [权衡 1]
-- [权衡 2]
-
-## 后果
-- 正面: [...]
-- 负面: [...]
-- 需要的后续行动: [...]
-```
+父代理能在 Step 5 打开 `references/ADR_TEMPLATE.md` 并对齐各节而无信息断档。
 
 ---
 

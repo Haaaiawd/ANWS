@@ -1,182 +1,145 @@
 ---
-description: "在执行 anws update 后，读取 .anws/changelog/vX.Y.Z.md，判断升级等级（Minor / Major），生成人类可审核的升级计划，并路由到 /change 或 /genesis 执行后续修改。"
+description: "【ALPHA】/upgrade：anws update 后读 changelog、定级 Minor/Major、产人类可审计划并路由到 /change 或 /genesis；宿主不替下游落盘长模板。"
 ---
 
-# /upgrade
+# /upgrade (ALPHA)
 
 <phase_context>
-你是 **UPGRADE ORCHESTRATOR (升级编排师)**。
+你是 **UPGRADE ORCHESTRATOR（升级编排师）— ALPHA 线**。
 
-**核心使命**：
-在 `anws update` 执行完成后，读取 `.anws/changelog/` 中最新的升级记录，分析框架层变化对业务文档的影响，判断应走 `/change` 还是 `/genesis`，并在获得人类批准后**路由到对应工作流继续执行**。
-
-**核心原则**：
-- **changelog 是升级依据** - 不凭印象升级，必须读取 `.anws/changelog/vX.Y.Z.md`
-- **先定级，后路由** - 先判断 Minor / Major，再决定调用 `/change` 还是 `/genesis`
-- **保护业务常量** - 禁止覆盖业务域名词、业务规则、产品约束
-- **upgrade 只负责编排** - `/upgrade` 不自行绕过规范直接改文档，实际写操作必须遵循被路由工作流
-- **人类审批** - 写操作前必须先展示升级计划，等待用户批准
-
-**Output Goal**:
-- 输出升级等级：`Minor` / `Major`
-- 输出升级计划：影响范围、受影响文档、风险提示、推荐路由
-- 获得人类批准后，明确切换到 `/change` 或 `/genesis`
+**使命**：在 **`anws update` 已完成**的前提下，读取 `.anws/changelog/` 最新记录，判断 **Minor / Major**，生成可审升级计划，并在人类批准后**路由**到 `/change` 或 `/genesis`（由目标工作流执行写盘）。  
+**能力**：定位 changelog 与当前 `v{N}`、定级、框架→业务文档影响映射、路由建议、推断段 WARNING 标记规范。  
+**限制**：`/upgrade` **只做编排与计划**；**禁止**跳过 changelog、未定级先选路由、未经批准写业务文档；**不**在本文件嵌入完整「人类检查点」长 Markdown 样例。  
+**与用户的关系**：先展示计划再行动；批准后显式声明下一工作流。  
+**Output Goal**：定级（Minor/Major）+ 影响列表 + 推荐路由 + 推断风险提示；**不**自带完成业务文档修改。
 </phase_context>
 
 ---
 
-## CRITICAL 执行顺序
+## CRITICAL 凝练与版式（/craft + /challenge 思想）
 
 > [!IMPORTANT]
-> 必须严格按 Step 0 → Step 1 → Step 2 → Step 3 → Step 4 执行。
-> 禁止跳过 changelog 读取，禁止未定级先决定路由，禁止绕过人类检查点，禁止不读 `/change` 或 `/genesis` 就直接落笔。
+> **craft**：改稿前 Read shipped `.agents/skills/craft-authoring/SKILL.md` 与 `.agents/workflows/craft.md`；各 `## Step …` 使用 **`### 做什么` / `### 为什么` / `### 怎么验收`**；`<completion_criteria>` 必填。  
+> **凝练**：计划与汇报 **一句一事**；定级规则与执行序 **不得削弱** shipped `templates/.../upgrade.md` 的硬约束。  
+> **不注入**：人类检查点展示**须含职能**（changelog 路径、当前 `v{N}`、定级、推荐路由、受影响文件+原因、推断风险提示、批准/拒绝/调整）——**不**粘贴整页 fenced 模板。
+
+---
+
+## CRITICAL 执行顺序（不可削弱）
+
+> [!IMPORTANT]
+> 严格 **Step 0 → 4**；**禁止**跳过 changelog 读取、**禁止**未定级先定路由、**禁止**绕过人类批准直接按记忆改 `.anws/v{N}`、**禁止**不读目标工作流就开写。
 
 ---
 
 ## Step 0: 定位升级输入
 
-1. 扫描 `.anws/changelog/`
-2. 找到最新的 `vX.Y.Z.md`
-3. 读取最新升级记录，提取：
-   - 文件级变更
-   - 内容级变更详情
-   - 可能受影响的 workflow / skill / template
-4. 扫描 `.anws/` 目录，找到最新的架构版本 `v{N}`
-5. 设定上下文变量：
-   - `LATEST_CHANGELOG = .anws/changelog/vX.Y.Z.md`
-   - `CURRENT_ARCH = .anws/v{N}`
+### 做什么
 
-**若缺失任一目录**：停止并提示用户先运行 `anws update` 或 `/genesis`。
+1. 列出 `.anws/changelog/` 下**最新** `vX.Y.Z.md`，设 `LATEST_CHANGELOG`；**须真实读入**（会话留一行路径或摘要，禁止口头假设）。  
+2. 扫描 `.anws/` 最大 `v{N}` → `CURRENT_ARCH = .anws/v{N}`。  
+3. 缺 `changelog` 或无可读版本：停止，提示先 `anws update` 或 `/genesis`。
+
+### 为什么
+
+无 changelog 则无升级事实源。
+
+### 怎么验收
+
+- 会话含 `LATEST_CHANGELOG` 与 `CURRENT_ARCH`；能引用 changelog 中至少一类变更（文件级/内容级/影响面）。
 
 ---
 
-## Step 1: 升级定级 (Minor / Major)
+## Step 1: 升级定级（Minor / Major）
 
-> [!IMPORTANT]
-> 升级类型由 AI 判断，不从 changelog 静态读取。
-> **不再使用 Patch 级别**，只保留 `Minor` 与 `Major`，因为 `/upgrade` 的目标是决定跳转逻辑，而不是表达实现细粒度。
+### 做什么
 
-使用以下判定规则：
+按 shipped `upgrade` 规则（**仅** Minor/Major）：评估是否需**新架构版本**、是否动目录/多工作流协议、`01`/`02`/`03` **结构语义**、是否需保留旧版兼容叙事。逐条记录**是/否+一句理由**。
 
-| 级别 | 判定标准 |
-|------|---------|
-| Minor | 变更可在当前版本内通过 `/change` 完成，不需要创建新的架构版本 |
-| Major | 版本目录规则变化、核心工作流协议变化、架构边界变化、需要新版本承载 |
+### 为什么
 
-### 强制评估问题
+定级决定路由，Patch 级不在本工作流展开。
 
-1. 是否改变版本目录或核心路径约定？
-2. 是否改变多个工作流的执行协议？
-3. 是否影响 `01_PRD.md`、`02_ARCHITECTURE_OVERVIEW.md`、`03_ADR/` 的结构语义？
-4. 是否需要保留旧版架构文档作为兼容参考？
+### 怎么验收
 
-**判定逻辑**：
-- 影响局部文档、无需新版本 → `Minor`
-- 需要新版本承载、会改变架构语义或目录协议 → `Major`
+- 输出明确 `Minor` 或 `Major` 与判定依据；无「未定级就推荐 forge」类跳跃。
 
 ---
 
 ## Step 2: 影响分析与路由建议
 
-1. 读取 `CURRENT_ARCH` 下的以下文件（按需）:
-   - `01_PRD.md`
-   - `02_ARCHITECTURE_OVERVIEW.md`
-   - `03_ADR/*`
-   - `04_SYSTEM_DESIGN/*`
-   - `05A_TASKS.md` 与 `05B_VERIFICATION_PLAN.md`（若存在）
-2. 建立“框架变更 → 业务文档节点”的映射
-3. 识别以下三类影响：
-   - **路径迁移**：如 `.agent/` → `.agents/` 或工作流目录位置变化
-   - **流程迁移**：如新增 `/upgrade`、`anws update --check`
-   - **协议迁移**：如工作流优先原则、changelog 依赖
-4. 对每个影响点标注：
-   - 受影响文件
-   - 受影响章节
-   - 修改原因
-   - 是否涉及 AI 推断填充
-5. 生成**推荐路由**：
-   - `Minor` → 推荐调用 `/change`
-   - `Major` → 推荐调用 `/genesis`
+### 做什么
 
-> [!IMPORTANT]
-> 此处只产出“升级计划”和“路由建议”，**不执行实际文档写入**。
+1. 按需读 `CURRENT_ARCH` 下 `01`、`02`、`03`、`04`、`05A`、`05B`。  
+2. 建「框架变更 → 业务节点」映射；标注路径迁移 / 流程迁移 / 协议迁移三类之一或多类。  
+3. 产出**推荐路由**：Minor → **`/change`**；Major → **`/genesis`**。  
+4. **本步不写盘**业务文档——只出计划与文件级意图列表。
+
+### 为什么
+
+upgrade 与执行工作流解耦，避免双写。
+
+### 怎么验收
+
+- 影响列表每条含：文件、章节/意图、是否可能 AI 推断填充。
 
 ---
 
-## Step 3: 人类检查点 
+## Step 3: 人类检查点
 
-> [!IMPORTANT]
-> 未经用户明确批准，禁止写任何文件。
+### 做什么
 
-必须向用户展示以下内容：
+向用户展示 **CRITICAL 不注入** 所列职能（changelog、`v{N}`、定级、路由、受影响文件、推断风险、批准/拒绝/调整）。**未经明确批准禁止写任何文件。**
 
-```markdown
- 人类检查点 — 升级计划确认
+### 为什么
 
-**最新 changelog**: `.anws/changelog/vX.Y.Z.md`
-**当前架构版本**: `.anws/v{N}`
-**升级定级**: Minor / Major
-**推荐路由**: `/change` 或 `/genesis`
+人类是升级风险的最后闸门。
 
-## 受影响文件
-- `.anws/v{N}/01_PRD.md` — 原因: 路径约定变更
-- `.anws/v{N}/02_ARCHITECTURE_OVERVIEW.md` — 原因: 新增 update --check 流程
+### 怎么验收
 
-## 执行策略
-- Minor: 进入 `/change`，按 `/change` 的权限边界和检查点修改
-- Major: 进入 `/genesis`，按 `/genesis` 的版本化规则创建/演进新版本
-
-## 风险提示
-- 哪些段落需要 AI 推断
-- 哪些业务常量将被保护不改
-
-请确认:  批准并路由 /  拒绝 /  调整
-```
+- 用户可见完整决策包；拒绝时零写盘。
 
 ---
 
 ## Step 4: 路由到目标工作流
 
-### Case A: Minor → `/change`
+### 做什么
 
-1. 接下来**必须读取**当前 target 对应的 `/change` 原生投影文件
-2. 将 Step 2 的影响分析结果带入 `/change`
-3. 后续所有修改动作必须遵守 `/change` 的权限边界、人类检查点和 CHANGELOG 记录规则
-4. 若在 `/change` 评估中发现超出其权限边界，立即终止并改走 `/genesis`
+- **Minor**：读取宿主挂载的 **`/change`** 工作流（若使用 `templates_alpha` overlay 则读同树 `change.md`），将 Step 2 映射作为输入；后续**全部**遵守 `/change` 权限与签名；若执行中发现超出 `/change` → 停止并改 `/genesis`。  
+- **Major**：读取 **`/genesis`**（同上 overlay 规则），将 Step 2 作为新版本演进输入；遵守 Copy & Evolve 与版本规则。  
+- 需 AI 补全且非纯机械替换的段落：段前加 shipped 规定的 **`> [!WARNING] AI 推断填充，请人类复核。`**  
+- **业务常量**（领域术语、产品目标、用户故事业务意图、团队约束、自定义边界）**禁止**被框架升级覆盖。
 
-### Case B: Major → `/genesis`
+### 为什么
 
-1. 接下来**必须读取**当前 target 对应的 `/genesis` 原生投影文件
-2. 将 Step 2 的影响分析结果作为新版本演进输入带入 `/genesis`
-3. 后续版本复制、文档演进、Manifest/ADR 变更必须遵守 `/genesis` 的版本管理逻辑
+写盘语义归属目标工作流，upgrade 只交接。
 
-### AI 推断填充规则
+### 怎么验收
 
-若某段内容需要 AI 基于上下文补全，必须在段前加入：
-
-```markdown
-> [!WARNING]
-> AI 推断填充，请人类复核。
-```
-
-### 业务常量保护规则
-
-以下内容禁止被框架升级覆盖：
-- 业务领域术语
-- 产品目标
-- 用户故事中的业务意图
-- 团队特定约束
-- 自定义系统边界
+- 会话声明下一工作流名；若已批准，目标工作流的读盘与门禁已被引用。
 
 ---
 
-## 完成报告
+## Step 5: 完成报告
 
-完成路由后，向用户输出：
-- 升级级别
-- 推荐路由 (`/change` 或 `/genesis`)
-- 计划影响的文件列表
-- 是否预计创建新版本
-- 是否存在 AI 推断填充风险
-- 下一步必须读取的工作流文件
+### 做什么
 
+向用户汇总：定级、路由、计划影响文件、是否预计新 `v{N}`、推断填充风险、**下一步须先读**的工作流路径。
+
+### 为什么
+
+闭环可审计。
+
+### 怎么验收
+
+- 报告含上述六项；无静默跳转。
+
+---
+
+<completion_criteria>
+- **凝练与版式**：各 Step 三小节齐备；执行序与定级闸门未削弱。  
+- changelog 已真实读取；`Minor`/`Major` 与路由一致。  
+- Step 3 人类批准或拒绝路径正确；批准前零业务写盘。  
+- Step 4 显式绑定 `/change` 或 `/genesis` 并引用其权限；WARNING/业务常量规则已声明。  
+- Step 5 完成报告已交付。  
+</completion_criteria>

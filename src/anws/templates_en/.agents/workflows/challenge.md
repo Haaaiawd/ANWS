@@ -1,520 +1,331 @@
 ---
-description: "Systematically challenge project decisions and prove risks truly exist with evidence. Suitable for quality gating after architecture design and before coding execution. Produces 07_CHALLENGE_REPORT.md (including graded issue list, Pre-Mortem analysis, and hypothesis validation)."
+description: "[ALPHA] Contract-fidelity challenge to design/tasks/implementation—evidence first, gates intact; produces 07_CHALLENGE_REPORT.md."
 ---
 
-# /challenge
+# /challenge (ALPHA)
 
 <phase_context>
-You are the project's **CHALLENGER**.
+You are the **CHALLENGER**.
 
-**Your core mission**:
-Systematically challenge every project decision and assumption, and **prove with evidence that issues truly exist**, rather than imagining problems.
-
-**Your primary review target is not the documents themselves, but whether the system is faithful to its specification contracts.**
-
-The **specification contract** is jointly composed of the following sources:
-- **Business contract**: Business goals, main flows, constraints, and acceptance semantics in `01_PRD.md`
-- **Architecture contract**: System boundaries, interfaces, states, and technical decisions in `02_ARCHITECTURE_OVERVIEW.md`, `03_ADR/`, and `04_SYSTEM_DESIGN/`
-- **Task contract**: Commitments made by `05A_TASKS.md` on implementation handoff and scope
-- **Verification contract**: Commitments made by `05B_VERIFICATION_PLAN.md` on validation methods and evidence
-- **Documentation contract**: Operational commitments made to reviewers and implementers by README / usage docs / validation paths (if obtainable within current review scope)
-- **Runtime contract**: Error semantics, audit boundaries, logging boundaries, idempotency, retries, timeouts, degradation, scheduling, and long-running commitments
-
-**Core principles**:
-- **Specification contract first**: First identify what the system promises, then judge whether those promises close, and finally substantiate with engineering evidence
-- **Three-dimensional review**: System design (architectural completeness), runtime simulation (temporal correctness), engineering implementation (testability)
-- **Promise closure over formal completeness**: Compared with "looking like a complete project," prioritize discovering whether "the places the system cannot lie about most" are distorted
-- **High-signal output**: Focus on root-cause issues that truly affect judgment; avoid turning the report into a low-value checklist
-- **No evidence, no issue**: Every challenge must have concrete rationale or research support
-- **Issue grading**: Critical / High / Medium / Low
-- **Quality over quantity**: 3 real issues are better than 10 fake ones
-- **Verifiable**: Every issue must explain how to verify it
-
-**Review methodology**:
-1. **System design dimension** - Architectural completeness, boundary clarity, consistency
-2. **Runtime simulation dimension** - Temporal correctness, state synchronization, boundary conditions
-3. **Engineering implementation dimension** - Testability, maintainability, performance, security
-
-**Output Goal**: `.anws/v{N}/07_CHALLENGE_REPORT.md`
+**Mission**: Systematically question decisions and assumptions, using verifiable evidence to show risks are real; the primary audit object is whether the system honors normative contracts, not document length.  
+**Capabilities**: contract-source identification and commitment modeling; Pre-Mortem reasoning; `REVIEW_MODE` determination; on-demand invocation of design-reviewer / task-reviewer / code-reviewer; commitment closure and falsification of assumptions; report to disk and round archival; Step 4.5 gates and downstream routing.  
+**Constraints**: You must not delete, weaken, or route around the normative gates below (contract model, severity, `REVIEW_MODE`, full adherence to each skill, Step 4.5, `/blueprint` routing, archival protocol); concision may only trim redundant narrative and low-signal asides.  
+**Relationship with the user**: You are an independent review voice; the user bears final responsibility for proceed / bypass; when the pattern is unclear, task/code review is escalated, or Critical items remain unclosed while the user pushes forge, you must obtain explicit confirmation or record risk acknowledgment.  
+**Output Goal**: `{TARGET_DIR}/07_CHALLENGE_REPORT.md` (`TARGET_DIR` as in Step 0).
+</phase_context>
 
 ---
 
-## CRITICAL Deep Thinking Requirements
+## CRITICAL Method anchor
 
 > [!IMPORTANT]
-> **Challenge work requires deep thinking; the thinking method is based on model capability and task complexity.**
-> 
-> **Core decision rules**:
-> - **No CoT model** → **must call** `sequential-thinking` CLI
-> - **CoT model + simple challenge** (clear issue, steps < 5) → use guided questions to organize natural CoT
-> - **CoT model + complex challenge** (needs multi-option comparison, premise correction) → call `sequential-thinking` CLI
-> 
-> Challenging is not "scan docs once and list issues." Challenging requires **deep thinking**:
-> - You need to understand the designer's intent to find what they missed
-> - You need to reason through causal chains to prove issues truly exist
-> - You need to simulate system runtime to uncover hidden failure modes
+> Challenge is not a rhetoric contest—it is aligning **commitments—evidence—consequences** on the same plane.
+>
+> - **Awaken, not declare**: Surface the contract and distortion types before debating clauses; skipping “what did the system actually promise?” degrades challenge into emotional lists.  
+> - **Unfold, not single-track**: Illuminate the same seam along business/architecture/tasks/verification/operations; a single path misses default-state and edge-state gaps.  
+> - **Raise dimension, then land**: Lift failure modes to the contract layer to name them, then pin to files and line numbers; stopping at abstraction or stopping at detail both make the report unactionable.  
+> - **Reconstruct, not paraphrase**: Rebuild “if fixed, how the system becomes self-consistent again” in verifiable tables and gate language, not by repeating original wording.
 
 ---
 
-## CRITICAL Quality Requirements
+## CRITICAL Writing constraints and report contract
 
 > [!IMPORTANT]
-> **No imagined issues allowed!**
-> - "There may be performance issues" → no evidence
-> - "According to RFC design, each request needs 3 database queries; this may become a bottleneck at 1000 concurrency" → concrete analysis
-> 
-> Each challenge **must** include:
-> 1. **Specific target**: Point out where in which file/design the issue is
-> 2. **Evidence source**: Code analysis / research results / historical experience
-> 3. **Impact assessment**: If the issue happens, what is the consequence
+> **Normative gates cannot be weakened**: Contract sources and commitment model, severity definitions, full adherence to `REVIEW_MODE` and each reviewer skill, Step 4.5 review gate, routing logic `/blueprint` before `/forge`, and round archival protocol are hard constraints; do not shorten, soften, or replace with implication because this is ALPHA or for length targets. The only tightening allowed is duplicate explanation, filler, and paraphrase already carried by tables.
+>
+> **Output documents (spec / report) writing contract**:
+>
+> - **Precise**: Verifiable statements carry source, `path:line`, or section anchor.  
+> - **Traceable**: Findings, evidence, and recommendations map back to concrete files, interfaces, or search steps.  
+> - **Non-repetitive**: The same fact is not restated differently; overview must not paste long detail blocks.  
+> - **No generic filler**: Ban object-less phrases like “needs attention,” “to be optimized,” “recommend strengthening.”
+>
+> **Challenge table rule**: In **Core findings**, **Finding**, **Impact**, and **Recommendation** are each **one sentence** (very short compound allowed); the **Location** column uses minimal anchors (e.g. `PRD §x`, `path:line`, `05A §Task`).
 
 ---
 
-## Severity Grading
+## CRITICAL Deep thinking and evidence floor
 
-| Level | Criteria | Required Action |
-|:----:|---------|---------|
-| **Critical**  | Fundamental contradiction or impossible to implement. Cannot proceed without fixing. | P0 — Must be fixed before blueprint/forge |
-| **High**  | Severe risk likely to cause rework or failure. | P1 — Fix before forge |
-| **Medium**  | Quality risk with workaround options. | P2 — Fix during implementation |
-| **Low**  | Polish item or minor inconsistency. | P3 — Follow up later |
+> [!IMPORTANT]
+> **sequential-thinking**: Without a CoT-capable model you **must** invoke the `sequential-thinking` CLI; with CoT, if steps or sub-questions ≥ 5, multi-option comparison, premise revision, Pre-Mortem, or closure on any commitment dimension is Partial/Fail, you **must** invoke the CLI. Otherwise natural CoT is allowed, but Pre-Mortem’s required thought count still applies.  
+> **No idle speculation**: Every challenge must simultaneously have **concrete pointer**, **evidence source**, and **impact**; without evidence, downgrade to “to be falsified” or remove—tone must not substitute for reasoning.
+
+---
+
+## Severity levels
+
+| Level | Criteria | Required action |
+|------|----------|-----------------|
+| **Critical** | Fundamental contradiction or cannot proceed | P0 — must fix before blueprint / forge |
+| **High** | High probability of rework or failure | P1 — fix before forge |
+| **Medium** | Quality risk with a workaround | P2 — fix during implementation |
+| **Low** | Polish or minor inconsistency | P3 — track later |
 
 > [!NOTE]
-> When outputting reports, **prioritize keeping Critical / High**. Keep Medium / Low only when they truly affect judgment or can form stable improvement direction, to avoid report bloat.
+> Prefer **Critical / High** in the report; Medium / Low only when they affect judgment or enable a stable improvement direction, to avoid report bloat.
 
 ---
 
-## Step 0: Locate Architecture Version (Locate Architecture)
+## Subagent orchestration
 
-**Goal**: Find the currently active architecture version.
+**Parent agent (this session)**: Owns `TARGET_DIR` resolution, context loading, contract model and Pre-Mortem lead, `REVIEW_MODE` determination, merged review outcomes, **sole write** of `07_CHALLENGE_REPORT.md`, Step 4.5 gate statement and downstream routing recommendation to the user.  
+**Child agents (when supported by the environment)**: Receive bounded slices (path scope, review mode, `REVIEW_MODE`, required-read file list); **prefer** delegating **code-reviewer** to a child agent; design / task review may also be delegated, but merge and gates remain with the parent.  
+**Closure handoff checklist** (child self-check before returning to parent):
 
-1.  **Scan versions**: `list_dir .anws/`
-2.  **Determine latest version**: Find the folder with the largest number `v{N}` (e.g., `v3`).
-3.  **TARGET_DIR** = `.anws/v{N}`.
-
----
-
-## Step 1: Build Context (Context Loading)
-
-**Goal**: Deeply understand project design.
-
-1.  **Prepare environment**: 
-    No extra directories need to be created. The report will be saved to `{TARGET_DIR}`.
-
-2.  **Deep-read design documents**:
-    - Read `{TARGET_DIR}/01_PRD.md`
-    - Read `{TARGET_DIR}/02_ARCHITECTURE_OVERVIEW.md`
-    - Read `{TARGET_DIR}/03_ADR/`
-    - Read `{TARGET_DIR}/04_SYSTEM_DESIGN/` (if exists)
-    - Read `{TARGET_DIR}/05A_TASKS.md` (if exists)
-    - Read `{TARGET_DIR}/05B_VERIFICATION_PLAN.md` (if exists)
-
-3.  **Forced deep understanding** :
-
-    > [!IMPORTANT]
-    > For complex projects, multiple loops are allowed.
-    > 
-    > **Why?** Because you cannot "challenge after a quick scan." You must first understand:
-    > - Why did the designer design it this way?
-    > - What did they consider? What did they miss?
-    > - What are the core constraints of the system?
-
-    Thinking prompts:
-    1. "What is the project's core goal? What do users need most?"
-    2. "What are the key technical decisions? Why this choice?"
-    3. "Where is the most complex part? Where does complexity come from?"
-    4. "Which parts are designed in detail? Which are rough?"
-    5. "If I were the implementer, where would I get stuck?"
+- Declares **ran / skipped** and one-line reason (if skipped).  
+- Output matches the corresponding **skill** structured findings, including severity suggestions and anchors.  
+- No implicit premises conflicting with contract already loaded by the parent; if any, list as “needs parent adjudication.”  
+- After parent merge, the child must not independently modify the same report path again.
 
 ---
 
-## Step 1.5: Contract Source Identification and Commitment Modeling (Contract Modeling)
-
-**Goal**: Before any detailed review, first clarify **what exactly the system promises**.
+## ALPHA paired skills (same bundle as this line)
 
 > [!IMPORTANT]
-> Do not start by scanning for issues. First extract the **specification source set** and **commitment model**.
-> This is the first-principles action of this workflow.
-
-1.  **Identify specification sources**:
-    - `01_PRD.md` → business contract
-    - `02_ARCHITECTURE_OVERVIEW.md` + `03_ADR/` + `04_SYSTEM_DESIGN/` → architecture contract
-    - `05A_TASKS.md` → task contract
-    - `05B_VERIFICATION_PLAN.md` → verification contract
-    - Readable README / validation docs / config docs within current review scope → documentation contract
-
-2.  **Build minimal semantic model** (for internal use; no need to copy as-is into final report):
-    - **Specification source list**: Which files each contract category comes from
-    - **Commitment list**: Source, target, and failure consequence of each key commitment
-    - **Task handoff mapping**: If `05A_TASKS.md` exists, record which commitments are covered by tasks and which are not
-    - **Verification handoff mapping**: If `05B_VERIFICATION_PLAN.md` exists, record which commitments are covered by verification design and evidence ownership
-
-3.  **At least extract the following commitment types**:
-    - **Outcome commitments**: What business outcomes the system must ultimately achieve
-    - **State commitments**: Whether state machine, resource lifecycle, and out-of-order constraints are clear
-    - **Time commitments**: Time windows, TTL, expiration, scheduling, retention period
-    - **Error commitments**: Whether error codes, error structure, default failure paths are consistent
-    - **Security commitments**: AuthN, authZ, data isolation, sensitive information boundaries
-    - **Audit commitments**: Which operations must be logged, logging granularity, accountability boundaries
-    - **Runtime commitments**: Idempotency, retries, timeouts, degradation, observability
-
-4.  **Output a concise commitment model summary**:
-    ```markdown
-    | Commitment Type | Commitment Summary | Contract Source | Distortion Risk |
-    |---------|---------|---------|---------|
-    | Error commitment | All API failure paths return a unified error structure | PRD §X / ADR-00Y | Client-side forked handling |
-    | Audit commitment | All key business read/write operations require audit trails | PRD §Y / System Design §Z | No accountability / troubleshooting |
-    | Runtime commitment | Write operations are safely retryable without duplicate side effects | PRD §A / Architecture §B | Duplicate charge/shipment |
-    ```
+> When using the **`templates_alpha/`** or **`templates_alpha_en/`** overlay, Step 3 / 3.5 / 3.7 must read **`design-reviewer`**, **`task-reviewer`**, and **`code-reviewer`** from the **same tree**: `.agents/skills/<id>/SKILL.md` (sibling of `workflows/challenge.md`). **Do not** mix, in one session, with skill revisions under shipped `templates/`—gates and table semantics will drift.  
+> **`nexus-mapper`**: **prefer** this bundle **`.agents/skills/nexus-mapper/`**; fall back to shipped **`templates/`** only if the full alpha tree is not mounted.
 
 ---
 
-## Step 2: Pre-Mortem (Failure Rehearsal)
+## Step 0: Locate architecture version (Locate Architecture)
 
-**Goal**: Look back from the future and analyze possible failure causes — **but must have logical basis**.
+### What to do
 
-> [!IMPORTANT]
-> You **must** use `sequential-thinking` skill to organize **3-5 thoughts** for deep thinking.
-> 
-> **Why?** The essence of Pre-Mortem is **simulation reasoning**. You need to:
-> - "Run" the project in your mind
-> - Imagine what can go wrong at each phase
-> - Trace the Root Cause of each issue
-> - Apply the three-dimensional review framework (system design, runtime simulation, engineering implementation)
+Scan `.anws/`, take the numeric largest `v{N}`, set **`TARGET_DIR = .anws/v{N}`**. Resolve inputs and write the report under this directory for the entire run.
 
-1.  **Set scenario**:
-    > 6 months later, the project failed. Why?
+### Why
 
-2.  **Prioritize probing these distortion types**:
-    - **Write-side-effect distortion**: Can retries produce duplicate side effects?
-    - **State/time semantics distortion**: Do state transitions, time fields, and window calculations deviate from contract?
-    - **Failure semantics distortion**: Do default 401/404/validation failure paths still match unified commitments?
-    - **Audit/observation distortion**: Are audit boundaries shrinking? Do logs introduce new leak surfaces?
-    - **Task handoff distortion**: Are key commitments missing from implementation tasks entirely?
+**Motto**: No version means no object.  
+**Calibration**: Good locating matches real active version; bad locating reviews stale directories and invalidates the whole text.
 
-3.  **Thinking prompts** (must answer for each failure cause):
-    1. "What is the Root Cause of this failure cause?"
-    2. "Which specification contract does it violate?"
-    3. "What evidence suggests this will happen?"
-    4. "How likely is it? (high/medium/low)"
-    5. "If it happens, how severe is the impact?"
-    6. "Are there known similar failure cases?"
+### How to verify
 
-4.  **Output format**:
-    ```markdown
-    | Failure Cause | Distorted Contract | Root Cause | Evidence | Probability |
-    |---------|---------|-----------|------|:----:|
-    | Duplicate shipment | Write operation commitment | No idempotency key / no dedupe state | PRD + API design does not define retry semantics | High |
-    | Error response fork | Error contract | Default failure paths not uniformly wrapped | 401/404 returned by framework defaults | Medium |
-    ```
+- Can state chosen `v{N}` and rationale (max sequence number or explicit user override).  
+- Relative paths referenced in later steps root at this `TARGET_DIR`.
 
 ---
 
-## Step 2.5: Review Mode Detection
+## Step 1: Load context (Context Loading)
 
-**Goal**: Before starting any review, first determine **what should be reviewed this time** — avoid mindless double-runs.
+### What to do
 
-Infer mode from context signals:
+Read `{TARGET_DIR}/01_PRD.md`, `02_ARCHITECTURE_OVERVIEW.md`, `03_ADR/`, `04_SYSTEM_DESIGN/` (if present), `05A_TASKS.md` (if present), `05B_VERIFICATION_PLAN.md` (if present); internally (no need for long prose in the report) answer: core goals, key ADRs, hardest subdomain, coarse or blank areas, likely implementer pinch points. For complex projects, invoke the CLI per **CRITICAL Deep thinking**.
 
-| Signal | Inferred Mode |
-| ------ | ------------- |
-| `05A_TASKS.md` does not exist | `DESIGN` — design-only review |
-| User explicitly mentions task / task-list issues | `TASKS` |
-| User explicitly mentions implementation code / delivery acceptance / static code QA | `CODE` |
-| User explicitly asks for a "comprehensive review" or to "check everything" | `FULL` |
-| `05A_TASKS.md` exists but the user gives no explicit direction | `DESIGN`, with **optional adaptive escalation** to task review and code review |
-| Current round is a post-fix re-review and the previous round had task-class issues | `FULL` |
+### Why
 
-**If mode is still unclear, ask the user directly**:
+**Motto**: Challenge without understanding intent is noise.  
+**Calibration**: Good context restates designers’ constraints and tradeoffs; bad context only lists directory titles.
 
-> What should this review focus on?
->
-> 1. **Design / architecture** (design-reviewer) — architecture completeness, interfaces, runtime behavior  
-> 2. **Task list** (task-reviewer) — task quality, REQ coverage, US completeness  
-> 3. **Implementation code** (code-reviewer) — contract fidelity, test drift, backflow omissions  
-> 4. **Full review** (run all applicable reviewers)
+### How to verify
 
-**Set** `REVIEW_MODE` = `DESIGN` / `TASKS` / `CODE` / `FULL`; subsequent steps trigger from this value.
+- Can explain in your own words “why the system exists” and “hard boundaries.”  
+- Makes explicit which file classes Step 5 contract modeling must cover.
 
 ---
 
-## Step 3: Design Review
+## Step 1.5: Normative sources and commitment model (Contract Modeling)
 
-**Trigger condition**: `REVIEW_MODE` = `DESIGN` or `FULL`
+### What to do
 
-> If `REVIEW_MODE` = `TASKS`, **skip this step** and go directly to Step 3.5.
+Before detailed review extract **normative source set** and **minimal commitment model**: business (`01_PRD.md`), architecture (`02` + `03_ADR/` + `04_SYSTEM_DESIGN/`), tasks (`05A`), verification (`05B`), docs and ops notes (README / config / verification paths readable in scope). Build internal inventories: sources table, key commitments (source, object, failure consequence), task handoff mapping, verification handoff mapping. Cover commitment types at least: outcome, state, time, error, security, audit, operations (idempotency, retries, timeouts, degradation, observability). Feed Step 5 appendix **high-signal** summary table (type | summary | source | distortion risk); do not repeat long text here.
 
-Follow the **`design-reviewer`** skill end-to-end (inputs, passes, outputs — all defined there).
+### Why
 
-**Collect findings** for Step 5.
+**Motto**: Make the contract before asking about breach.  
+**Calibration**: Good model attaches each finding to a commitment type; bad model collapses into generic “risk.”
 
----
+### How to verify
 
-## Step 3.5: Task Review
-
-**Trigger conditions** (execute if any condition is met; `05A_TASKS.md` must exist):
-
-1. `REVIEW_MODE` = `TASKS` or `FULL`
-2. **Adaptive escalation**: `REVIEW_MODE` = `DESIGN`, and design-reviewer output signals task-coverage gaps (see skill / prior round).
-
-Before escalating, ask whether to add task-reviewer (yes / no).
-
-If triggered, follow **`task-reviewer`** end-to-end (including mandatory `04_SYSTEM_DESIGN/` rules — see skill).
-
-**Collect findings** for Step 5. If skipped, `Task review skipped` + reason.
+- Internally, one table can cover major commitment types without whole classes silent.  
+- Can cite at least one “high distortion risk” contract seam (if truly none exists, document searched scope).
 
 ---
 
-## Step 3.7: Code Review
+## Step 2: Pre-Mortem (simulate failure)
 
-**Trigger**: same `REVIEW_MODE` / adaptive rules as above; `src/` must exist.
+### What to do
 
-Follow **`code-reviewer`** end-to-end (static boundaries, inputs, lenses, outputs, skip protocol — all in the skill).
+Organize **3–5 thoughts** with `sequential-thinking`: posit “project already failed” counterfactual; along three axes (system design, ops simulation, engineering implementation) ask distortion classes: write side-effects, state/time semantics, failure semantics, audit/observability, task handoff, verification handoff, etc.; each question must answer root cause, which contract it violates, evidence, probability band, impact. Produce internal analysis table (failure cause | distorted contract | root cause | evidence | probability).
 
-**Execution**: Prefer delegating to a **subagent** when available; otherwise run in this session (same protocol).
+### Why
 
-**Collect findings** for Step 5. If skipped, `Code review skipped` + one-line reason.
+**Motto**: Borrow failure from the future, buy insurance now.  
+**Calibration**: Good Pre-Mortem yields hypotheses linkable to contracts; bad Pre-Mortem is story without anchors.
 
----
+### How to verify
 
-## Step 4: Commitment Closure Validation and Hypothesis Falsification (Closure Validation)
-
-**Goal**: Identify implicit assumptions and verify whether key commitments are **truly closed** under boundary conditions.
-
-> **Why?** Implicit assumptions are the most dangerous, because they are usually not documented or validated.
-
-1.  **Commitment closure checklist**:
-
-    | Check Dimension | Core Question | Contract Location |
-    |---------|---------|:-------:|
-    | **Duplicate state** | If the same request comes again, does it still honor the original commitment? | — |
-    | **Failure state** | On timeout, partial failure, or external dependency failure, does the commitment still hold? | — |
-    | **Default state** | Are framework default failure paths/default resource paths consistent with system contracts? | — |
-    | **Runtime state** | Are scheduling, cleanup, retention, and long-running behavior closed-loop? | — |
-    | **Concurrency state** | Under multi-user/concurrency conflicts, are state and side effects controllable? | — |
-    | **Observation state** | Is there enough logging/audit evidence without expanding leakage surface? | — |
-
-2.  **Technical and runtime robustness checks**:
-
-    | Check Item | Question | Contract Location |
-    |---------|------|:-------:|
-    | **Transaction handling** | Are key write operations guaranteed atomic? Can mid-failure roll back? | — |
-    | **Retry mechanism** | What happens when external service calls fail? Will side effects be amplified? | — |
-    | **Degradation strategy** | Is there fallback when primary service is unavailable? | — |
-    | **Timeout handling** | Do slow operations have timeout limits? | — |
-    | **Interface definition** | Do all key APIs have complete input/output/error schemas? | — |
-    | **Config management** | How are secrets/config managed? Any hardcoding? | — |
-    | **Logging and monitoring** | Are key operations logged? Do logs over-record sensitive data? | — |
-    | **Version control** | How are data formats/upgrades handled? | — |
-    | **Prompt templates** | Are LLM prompts fully defined? | — |
-    | **Tool definitions** | Does LLM Tool Use have JSON Schema? | — |
-
-3.  **Contract and verification-responsibility closure checks**:
-
-    | Check item | Question | Contract location |
-    | ---------- | -------- | ----------------- |
-    | **Contract handoff** | Does every public contract have implementation tasks carrying it? | — |
-    | **Verification handoff** | Does every high-risk public contract have at least one explicit verification layer? | — |
-    | **Foundational unit tests** | Do base, shared, and pure-logic layers get unit-test coverage by default—not only via high-level integration tests? | — |
-    | **Error paths** | Do failure and boundary behaviors from contracts have mapped test obligations? | — |
-    | **Regression duty** | Do changes impacting existing critical behaviors require minimum regression verification? | — |
-
-4.  **Record validation results** (internal analysis can be detailed; the final report keeps only a high-signal summary):
-
-    ```markdown
-    | Item | Conclusion | Evidence | Related Issue |
-    |------|------|------|----------|
-    | Duplicate state | Pass / Partial / Fail | ... | CH-01 |
-    | Failure state | Pass / Partial / Fail | ... | CH-02 |
-    | Default state | Pass / Partial / Fail | ... | CH-03 |
-    | Runtime state | Pass / Partial / Fail | ... | CH-04 |
-    ```
+- Thought count matches **CRITICAL**.  
+- At least one failure chain maps to commitment types from Step 1.5.  
+- Items without evidence chains must not be marked high probability.
 
 ---
 
-## Step 4.5: Review Gate
+## Step 2.5: Review mode determination (Review Mode Detection)
 
-**Goal**: Prevent high-severity challenge results from being silently bypassed by subsequent execution chains.
+### What to do
 
-> [!IMPORTANT]
-> **If the latest `07_CHALLENGE_REPORT.md` contains unresolved Critical issues, do not directly enter `/forge`.**
->
-> Handling methods:
-> - Digest issues that can converge within current version via `/change`
-> - Or reopen design premises via `/genesis` / `/design-system`
+From context signals set `REVIEW_MODE` ∈ {`DESIGN`, `TASKS`, `CODE`, `FULL`}:
 
-> [!IMPORTANT]
-> **If unresolved High issues exist, only allow explicit user sign-off to accept risk; AUTO mode cannot auto-pass.**
+| Signal | Inferred mode |
+|------|----------------|
+| `05A_TASKS.md` absent | `DESIGN` |
+| User clearly flags task-list issues | `TASKS` |
+| User clearly flags implementation / acceptance / static code | `CODE` |
+| User clearly wants full review | `FULL` |
+| `05A` present and user gives no explicit pointer | `DESIGN`, with task and code review **adaptively escalated as needed** |
+| Re-review after fixes and prior round had task-class issues | `FULL` |
 
-> **Next-workflow routing (user-facing guidance)**: Before recommending the implementation chain, **check** whether `{TARGET_DIR}/05A_TASKS.md` exists and contains a **real task breakdown** usable as `/forge` input (normally produced by `/blueprint`). **If there is no task list yet, the file is missing, or it is still placeholder/empty** (common right after `/genesis` or design work without `/blueprint`) → **recommend `/blueprint`**, **do not** default to `/forge`. Only recommend `/forge` once the task list is ready **and** the Critical/High gates above allow it.
+If still unclear, ask the user the four options (design / task / code / full) and wait. Write `REVIEW_MODE` into the final report **Review summary**.
 
-**Gate check logic**:
-1. Read latest `07_CHALLENGE_REPORT.md`
-2. Check for unresolved Critical issues
-   - If any → **BLOCK**, must resolve before `/forge`
-3. Check for unresolved High issues
-   - If any → only allow explicit user sign-off to accept risk
-   - AUTO mode cannot auto-pass High issues
-4. If no unresolved Critical/High → allow proceeding
+### Why
 
----
+**Motto**: Without picking a lens, you scan blind.  
+**Calibration**: Good mode saves effort yet covers risk; bad mode blindly double-runs or reads only PRD when code review is warranted.
 
-## Step 5: Generate Challenge Report (Challenge Report)
+### How to verify
 
-**Goal**: Output a structured report where each issue is evidence-backed, using a compact structure that **prioritizes issue findings**.
-
-Save report to `{TARGET_DIR}/07_CHALLENGE_REPORT.md`
-
-**Report template**:
-
-```markdown
-# [Project Name] Challenge Report
-
-> **Review Date**: {YYYY-MM-DD}  
-> **Review Scope**: All design documents under {TARGET_DIR}  
-> **Total Rounds**: {N}
+- `REVIEW_MODE` in the report matches trigger logic.  
+- When skipping a review, the report notes **skipped + one-line reason**.
 
 ---
 
-## Issue Overview
+## Step 3: Design review (Design Review)
 
-> Resolved rounds keep summary only. Current active round keeps only high-signal issues that affect judgment.
+### What to do
 
-### Round {N} (Current Active)
+When `REVIEW_MODE` is `DESIGN` or `FULL`; if only `TASKS`, **skip** and record `Design review skipped` + reason. Follow **design-reviewer** skill in full (input scope, Pass conditions, output structure per skill). Collect findings and hold for Step 5 merge. Delegation optional; merge stays parent.
 
-| Severity | Count | Summary | Status |
-|--------|------|------|------|
-| Critical | X | [Merged summary of Critical issues in this round] |  Pending |
-| High | X | [Merged summary of High issues in this round] |  Pending |
-| Medium | X | [Merged summary of Medium issues in this round] |  Pending |
-| Low | X | [Merged summary of Low issues in this round or omission note] |  Pending |
+### Why
 
----
+**Motto**: Architecture cracks are cheapest on paper.  
+**Calibration**: Good design review is sensitive to interface and runtime semantics; bad design review only comments prose style.
 
-## Review Summary
+### How to verify
 
-**Review Mode**: `{REVIEW_MODE}`  
-**Overall Judgment**:  Can proceed /  Must fix high-priority issues first /  Not recommended to proceed  
-**High-Signal Conclusions**: [Summarize the most important concerns in 2-4 sentences, without unfolding methodology]
-
-| Metric | Value |
-|------|------|
-| Critical | X |
-| High | X |
-| Medium | X |
-| Low | X |
-| Total Findings | X |
-
-| Evidence Source | Conclusion |
-|----------|------|
-| design-reviewer | {Executed / Skipped} |
-| task-reviewer | {Executed / Skipped / Adaptive escalation} |
-| code-reviewer | {Executed / Skipped / Adaptive escalation} |
-| Pre-Mortem | {One-sentence key conclusion} |
-| Commitment closure check | {Pass / Partial / Fail} |
+- Skill-required checks completed or waiver reason stated.  
+- Each High-or-above finding has a citeable anchor.
 
 ---
 
-## Core Findings List
+## Step 3.5: Task review (Task Review)
 
-| ID | Category | Severity | Contract/Pass | Location | Finding | Impact | Recommendation |
-|----|------|--------|-----------|------|------|------|------|
-| CH-01 | Commitment distortion | Critical | Error commitment | PRD §X / ADR §Y | Default failure paths are not unified; contract is not closed | Client-side error handling forks | Unify error semantics and add validation task |
-| CH-02 | Task handoff | High | E1 | 05A_TASKS.md §X | No corresponding task for P0 requirement | Core capability cannot be implemented | Add implementation and validation tasks |
-| CH-03 | Design closure | Medium | RS-5 / Code drift | 04_SYSTEM_DESIGN/... / src/... | Failure propagation path unspecified or implementation not aligned with design | Hard to recover from cascading failures | Add degradation and timeout strategies |
- 
-> Keep only issues that truly affect judgment. Do not write low-value phrasing or vague concerns into the table.
- 
----
+### What to do
 
-## Recommended Action List
+Trigger: (`REVIEW_MODE` ∈ {`TASKS`, `FULL`}) and `05A_TASKS.md` exists; or `REVIEW_MODE` = `DESIGN` and design-reviewer shows insufficient task handoff—**ask the user before escalation** whether to add task-reviewer. When triggered, follow **task-reviewer** skill in full (including required-read rules for `04_SYSTEM_DESIGN/`). Collect findings for Step 5. If skipped, record `Task review skipped` + reason.
 
-### P0 - Immediate Handling (Blocking)
-1. [CH-01] - [Recommended solution]
+### Why
 
-### P1 - Near-Term Handling (Important)
-1. [CH-02] - [Recommended solution]
+**Motto**: Promises without handoff are bad checks.  
+**Calibration**: Good task review verifies REQ/US closure; bad task review only counts task rows.
 
-### P2 - Continuous Improvement (Optimization)
-1. [CH-03] - [Recommended solution]
+### How to verify
+
+- Skill output structure complete; user Q&A about escalation recorded (in report or internally).  
+- If handoff gaps exist, mapping to REQ or contract paragraphs appears in tables.
 
 ---
 
-## Final Judgment
+## Step 3.7: Code review (Code Review)
 
-- [ ]  Project can proceed, risk is controllable
-- [ ]  Project can proceed, but P0 issues must be solved first
-- [ ]  Project requires re-evaluation
+### What to do
 
-**Judgment Basis**: [Comprehensive assessment based on key issue count, severity, and impact scope]
+Trigger: consistent with `REVIEW_MODE` / adaptive rules, and the repo has reviewable code (e.g. `src/`). Follow **code-reviewer** skill in full (static bounds, Lens, artifact format per skill). When host supports child agents **prefer** delegating code-reviewer execution; otherwise run in this session. Merge findings into Step 5; if skipped `Code review skipped` + one-line reason.
+
+### Why
+
+**Motto**: Paper closure must pass symbolic inspection.  
+**Calibration**: Good code review catches contract drift and test blind spots; bad code review nitpicks style line by line.
+
+### How to verify
+
+- Skill Pass/fail signals are respected.  
+- When delegated, parent still owns merge and disk write—no forked report versions.
 
 ---
 
-## Appendix (Optional)
+## Step 4: Commitment closure validation and falsification (Closure Validation)
 
-### A. Commitment Closure and Hypothesis Validation Summary
+### What to do
 
-| Item | Conclusion | Evidence | Related Issue |
-|------|------|------|----------|
-| Duplicate state | Pass / Partial / Fail | ... | CH-01 |
-| Failure state | Pass / Partial / Fail | ... | CH-02 |
-| Default state | Pass / Partial / Fail | ... | CH-03 |
-| Runtime state | Pass / Partial / Fail | ... | CH-04 |
+For key commitments, under boundary conditions validate **closure**, covering at least: duplicate-state, failure-state, default-state, runtime-state, concurrency-state, observability-state; plus robustness entries (transactions, retries, degradation, timeouts, interface schema, config and secrets, logs and sensitive-boundary handling, versioning and migrations, Prompt/Tool schema where applicable); plus **contract vs verification responsibility** (contract handoff, verification handoff, foundational unit tests, error paths, regression responsibility). Produce internal analysis table (item | verdict | evidence | mapped issue ID); final report keeps only distilled summary linking to finding IDs.
 
-### B. ADR Impact Tracking
+### Why
 
-> **Reminder**: If this review finds ADR changes needed, check the following reference chain:
+**Motto**: Hidden assumptions unchecked are paid by incidents.  
+**Calibration**: Good closure covers default paths and worst paths; bad closure only has happy paths.
 
-| ADR File | SYSTEM_DESIGN referencing this ADR | Impact Description |
-|---------|---------------------------|---------|
-| [ADR-XXX](../03_ADR/ADR_XXX.md) | [system-1.md](../04_SYSTEM_DESIGN/system-1.md) §8 | [Description] |
-```
+### How to verify
 
-## Step 6: Round Archive Protocol
+- Every Fail / Partial row in the table has a corresponding issue row in Step 5 or an explicit note of “no dedicated row.”  
+- Each dimension is touched or marked “not applicable + basis.”
 
-**Goal**: Keep the report lean. For resolved rounds, keep summary only.
+---
 
-> [!IMPORTANT]
-> **This step is auto-executed at the start of each new review round and does not need separate triggering.**
+## Step 4.5: Review gate and downstream routing
 
-### Archive Rules
+### What to do
 
-1.  **At the start of a new review round**, check whether all issues from the previous round are resolved (confirmed by user)
-2.  **If resolved** →
-    - Mark that round as  in ` Issue Overview`
-    - **Delete that round's detailed review section** (`##  Round {N-1} Detailed Review`)
-    - Summary row in issue overview is the permanent archive of that round
-3.  **If partially resolved** →
-    - Resolved issues marked  in overview
-    - Unresolved issues remain  and continue tracking in new round
-    - In previous round details, keep descriptions only for unresolved issues
-4.  **At any time, report has detailed content for only one round** (current active round)
+Gate: **if this round’s report contains unaddressed Critical**, do not default into **`/forge`**; converge via **`/change`**, or redo premises via **`/genesis`** / **`/design-system`**. When only **High** exists, **explicit user acknowledgment** is required to continue; AUTO mode must not auto-pass. Routing: Before the coding chain, **check** whether `{TARGET_DIR}/05A_TASKS.md` exists and contains **real task breakdown** usable as `/forge` input (typically from **`/blueprint`**). If missing, placeholder, or empty (common right after `/genesis`)→ **recommend `/blueprint`**, **do not** default-recommend `/forge`. Recommend `/forge` only when task list is ready and Critical/High gates are satisfied.
 
-### Overview Row Merge Rules
+### Why
 
-Resolved issues of the same severity are merged into one row, format:
-```markdown
-| C1-C4 |  | Treaty contradictions / breach logic / upgrade formula / territory missing |  Fully fixed |
-```
+**Motto**: A gate that fails is ritual, not flow.  
+**Calibration**: Good gates block highest risk before compile; bad gates postpone to rework.
 
-Unresolved issues remain standalone rows, format:
-```markdown
-| R2-C1 |  | executor v2 action missing |  Pending fix |
-```
+### How to verify
+
+- Final **Verdict** or **Recommended actions** explicitly reflects Critical/High state and routing advice.  
+- No isolated “forge directly now” wording when task list not attached.
+
+---
+
+## Step 5: Produce challenge report (Challenge Report)
+
+### What to do
+
+Write `{TARGET_DIR}/07_CHALLENGE_REPORT.md` covering the functional sections below; observe **CRITICAL Writing constraints**; **Finding / Impact / Recommendation** each one sentence; **Severity** matches **Severity levels**; roll up design / task / code / Pre-Mortem / closure rows. **Do not** paste a full nested fenced template from this host into the report body—use session-local samples or bundle `references/` for table skeletons.
+
+### Why
+
+**Motto**: Reports are evidence containers, not prose showcases.  
+**Calibration**: Good report lets readers grasp blockers within five minutes; bad report leaves unclear what to fix first.
+
+### How to verify
+
+- Correct file path and single writer.  
+- Key sections non-empty: review mode, overall verdict, metrics table, core findings table at least one row or explicit “no issues” statement.  
+- No violation of “one sentence per three columns” rule.
+
+**Sections to cover (pointer)**: **Issue overview** (current-round summary rows), **Review summary** (mode / metrics / evidence sources), **Core findings** (Critical row semantics unchanged), **Recommended actions** (P0/P1/P2), **Final verdict**, appendices as needed. Full table scaffolds: cite **`/challenge`** exemplars or bundle `references/`—not repeated verbatim here.
+
+---
+
+## Step 6: Round archive protocol (Round Archive Protocol)
+
+### What to do
+
+**Each new review round at start** (ties to this round’s Step 5 write): Check whether prior-round issues were user-confirmed fixed. If resolved: mark solved summary in **Issue overview**, **delete** prior-round “Detailed review” long sections, retain only overview rows. If partly resolved: update overview for solved items; carry open items into new round; prior detail retains only unresolved descriptions. At **one time** report keeps only **one** detailed expansion (currently active round). Overview row merging: solved same severity may merge into one row; open items stay distinct (format follows template convention).
+
+### Why
+
+**Motto**: Archive is memory; repetition is noise.  
+**Calibration**: Good archives show current battlefield only; bad archives bury readers in duplicated history.
+
+### How to verify
+
+- When starting a new round with an old report, run archival before writing new round structure.  
+- No multiple lengthy “Detailed review” blocks in parallel redundancy.
 
 ---
 
 <completion_criteria>
-- Deeply read project design documents
-- Identified specification source set and extracted key commitment model
-- Pre-Mortem analysis has logical grounding
-- Every challenge point has evidence support
-- Commitment closure validation completed (covers at least duplicate/failure/default/runtime/concurrency/observation states)
-- Contract and verification-responsibility closure checks completed where applicable
-- Technical robustness audit completed
-- Top 3 hypotheses have been attempted for validation
-- Commitment-oriented challenges prioritized over carrier-oriented challenges
-- Challenge report format complete (including issue overview directory and code-reviewer execution status where applicable)
-- Details of resolved issues from previous round archived (overview row only)
-- User has reviewed and decided next steps
+- [ ] `TARGET_DIR` resolved and all input paths correctly relative to it  
+- [ ] **CRITICAL Method anchor**, **Writing constraints and report contract**, **Deep thinking and evidence floor** visibly followed during execution  
+- [ ] Commitment model and Pre-Mortem completed and traceable to contract types  
+- [ ] `REVIEW_MODE` determined and written to report; design / task / code triggers match skill, skips have reasons  
+- [ ] Step 4 closure dimensions and robustness table covered or marked not applicable  
+- [ ] Step 4.5 gate and `/blueprint` routing reflected in report recommendations  
+- [ ] `07_CHALLENGE_REPORT.md` written once, template keys complete, **Finding/Impact/Recommendation** each one sentence  
+- [ ] Round archive rules understood; if continuing rounds, history compressed per protocol  
+- [ ] No emoji anywhere in document  
 </completion_criteria>

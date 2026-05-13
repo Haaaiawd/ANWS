@@ -21,6 +21,7 @@ test('cli help documents init target option and one-click update flow', () => {
 
   assert.equal(result.status, 0);
   assert.match(result.stdout, /--target/);
+  assert.match(result.stdout, /--locale/);
   assert.match(result.stdout, /for init/);
   assert.match(result.stdout, /windsurf/);
   assert.match(result.stdout, /antigravity/);
@@ -46,6 +47,16 @@ test('cli accepts comma-separated target ids for init', () => {
   assert.match(result.stdout, /comma-separated/);
   assert.match(result.stdout, /windsurf/);
   assert.match(result.stdout, /codex/);
+});
+
+test('cli rejects invalid --locale for init', () => {
+  const result = runCli(['init', '--locale', 'fr'], {
+    input: '',
+    stdio: ['pipe', 'pipe', 'pipe']
+  });
+
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr + result.stdout, /--locale must be zh or en/);
 });
 
 test('cli rejects removed update flags', () => {

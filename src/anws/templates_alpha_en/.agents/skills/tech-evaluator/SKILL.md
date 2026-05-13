@@ -16,7 +16,7 @@ This skill is grounded in **SEI ATAM (Architecture Tradeoff Analysis Method)** a
 > [!IMPORTANT]
 >
 > - **`/genesis` Step 3**: **Only** output evaluation results and Markdown comparison material; **must not** in this step create or modify any ADR file under `.anws/v{N}/03_ADR/`. Rationale is in `genesis.md` Step 3 / Step 5: ADRs are formal decision records and must land after full review in Step 5.
-> - **Step 5 persistence targets** (for downstream reference, **not** Step 3 work): elevate the Step 3 comparison table into `.anws/v{N}/03_ADR/ADR_001_TECH_STACK.md` (and sibling ADRs); **section structure is authoritative in `references/ADR_TEMPLATE.md` only**; the "ADR output template" section here is a digest—on conflict, the file wins.
+> - **Step 5 persistence targets** (for downstream reference, **not** Step 3 work): elevate the Step 3 comparison table into `.anws/v{N}/03_ADR/ADR_001_TECH_STACK.md` (and sibling ADRs); **section structure is authoritative in `references/ADR_TEMPLATE.md` only**.
 > - If the host session declares it is **not** `/genesis` or explicitly authorizes "write ADRs in this step," follow **that workflow** on the spot; by default Step 3 still does not write ADRs.
 
 > [!NOTE]
@@ -31,7 +31,7 @@ This skill is grounded in **SEI ATAM (Architecture Tradeoff Analysis Method)** a
 > - **Verifiable**: Constraint blocks must cover functional requirements, non-functional requirements, team, budget, and special constraints; for missing items write "Not provided—evaluation assumes H-…"; silent omission is not allowed.
 > - **Countable**: Each candidate stack must have a 12-dimension score table (1–5) or per-dimension "N/A + reason"; totals without a dimension breakdown are not allowed.
 > - **Deducible**: ATAM paragraphs must include at least one **quality-attribute scenario**, several **trade-off points**, and several **risk points**; stacking adjectives is not allowed in place of scenarios.
-> - **Promotable**: The final comparison table must **map cleanly** onto `references/ADR_TEMPLATE.md` and the sections in this doc's "ADR output template" (context / decision / comparison / trade-offs / consequences) for paste and polish in Step 5.
+> - **Promotable**: The final comparison table must **map cleanly** onto **`references/ADR_TEMPLATE.md`** sections and required fields for paste and polish in Step 5.
 > - **Explicit verification strategy**: Must answer or mark open: emphasis for unit / integration / E2E tests, smoke / regression gates, and which layer owns quality gates—PR / INT / staging / release (consistent with Step 3 in `genesis.md`).
 > - **Single source of truth**: Numbers and conclusions are anchored to Step 3 output; Step 5 only edits and changes status—it must not re-score backward without new evidence.
 
@@ -175,13 +175,15 @@ At least one scenario plus several trade-offs / risks cross-referenced with cand
 
 ### Step 5: Produce ADR promotion material (Step 3—not persisted)
 
-Under **`/genesis` Step 3** you **must not** create `ADR_001_TECH_STACK.md`. Instead output **Markdown** shaped like "ADR output template" below; sections may be marked `Proposed` / `TBD` for Step 5 to copy, `Accepted`, and save under `03_ADR/`.
+Under **`/genesis` Step 3** you **must not** create or modify `03_ADR/*.md`. Produce full **Markdown** comparison conclusions and promotion material so Step 5 can elevate losslessly against **`references/ADR_TEMPLATE.md`**; sections may read `Proposed` / `TBD`.
 
 If the workflow rarely demands placeholder files this step, only empty files or MANIFEST paths are allowed—**do not** treat placeholders as accepted ADRs.
 
+**Forbidden**: embed another full ADR exemplar in this SKILL that duplicates **`references/ADR_TEMPLATE.md`**; any section question defers to that file.
+
 #### What to do
 
-Produce full comparison + ADR-shaped draft Markdown (in memory / session).
+Produce full comparison + draft Markdown scoped to `references/ADR_TEMPLATE.md` (in memory / session).
 
 #### Why
 
@@ -189,40 +191,7 @@ Align with `genesis` decision checkpoints; avoid early informal ADRs.
 
 #### How to validate
 
-The parent agent can open `references/ADR_TEMPLATE.md` in Step 5 and align fields without information breaks.
-
----
-
-## ADR output template (for elevation; Step 5)
-
-```markdown
-# ADR-001: Technology stack selection
-
-## Status
-Accepted / Proposed / Deprecated
-
-## Context
-[Project context and constraints]
-
-## Decision
-[Chosen stack and core rationale]
-
-## Candidate comparison
-
-| Candidate | Score | Strengths | Weaknesses |
-| --------- | ----- | --------- | ---------- |
-| Option A | 42/60 | ... | ... |
-| Option B | 38/60 | ... | ... |
-
-## Trade-offs
-- [Trade-off 1]
-- [Trade-off 2]
-
-## Consequences
-- Positive: [...]
-- Negative: [...]
-- Follow-up actions: [...]
-```
+The parent agent can open `references/ADR_TEMPLATE.md` in Step 5 and align sections without information breaks.
 
 ---
 

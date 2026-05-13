@@ -44,6 +44,20 @@ test('anws init --target windsurf writes windsurf projection and AGENTS.md', asy
     assert.equal(await exists(path.join(tempDir, '.windsurf', 'skills', 'spec-writer', 'SKILL.md')), true);
     assert.equal(await exists(path.join(tempDir, 'AGENTS.md')), true);
     assert.equal(await exists(path.join(tempDir, '.agents')), false);
+    const lock = JSON.parse(await fs.readFile(path.join(tempDir, '.anws', 'install-lock.json'), 'utf8'));
+    assert.equal(lock.templateLocale, 'zh');
+  });
+});
+
+test('anws init --locale en copies English workflow templates', async () => {
+  await withTempDir(async (tempDir) => {
+    const result = runCliInDir(tempDir, ['init', '--target', 'windsurf', '--locale', 'en']);
+
+    assert.equal(result.status, 0, result.stderr || result.stdout);
+    const genesis = await fs.readFile(path.join(tempDir, '.windsurf', 'workflows', 'genesis.md'), 'utf8');
+    assert.match(genesis, /You are \*\*Genesis/);
+    const lock = JSON.parse(await fs.readFile(path.join(tempDir, '.anws', 'install-lock.json'), 'utf8'));
+    assert.equal(lock.templateLocale, 'en');
   });
 });
 
@@ -125,6 +139,22 @@ test('anws init preserves scanned targets when install-lock is missing and a new
 
     const lock = JSON.parse(await fs.readFile(path.join(tempDir, '.anws', 'install-lock.json'), 'utf8'));
     assert.deepEqual(lock.targets.map((item) => item.targetId), ['opencode', 'windsurf']);
+  });
+});
+
+test('anws init with skipped overwrite retains templateLocale when lock targets remain', async () => {
+  await withTempDir(async (tempDir) => {
+    const first = runCliInDir(tempDir, ['init', '--target', 'windsurf', '--locale', 'en']);
+    assert.equal(first.status, 0, first.stderr || first.stdout);
+
+    await fs.writeFile(path.join(tempDir, '.windsurf', 'workflows', 'genesis.md'), 'user conflict', 'utf8');
+
+    const second = runCliInDir(tempDir, ['init', '--target', 'windsurf']);
+    assert.equal(second.status, 0, second.stderr || second.stdout);
+
+    const lock = JSON.parse(await fs.readFile(path.join(tempDir, '.anws', 'install-lock.json'), 'utf8'));
+    assert.equal(lock.templateLocale, 'en');
+    assert.deepEqual(lock.targets.map((item) => item.targetId), ['windsurf']);
   });
 });
 

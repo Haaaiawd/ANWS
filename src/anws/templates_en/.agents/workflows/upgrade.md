@@ -1,193 +1,145 @@
 ---
-description: "After running anws update, read .anws/changelog/vX.Y.Z.md, determine upgrade level (Minor / Major), produce a human-reviewable upgrade plan, and route follow-up changes to /change or /genesis."
+description: "[ALPHA] /upgrade: after anws update, read changelog, classify Minor/Major, produce a human-reviewable plan, route to /change or /genesis; host does not embed long checkpoint templates."
 ---
 
-# /upgrade
+# /upgrade (ALPHA)
 
 <phase_context>
-You are **UPGRADE ORCHESTRATOR**.
+You are **UPGRADE ORCHESTRATOR (ALPHA track)**.
 
-**Core Mission**:
-After `anws update` completes, read the latest upgrade record in `.anws/changelog/`, analyze the impact of framework-level changes on business documents, determine whether to use `/change` or `/genesis`, and after human approval **route to the corresponding workflow for continued execution**.
-
-**Core Principles**:
-- **changelog is the upgrade basis** - never upgrade by impression; must read `.anws/changelog/vX.Y.Z.md`
-- **Classify first, route later** - determine Minor / Major first, then decide `/change` or `/genesis`
-- **Protect business constants** - do not overwrite business domain terms, business rules, or product constraints
-- **upgrade only orchestrates** - `/upgrade` must not bypass specs to directly edit docs; actual write operations must follow routed workflow
-- **Human approval** - must show upgrade plan before write operations and wait for user approval
-
-**Output Goal**:
-- Output upgrade level: `Minor` / `Major`
-- Output upgrade plan: impact scope, affected docs, risk alerts, recommended route
-- After human approval, explicitly switch to `/change` or `/genesis`
+**Mission**: After **`anws update` has completed**, read the latest `.anws/changelog/vX.Y.Z.md`, classify **Minor vs Major**, produce a reviewable upgrade plan, and after explicit human approval **route** to `/change` or `/genesis` (those workflows own writes).  
+**Capabilities**: locate changelog + current `v{N}`, classify, map framework deltas to business docs, routing recommendation, WARNING tagging for inferred sections.  
+**Limits**: `/upgrade` is **orchestration + plan only**—**no** skipping changelog, **no** routing before classification, **no** writing business docs without approval; **no** full fenced “human checkpoint” template pasted in this host.  
+**Relationship with the user**: show plan first; after approval, name the next workflow explicitly.  
+**Output Goal**: Classification + impact list + recommended route + inference-risk notes—**not** completing business doc edits inside `/upgrade`.
 </phase_context>
 
 ---
 
-## CRITICAL Execution Order
+## CRITICAL concision & layout (/craft + /challenge spirit)
 
 > [!IMPORTANT]
-> Must strictly execute in order Step 0 → Step 1 → Step 2 → Step 3 → Step 4.
-> Skipping changelog reading is forbidden; deciding route before classification is forbidden; bypassing human checkpoint is forbidden; writing directly without reading `/change` or `/genesis` is forbidden.
+> **craft**: Before editing, Read shipped `.agents/skills/craft-authoring/SKILL.md` and `.agents/workflows/craft.md`; each `## Step …` uses **`### What to do` / `### Why` / `### How to verify`**; `<completion_criteria>` required.  
+> **Concision**: Plans and narration—**one fact per sentence**; ordering and classification gates must stay **as strong** as shipped `templates/.../upgrade.md`.  
+> **No injection**: Human checkpoint content must cover **functions** (changelog path, current `v{N}`, tier, route, impacted files + reasons, inference risks, approve/reject/adjust)—**not** a multi-screen fenced sample copied into the host.
 
 ---
 
-## Step 0: Locate Upgrade Input
-
-1. Scan `.anws/changelog/`
-2. Find latest `vX.Y.Z.md`
-3. Read latest upgrade record and extract:
-   - File-level changes
-   - Content-level change details
-   - Possibly affected workflow / skill / template
-4. Scan `.anws/` directory and find latest architecture version `v{N}`
-5. Set context variables:
-   - `LATEST_CHANGELOG = .anws/changelog/vX.Y.Z.md`
-   - `CURRENT_ARCH = .anws/v{N}`
-
-**If any directory is missing**: stop and prompt user to run `anws update` or `/genesis` first.
-
----
-
-## Step 1: Upgrade Classification (Minor / Major)
+## CRITICAL execution order (cannot be weakened)
 
 > [!IMPORTANT]
-> Upgrade type is judged by AI and is not statically read from changelog.
-> **Patch level is no longer used**; only `Minor` and `Major` remain, because `/upgrade` is for deciding routing logic rather than expressing implementation granularity.
-
-Use the following classification rules:
-
-| Level | Classification Standard |
-|------|---------|
-| Minor | Changes can be completed within current version via `/change`, no need to create new architecture version |
-| Major | Version directory rule changes, core workflow protocol changes, architecture boundary changes, or requiring a new version carrier |
-
-### Mandatory Assessment Questions
-
-1. Does it change version directories or core path conventions?
-2. Does it change execution protocols across multiple workflows?
-3. Does it affect structural semantics of `01_PRD.md`, `02_ARCHITECTURE_OVERVIEW.md`, `03_ADR/`?
-4. Is it necessary to preserve old architecture docs as compatibility reference?
-
-**Decision logic**:
-- Affects local docs only, no new version needed → `Minor`
-- Requires new version carrier, changes architecture semantics or directory protocol → `Major`
+> Strict **Step 0 → 4**; **forbid** skipping changelog read, **forbid** choosing route before tiering, **forbid** bypassing human approval to edit `.anws/v{N}` from memory, **forbid** writing without reading the routed workflow.
 
 ---
 
-## Step 2: Impact Analysis and Routing Recommendation
+## Step 0: Locate upgrade inputs
 
-1. Read the following files under `CURRENT_ARCH` as needed:
-   - `01_PRD.md`
-   - `02_ARCHITECTURE_OVERVIEW.md`
-   - `03_ADR/*`
-   - `04_SYSTEM_DESIGN/*`
-   - `05A_TASKS.md` (if exists)
-   - `05B_VERIFICATION_PLAN.md` (if exists)
-2. Build mapping from "framework changes → business document nodes"
-3. Identify impacts in these three categories:
-   - **Path migration**: e.g. `.agent/` → `.agents/` or workflow directory location changes
-   - **Process migration**: e.g. new `/upgrade`, `anws update --check`
-   - **Protocol migration**: e.g. workflow-first principle, changelog dependency
-4. For each impact point, annotate:
-   - Affected file
-   - Affected section
-   - Reason for modification
-   - Whether AI inference fill is involved
-5. Generate **recommended route**:
-   - `Minor` → recommend `/change`
-   - `Major` → recommend `/genesis`
+### What to do
 
-> [!IMPORTANT]
-> This step outputs only "upgrade plan" and "routing recommendation"; **do not execute actual document writes**.
+1. List `.anws/changelog/`, pick the **latest** `vX.Y.Z.md`, set `LATEST_CHANGELOG`; **actually read it** (one-line path/summary in-session—no verbal guessing).  
+2. Scan `.anws/` for max `v{N}` → `CURRENT_ARCH = .anws/v{N}`.  
+3. If changelog missing/unreadable: stop; instruct `anws update` or `/genesis`.
+
+### Why
+
+No changelog → no upgrade fact base.
+
+### How to verify
+
+- Session names `LATEST_CHANGELOG` and `CURRENT_ARCH`; cites at least one change class from the file.
 
 ---
 
-## Step 3: Human Checkpoint 
+## Step 1: Classify upgrade (Minor / Major)
 
-> [!IMPORTANT]
-> No file writing is allowed without explicit user approval.
+### What to do
 
-You must show the user the following:
+Apply shipped `upgrade` rules (**Minor / Major only**): whether a **new architecture version** is needed, directory/multi-workflow protocol shifts, structural semantics of `01`/`02`/`03`, need to keep prior version as compatibility narrative. Record yes/no + one-line rationale each.
 
-```markdown
- Human Checkpoint — Upgrade Plan Confirmation
+### Why
 
-**Latest changelog**: `.anws/changelog/vX.Y.Z.md`
-**Current architecture version**: `.anws/v{N}`
-**Upgrade classification**: Minor / Major
-**Recommended route**: `/change` or `/genesis`
+Tier drives routing; patch-level nuance is out of scope here.
 
-## Affected Files
-- `.anws/v{N}/01_PRD.md` — reason: path convention changes
-- `.anws/v{N}/02_ARCHITECTURE_OVERVIEW.md` — reason: new update --check process
+### How to verify
 
-## Execution Strategy
-- Minor: enter `/change`, modify according to `/change` permission boundaries and checkpoints
-- Major: enter `/genesis`, create/evolve new version according to `/genesis` versioning rules
-
-## Risk Alerts
-- Which paragraphs require AI inference
-- Which business constants will be protected from modification
-
-Please confirm:  Approve and route /  Reject /  Adjust
-```
+- Explicit `Minor` or `Major` with evidence; no “tier unknown but here is forge.”
 
 ---
 
-## Step 4: Route to Target Workflow
+## Step 2: Impact analysis and routing recommendation
 
-### Case A: Minor → `/change`
+### What to do
 
-1. Next, you **must read** the native projection file of `/change` for current target
-2. Bring Step 2 impact analysis results into `/change`
-3. All subsequent modifications must comply with `/change` permission boundaries, human checkpoints, and CHANGELOG recording rules
-4. If `/change` assessment finds scope beyond its permission boundaries, terminate immediately and switch to `/genesis`
+1. Read from `CURRENT_ARCH` as needed: `01`, `02`, `03`, `04`, `05A`, `05B`.  
+2. Build “framework delta → business node” mapping; tag path / process / protocol migration classes.  
+3. Emit **recommended route**: Minor → **`/change`**; Major → **`/genesis`**.  
+4. **No business writes in this step**—plan and intended file touches only.
 
-### Case B: Major → `/genesis`
+### Why
 
-1. Next, you **must read** the native projection file of `/genesis` for current target
-2. Bring Step 2 impact analysis results into `/genesis` as new version evolution input
-3. Subsequent version copy, document evolution, and Manifest/ADR changes must follow `/genesis` version-management logic
+Keeps `/upgrade` decoupled from execution workflows.
 
-### AI Inference Fill Rules
+### How to verify
 
-If some paragraph requires AI contextual completion, add before that paragraph:
-
-```markdown
-> [!WARNING]
-> AI inference fill; human review required.
-```
-
-### Business Constants Protection Rules
-
-The following content must not be overwritten by framework upgrades:
-- Business domain terminology
-- Product goals
-- Business intent in user stories
-- Team-specific constraints
-- Custom system boundaries
+- Each impact row lists file, section/intent, and whether AI inference is likely.
 
 ---
 
-## Completion Report
+## Step 3: Human checkpoint
 
-After routing, output to user:
-- Upgrade level
-- Recommended route (`/change` or `/genesis`)
-- List of files planned to be impacted
-- Whether creating a new version is expected
-- Whether AI inference fill risk exists
-- Next workflow file that must be read
+### What to do
+
+Present the **functions** listed under **No injection** in CRITICAL concision. **No file writes** until explicit approval.
+
+### Why
+
+Human is the last gate for upgrade blast radius.
+
+### How to verify
+
+- User saw the full decision bundle; on reject, zero writes.
+
+---
+
+## Step 4: Route to target workflow
+
+### What to do
+
+- **Minor**: Read the mounted **`/change`** workflow (if using `templates_alpha` overlay, read the **same tree** `change.md`), feed Step 2 mapping; all subsequent edits obey `/change` permissions and signatures; if execution exceeds `/change`, stop and switch to `/genesis`.  
+- **Major**: Read **`/genesis`** (same overlay rule), feed Step 2 as new-version input; obey Copy & Evolve and versioning.  
+- For AI-filled non-mechanical text: prefix with **`> [!WARNING] AI-generated content—inferential; human review required.`** (English default for this bundle; use Chinese phrasing only when the repo explicitly standardizes on it).  
+- **Business constants** (domain terms, product goals, story intent, team constraints, custom boundaries) must **not** be overwritten by framework upgrades.
+
+### Why
+
+Write semantics belong to the routed workflow; `/upgrade` only hands off.
+
+### How to verify
+
+- Session states next workflow; after approval, that workflow’s read + gates are referenced.
+
+---
+
+## Step 5: Completion report
+
+### What to do
+
+Summarize: tier, route, planned files, whether a new `v{N}` is expected, inference risk, **which workflow file to read next**.
+
+### Why
+
+Auditable closure.
+
+### How to verify
+
+- Report includes all six items; no silent jumps.
 
 ---
 
 <completion_criteria>
-- Latest `.anws/changelog/vX.Y.Z.md` has been read
-- Upgrade classification completed
-- Recommended route output (`/change` / `/genesis`)
-- Upgrade plan shown and user approval obtained
-- Switched to reading target workflow before execution
-- Subsequent write operations are governed by target workflow specs
+- **Concision & layout**: all Steps have three subsections; execution order and tiering gates intact.  
+- Changelog actually read; `Minor`/`Major` consistent with routing.  
+- Step 3 approval/reject path correct; zero business writes before approval.  
+- Step 4 explicitly binds `/change` or `/genesis` and cites their rules; WARNING / business-constant rules stated.  
+- Step 5 report delivered.  
 </completion_criteria>

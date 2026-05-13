@@ -350,16 +350,19 @@ T{X.Y.Z}, T{X.Y.Z}, T{X.Y.Z}
 
 ---
 
+> [!IMPORTANT]
+> **sequential-thinking（编码前）判断规则**（§3.2 **不重述全文**）：
+>
+> - **无 CoT 模型** → **必须调用** `sequential-thinking` CLI
+> - **有 CoT 模型 + 简单任务**（步骤 < 5，无歧义）→ 用思考引导问题组织自然 CoT
+> - **有 CoT 模型 + 复杂任务**（需要多方案比较、修正前提）→ 调用 `sequential-thinking` CLI
+
+---
+
 #### 3.2 Think Before Code (编码前思考)
 
 > [!IMPORTANT]
-> **编码前必须先思考，思考方式基于模型能力和任务复杂度。**
-
-**核心判断规则**：
-
-- **无 CoT 模型** → **必须调用** `sequential-thinking` CLI
-- **有 CoT 模型 + 简单任务**（步骤 < 5，无歧义）→ 用思考引导问题组织自然 CoT
-- **有 CoT 模型 + 复杂任务**（需要多方案比较、修正前提）→ 调用 `sequential-thinking` CLI
+> **思考方式**：见上文 **sequential-thinking（编码前）判断规则**。须完成下列思考引导（逐项作答）。
 
 > **本节动机**：错误的理解导致返工，提前发现问题比事后修复便宜 10 倍。
 

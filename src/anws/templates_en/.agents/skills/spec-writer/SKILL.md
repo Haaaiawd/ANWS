@@ -1,108 +1,153 @@
 ---
 name: spec-writer
-description: Convert vague or high-level requirements into a rigorous Product Requirements Document (PRD). Suitable for scenarios where requirements are unclear, scope is too broad, or expression remains at the conceptual level.
+description: "[ALPHA] genesis Step 2: turn fuzzy or high-level needs into strict product requirement documents (PRDs); includes craft scaffolding, PRD spec contract, optional sub-agent shard orchestration, and Step completion signals. Use when requirements are vague, scope is too large, or expression stays conceptual."
 ---
 
-# Requirements Detective Manual
+# Requirements Detective Handbook
 
-> "The hardest part of software development is not how to build it, but precisely defining what should be built."
+> "The hardest part of building software isn't how to implement it—it's precisely defining what to implement."
 
-Your task is to **eliminate ambiguity**.
+Your job is to **eliminate ambiguity**.
 
-## Quick Start
+## [ALPHA] genesis Step 2 (scope and handoff)
 
-1. **Read requirements (mandatory)**: Read user requests and context; identify "feeling words" (e.g., "fast", "modern", "simple").
-2. **Deep thinking (critical)**: You **must** do 3-7 rounds of structured reasoning (depending on complexity):
-   * Extract User Stories (As a X, I want Y, so that Z)
-   * Identify ambiguity points
-   * Draft clarification questions
-3. **Follow-up clarification**: Ask users clarifying questions. **Do not continue without answers**.
-4. **Draft PRD (mandatory)**: Read `references/prd_template.md`, then create `.anws/v{N}/01_PRD.md`.
-5. **Ambiguity scan (mandatory)**: After drafting, run the "10-Dimension Ambiguity Scan" below. Fix issues in place or mark them as `[ASSUMPTION]`.
-6. **User Story quality gate (mandatory)**: Verify every User Story passes the checklist below.
+Compared with `templates/.agents/skills/spec-writer`, this template adds **[ALPHA]**-side **craft scaffolding**, **spec contract** (on-disk semantics), **sub-agent orchestration**, and **completion**. The normative force of **Execution checklist / Methodology / 10-dimension ambiguity scan / User Story quality gate** sections is **unchanged**—rules such as Socratic probing, **one question at a time**, the hard cap on `[NEEDS CLARIFICATION]`, Non-Goals, and the User Story gate **apply verbatim**.
 
-## Mandatory Steps
-Before creating PRD, you **must**:
-1. Extract at least 3 clear User Stories.
-2. Define at least 3 Non-Goals (explicitly what is **not** in scope).
-3. Clarify user "feeling words" (e.g., what exactly does "fast" mean? what does "modern" mean?).
-4. Create output files; **do not only print content in chat**.
+### Craft scaffolding (artifact skeleton)
 
-After creating PRD, you **must**:
-5. Execute the "10-Dimension Ambiguity Scan"; fix or tag all `Partial` / `Missing` items.
-6. Verify each User Story includes: priority / independently testable / involved systems / edge cases.
-7. Ensure `[NEEDS CLARIFICATION]` tag count <= 3 (hard limit). If exceeded, use reasonable defaults with `[ASSUMPTION]`.
+Before **Execution checklist** step 4 (writing `01_PRD.md`), the skeleton **must first** be in place; when filling content, **do not remove normative sections** from the template. Where there is no information, write **`[NOT APPLICABLE | reason]`** or **`[ASSUMPTION]`**—never leave blanks that pretend completeness.
 
-## Completion Checklist
-- [ ] PRD file created: `.anws/v{N}/01_PRD.md`
-- [ ] Includes User Stories, acceptance criteria, Non-Goals
-- [ ] Every requirement is testable and measurable
-- [ ] User has confirmed PRD
+| Artifact | Path | Requirement |
+|----------|------|---------------|
+| Version directory | `.anws/v{N}/` | `v{N}` must match host genesis / session convention; create on first round or explicitly reuse existing `v{N}`; silent fork forbidden. |
+| PRD | `.anws/v{N}/01_PRD.md` | **Single source of truth** for Step 2 output; content driven by `references/prd_template.md`; **forbidden** to replace on-disk artifact with long chat-only prose only. |
+| Template | `references/prd_template.md` | Read in full **before** drafting PRD; heading levels and mandatory sections follow the template; extra appendices allowed but cannot replace mandatory template sections. |
 
-## Methods and Tools
+**Readiness check (internal; may summarize for user):** `v{N}` chosen; this SKILL + `prd_template.md` read; enumerate at least 3 User Story drafts and ≥3 Non-Goals before expanding written PRD sections.
 
-### 1. Socratic follow-up
-* **User**: "I want it to be fast."
-* **You**: "Do you mean p99 under 100ms, or only optimistic UI updates?"
-* *Goal*: Convert adjectives into numbers and verifiable criteria.
+### Spec contract (PRD on-disk semantics)
+
+> [!IMPORTANT]
+> When folded into the genesis pipeline, PRD sections are treated as **assertable draft contracts** for downstream work (architecture, task breakdown, challenge) and must satisfy:
+>
+> - **Verifiable:** Any statement of "must / must not / SLA / user counts / compatibility" needs Given-When-Then, metrics, or enumerated options; otherwise it cannot be marked as implemented—only `[ASSUMPTION]` or move to Non-Goals.  
+> - **Traceable:** Every User Story carries `[REQ-XXX]`; terms and systems must be **internally consistent** with "Affected systems" below (when aligning to `02_ARCHITECTURE_OVERVIEW.md` downstream, no arbitrary renames).  
+> - **Ambiguity-bounded:** `[NEEDS CLARIFICATION]` **≤ 3** (hard limit); if exceeded, use defaults + `[ASSUMPTION: …]`; **forbidden** to re-ask generic defaults stated in this document's 10-dimension scan to pad counts.  
+> - **Value-traceable:** Every requirement aligns to user value in one sentence; Non-Goals and Goals are **mutually exclusive** with no empty "maybe won't do".  
+> - **Consistent:** The same fact is **not stated twice contradictorily** in summary vs detail; fixes use **atomic paragraph replacement**, not side-by-side conflicting wording.
+
+Challenge / downstream alignment: If excerpts from the PRD appear in reports or attachments, excerpts must carry **subsection anchors** or **stable headings from `01_PRD.md`**; do not cite only "see PRD".
+
+### Sub-agent orchestration (optional)
+
+When the host supports parallel sub-sessions:
+
+| Role | Responsibility |
+|------|----------------|
+| **Parent agent** | Choose `v{N}`, load user intent and context, merge structured blocks returned by sub-agents, **dedupe and pick best among same-topic answers**, maintain **single writer** for `.anws/v{N}/01_PRD.md`, run mandatory "10-dimension ambiguity scan" and User Story quality gate, then deliver for user confirmation. |
+| **Sub-agent** | Consumes bounded slices only—e.g. "generate clarification question batches only (with suggested answers)", "extract / rewrite User Stories only (still drafts)", "annotate dimension k of the 10-dimension table with Clear/Partial/Missing + patch suggestions", "rewrite feeling words into candidate metric lists only"; return **Markdown structured blocks + anchor suggestions**; do not assume access to parent-only context. |
+
+**Single writer:** Only **one** writer for `01_PRD.md` per genesis Step 2 round; sub-agents must not write that path without parent authorization.
+
+#### Handoff checklist (sub → parent)
+
+- [ ] State deliverable type (question list / Story draft / scan vector / feeling-word metric table) and **N/A dimensions** (one-line reason each).
+- [ ] Every item maps to a **subsection title or `[REQ-XXX]` placeholder** the PRD will use; if no anchor, mark "pending parent mount".
+- [ ] Do not introduce requirements conflicting with parent-declared Non-Goals; if conflict is possible, list "requires parent ruling".
+- [ ] Sub-agent stops at structured handoff; subsequent edits merged by parent.
+
+### Completion (genesis Step 2 done signal)
+
+Step 2 **must not be claimed complete** unless all of:
+
+| Gate | Condition |
+|------|-----------|
+| On-disk | `.anws/v{N}/01_PRD.md` exists and opens standalone; structure aligns with **mandatory sections** of `prd_template.md`. |
+| Content | Contains User Stories (pass quality gate), acceptance criteria, **≥3** Non-Goals; every requirement is testable, measurable, or explicitly assumed. |
+| Ambiguity | "10-dimension ambiguity scan" executed; every `Partial` / `Missing` fixed, `[ASSUMPTION]`-ized, or closed under hard-limit rules. |
+| Tags | `[NEEDS CLARIFICATION]` **≤ 3**; no Story has untracked feeling words unless rewritten or assumed away. |
+| Human | **User confirmed PRD** (or explicitly waived in writing logged as `[ASSUMPTION: stakeholder sign-off deferred]`); do not fake confirmation. |
+| Handoff | Parent delivered **short summary table** to user (goals / key REQ count / open clarifications / Non-Goals count / recommended reading order for next Step). |
+
+Failing any **hard** row above → Step 2 is **blocked / in_progress**; do not silently advance the pipeline into architecture drafting.
+
+---
+
+## Execution checklist (single source of order)
+
+Aligned with **craft scaffolding** and the **completion** table above; release is gated by **completion hard rows**—this section only sequences work (merges former Quick start / Mandatory steps / Completion checklist to avoid duplicate reading).
+
+1. **Read the request**: identify feeling words and hidden boundaries (mandatory).
+2. **Think deeply**: 3–7 rounds of structured reasoning (by complexity); produce User Story drafts, ambiguity, clarification questions (mandatory).
+3. **Probe for answers**: do not advance the main line until answers arrive (mandatory).
+4. **Before disk**: ≥3 User Stories, ≥3 Non-Goals, clarify feeling words; read `references/prd_template.md`, create `.anws/v{N}/01_PRD.md`—**do not** substitute chat for disk (mandatory).
+5. **After disk**: run the **10-dimension ambiguity scan** and close `Partial` / `Missing`; User Story quality gate; `[NEEDS CLARIFICATION]` ≤ 3 (mandatory).
+6. **Close**: satisfy **completion** hard rows + user sign-off on PRD (or logged waiver).
+
+## Methods and tools
+
+### 1. Socratic probing
+*   **User:** "I want it to be fast."
+*   **You:** "Does that mean p99 under 100ms? Or optimistic UI updates only?"
+*   *Goal:* Turn adjectives into numbers and verifiable criteria.
 
 ### 2. Context compression
-* **Input**: 500 lines of chat logs.
-* **Action**: Extract *User Stories*: "As a User, I want X, so that Y."
-* **Discard**: Premature implementation details (e.g., "use Redis").
+*   **Input:** 500-line chat log.
+*   **Action:** Extract *User Stories*—"As a User, I want X, so that Y."
+*   **Drop:** Premature implementation details (e.g. "use Redis").
 
-### 3. Non-Goal definition (draw the circle)
-* Explicitly define what we **will not do**.
-* *Why*: Prevent scope creep and endless "what about X?" follow-ups.
+### 3. Non-Goals (draw the circle)
+*   Explicitly define what we **do not do**.
+*   *Why:* Prevent scope creep and endless "what about X?" follow-ups.
 
-## Detective Rules
+## Detective rules
 
-1. **Contract first**: If it cannot be verified, do not write it into PRD.
-2. **Do not steal design work**: Describe *what to do*, not prematurely *how to do it*. Implementation belongs to architecture design stage.
-3. **User value first**: Every requirement must trace back to explicit user value.
+1.  **Contract first:** If it cannot be verified, do not put it in the PRD.
+2.  **Don't steal design work:** Describe *what* to do, not prematurely *how*. Implementation belongs in architecture.
+3.  **User value first:** Every requirement must trace to clear user value.
 
 ## Toolbox
-* `references/prd_template.md`: PRD template.
+*   `references/prd_template.md`: Product requirements template.
 
-## 10-Dimension Ambiguity Scan
+## 10-dimension ambiguity scan
 
-After drafting PRD, you **must** systematically scan the full document across these 10 dimensions. This replaces ad-hoc "anything else?" with a **repeatable, exhaustive** method.
+After drafting the PRD, you **must** scan the full text across these 10 dimensions. This replaces ad-hoc "anything else?" with a **repeatable, exhaustive** pass.
 
-For each dimension, mark status: `Clear`  / `Partial`  / `Missing` 
+For each dimension, mark status: `Clear` / `Partial` / `Missing`
 
 | # | Dimension | What to check | Status |
-|---|------|----------|:------:|
-| 1 | **Functional scope and behavior** | Core goals / success criteria / explicit exclusions / user role distinctions | |
-| 2 | **Domain and data model** | Entities, attributes, relationships / uniqueness rules / lifecycle and state transitions / data-scale assumptions | |
-| 3 | **Interaction and UX flow** | Key user paths / error, empty, loading states / accessibility and i18n | |
+|---|-----------|---------------|:------:|
+| 1 | **Functional scope and behavior** | Core goals / success criteria / explicit exclusions / user role distinction | |
+| 2 | **Domain and data model** | Entities, attributes, relationships / uniqueness rules / lifecycle and state transitions / data volume assumptions | |
+| 3 | **Interaction and UX flows** | Key user paths / error, empty, loading states / a11y and i18n | |
 | 4 | **Non-functional quality** | Performance / scalability / reliability / observability / security and privacy / compliance | |
-| 5 | **Integration and external dependencies** | External service failure modes / import-export formats / protocol version assumptions | |
-| 6 | **Edge cases and failure scenarios** | Negative scenarios / rate limits / concurrency conflict handling | |
-| 7 | **Constraints and trade-offs** | Technical constraints / explicit trade-off records / rejected alternatives | |
-| 8 | **Terminology consistency** | Standard glossary / synonym consistency across document | |
-| 9 | **Completion signals** | Are acceptance criteria testable? Is DoD measurable? | |
-| 10 | **Placeholders and fuzzy words** | TODO markers / unquantified adjectives (fast, scalable, secure, intuitive, robust) | |
+| 5 | **Integrations and externals** | External failure modes / import-export formats / protocol version assumptions | |
+| 6 | **Edge cases and failures** | Negative paths / rate limits / concurrent conflict handling | |
+| 7 | **Constraints and tradeoffs** | Technical constraints / explicit tradeoffs / rejected architecture options | |
+| 8 | **Terminology consistency** | Glossary / synonym unification across the doc | |
+| 9 | **Done signals** | Acceptance testable? / DoD quantifiable? | |
+| 10 | **Placeholders and vague words** | TODOs / unquantified adjectives (fast, scalable, secure, intuitive, robust) | |
 
-**Rules**:
-- For `Partial` or `Missing`, rank by **impact x uncertainty**, pick top **5** to ask users
-- **Ask one question at a time**; provide recommended answers; user may accept or customize
-- After user response, **atomically write** into corresponding PRD section; no contradictory text allowed
-- `[NEEDS CLARIFICATION]` hard limit **<= 3**; if still exceeded, use reasonable defaults with `[ASSUMPTION: ...]`
-- **Do not ask users** about these reasonable defaults: industry-standard data retention policies, standard web/mobile performance expectations, user-friendly fallback error messages, standard Session or OAuth2 auth
+**Rules:**
+- For `Partial` or `Missing`, sort by **impact × uncertainty**, ask user about top **5**
+- **One question at a time**; offer a suggested answer; user may accept or customize
+- After answers, **atomically write** the matching PRD section; no mutually contradictory text
+- `[NEEDS CLARIFICATION]` **hard cap ≤ 3**; if still over, use reasonable defaults + `[ASSUMPTION: ...]`
+- **Do not ask users to clarify these reasonable defaults:** industry-standard data retention, typical web/mobile performance expectations, friendly errors with fallbacks, standard Session or OAuth2 authentication
 
-## User Story Quality Gate
+## User Story quality gate
 
-Each User Story in PRD **must** pass the following before PRD is considered complete:
+Every User Story in the PRD **must** pass before the PRD is considered done:
 
-| Check Item | Requirement |
-|-------|------|
+| Check | Requirement |
+|-------|---------------|
 | **Unique ID** | Must include `[REQ-XXX]` for traceability |
-| **Priority** | Mark as P0 / P1 / P2, and P0 must be first |
-| **Independently testable** | Explain how the story can be demonstrated and validated **independently** |
-| **Involved systems** | List concrete system IDs (must align with `02_ARCHITECTURE_OVERVIEW.md`) |
-| **Acceptance criteria** | At least 1 Given-When-Then + at least 1 error scenario |
-| **Edge cases** | At least 1 edge condition identified |
-| **No fuzzy feeling words** | No unquantified adjectives (e.g., fast -> <100ms p99, scalable -> supports N users) |
-| **User value** | One sentence stating value to end users |
+| **Priority** | P0 / P1 / P2, P0 first |
+| **Independently testable** | How the story is **independently** demoed and verified |
+| **Affected systems** | Concrete system IDs (must align with `02_ARCHITECTURE_OVERVIEW.md`) |
+| **Acceptance criteria** | At least one Given-When-Then + at least one error path |
+| **Edge cases** | At least one boundary condition |
+| **No vague feeling words** | No unquantified adjectives (e.g. fast → <100ms p99; scalable → supports N users) |
+| **User value** | One-sentence end-user value |
 
-If any User Story fails, **fix it before delivering PRD**.
+If any User Story fails, **fix before delivering the PRD**.

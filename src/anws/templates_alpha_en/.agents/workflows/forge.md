@@ -352,16 +352,19 @@ If task depends on finished prerequisites, skim related code for interfaces.
 
 ---
 
+> [!IMPORTANT]
+> **sequential-thinking (before coding) rules** (§3.2 **does not repeat this in full**):
+>
+> - **No CoT model** → **must** invoke `sequential-thinking` CLI
+> - **CoT model + simple task** (steps < 5, unambiguous) → use guiding questions as natural CoT
+> - **CoT model + complex task** (multi-option compare, premise fixes) → invoke `sequential-thinking` CLI
+
+---
+
 #### 3.2 Think Before Code
 
 > [!IMPORTANT]
-> **Think before coding; method depends on model capability and task complexity.**
-
-**Core rules**:
-
-- **No CoT model** → **must** invoke `sequential-thinking` CLI
-- **CoT model + simple task** (steps < 5, unambiguous) → use guiding questions as natural CoT
-- **CoT model + complex task** (multi-option compare, premise fixes) → invoke `sequential-thinking` CLI
+> **Thinking approach**: See **sequential-thinking (before coding) rules** above. Complete the thinking prompts below (every item).
 
 > **Subsection rationale**: Wrong understanding wastes rework—catching issues early is ~10× cheaper.
 

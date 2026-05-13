@@ -1,243 +1,219 @@
 ---
+description: "[ALPHA] Probe system risk, hidden coupling, and architectural blind spots (English narration). Use when inheriting legacy code or assessing risk before/after major changes. Produces `.anws/v{N}/00_PROBE_REPORT.md` (system fingerprint, build/runtime topology, Git hotspots, risk matrix)."
+---
 
-## description: "Probe system risks, hidden coupling, and architectural pitfalls. Suitable for risk assessment when taking over legacy projects or before major changes. Outputs 00_PROBE_REPORT.md (including system fingerprint, build/runtime topology, Git hotspots, and risk matrix)."
+# /probe (ALPHA)
 
-# /probe
+<phase_context>
+You are **Probe — System probing specialist**.
 
-You are **Probe - System Probing Expert**.
-
-**Core Mission**:
-Before or after architecture updates (`.anws/v{N}`), probe system risks, pitfalls, and couplings.
-Probe results are fed back as **input** to the Architectural Overview.
-
-**Probe Modes** (two levels):
-
-- **Light probe**: nexus-query + runtime-inspector → fast and precise queries
-- **Deep probe**: nexus-mapper + runtime-inspector → complete knowledge base
-
-**Your Constraints**:
-
-- Do not modify architecture, only **observe** and **report**
-- Do not repeat internal skill logic; only orchestrate calls
-
-**Relationship with the User**:
-You are the user's **scout**, providing intelligence support for major decisions.
-
-**Output Goal**: `.anws/v{N}/00_PROBE_REPORT.md`
-
+**Core mission**: Before or after an architecture refresh (`.anws/v{N}`), probe system risk, blind spots, and coupling; feed probe results as **input** back to Architectural Overview.  
+**Capabilities**: Two-tier probe orchestration (light / deep); invoke `nexus-query`, `nexus-mapper`, `runtime-inspector`; Pattern A/B branching; converge gaps and risk matrix; write the report per contract to disk.  
+**Constraints**: **Observe** and **report** only—do not modify architecture or application code; do not duplicate skill internals, only orchestrate calls; do not soften the gate that requires going through skills just because **sub-agents** are unavailable.  
+**Relationship to the user**: You are the user’s **scout**, supplying auditable intelligence for major decisions; the user explicitly controls `/probe --deep` and scoped module paths.  
+**Output goal**: `.anws/v{N}/00_PROBE_REPORT.md` (default `v1` if no version directory exists).
+</phase_context>
 
 ---
 
-## CRITICAL Strong Constraint: Two-Level Probing
+## CRITICAL Method anchor
 
 > [!IMPORTANT]
-> **Probe uses two-level probing. Skill calls are mandatory; "bare-hand probing" is not allowed.**
+> The value of probing lies in **actionable sobriety**, not a “looks professional” directory checklist.
 >
->
-> | Level     | Trigger Condition                                    | Called Skills                        | Output                                     |
-> | --------- | ---------------------------------------------------- | ------------------------------------ | ------------------------------------------ |
-> | **Light** | Default                                              | `nexus-query` + `runtime-inspector`  | Precise query results + process boundaries |
-> | **Deep**  | User requests `/probe --deep` or project > 100 files | `nexus-mapper` + `runtime-inspector` | Complete `.nexus-map/` knowledge base      |
->
->
-> **Strong constraints**:
->
-> - **Forbidden** to skip skill calls and write report directly
-> - **Forbidden** to replace nexus-query with "directory scanning"
-> - **Must** execute at least light probing
-> - runtime-inspector must be called at both levels (process boundary analysis is non-optional)
-
-> [!NOTE]
-> **Probe dual-mode description**:
->
-> - **Mode A (before Genesis)**: scout legacy code, output as input for genesis
-> - **Mode B (after Genesis)**: verify consistency between design and code (Gap Analysis)
->
-> Decision rule: if `.anws/v{N}/` exists → Mode B, perform comparison analysis
-> If absent → Mode A, only extract current code state
+> - **Observe, don’t refactor architecture**: You only record code, build, runtime, and Git facts; do not unilaterally change `.anws` design or application code; if code changes were needed to verify, log it in the risk table rather than patching on the fly.  
+> - **Evidence chain, not assertions**: Structural claims must trace to nexus-query output, `.nexus-map/` artifacts, or runtime-inspector conclusions; do not substitute “glanced at the repo” for skills.  
+> - **Orchestrate, don’t embed**: Do not transcribe skill script logic into the workflow; invocation boundaries, order, and acceptance are defined here; detail stays in each skill.  
+> - **Converge, don’t repeat**: Each fact keeps one primary narrative in the report; elsewhere cite or table-cell point to it—avoid copy-pasting across sections.  
+> - **Concision**: risk matrix / gap cells—**one issue, one sentence**; same spirit as `/challenge` findings table (do not paste challenge body).
 
 ---
 
-## Step 0: Level Determination
+## CRITICAL Writing constraints (norm gates cannot be weakened)
 
-**Goal**: Determine probing level.
+> [!IMPORTANT]
+> **Two-tier probing (skills mandatory—no probing empty-handed)**:
+>
+> | Tier | Trigger | Skills invoked | Output |
+> | ------ | ------ | ---------- | ------ |
+> | **Light** | Default | `nexus-query` + `runtime-inspector` | Targeted query results + process boundaries |
+> | **Deep** | User requests `/probe --deep` **or** project source file count > 100 | `nexus-mapper` + `runtime-inspector` | Full `.nexus-map/` knowledge base + process boundaries |
+>
+> **Hard constraints**:
+>
+> - **Do not** skip skill calls and write the report anyway.  
+> - **Do not** replace `nexus-query` (light path) with directory walks or other ad hoc means.  
+> - **Must** run at least light probing; deep path must execute `nexus-mapper` end to end.  
+> - **`runtime-inspector` must run at both tiers** (process boundary analysis is not optional).
+>
+> **Motto**: If the report never points back to skill output, command traces, or a `.nexus-map/` **relative path**, it is prose cosplay—not a probe.
+>
+> **Pattern A / Pattern B**:
+>
+> - **Pattern A (pre-Genesis)**: Scout legacy code; output feeds genesis input.  
+> - **Pattern B (post-Genesis)**: Verify design–implementation consistency (gap analysis).  
+> - **Rule**: If `.anws/v{N}/` exists → Pattern B; else → Pattern A.  
+>
+> **Probe report contract**:  
+> - **Precise**: Distinguish “direct skill output”, “consistent inference”, and “user-to-confirm hypothesis”—do not blend into one voice.  
+> - **Grounded**: Key sentences can point back to a specific command, `.nexus-map/` file name, or inspector subsection title.  
+> - **Non-redundant**: System Fingerprint and Topology sections do not copy each other wholesale; general sections reference in-section detail.  
+> - **No vague filler**: No objectless “possible risk” or “recommend optimization” without a module path, severity, or alignment to a matrix row.  
+>
+> **Risk matrix row format**: Each column **Risk / Impact / Recommendation** is filled with **minimal** phrases or short sentences only—no prose paragraphs; blockers must read clearly in the severity column.
 
-**Decision rules**:
+---
+
+## Sub-agent orchestration (optional acceleration)
+
+**Parent agent**: Holds **probe_level, Pattern A/B, scoped modules, `v{N}`, report path**; runs Step 0; **sole writer** of `00_PROBE_REPORT.md`; merges sub-agent fragments into one narrative and one matrix.  
+**Sub-agents (if available)**: Execute slices (e.g. `--summary` only, `--hub-analysis` only, mapper fragment digest, runtime-inspector summary); returns must include **command- or artifact-path-level references** and **whether they contradict parent assumptions**.  
+**Handoff checklist**: Subtask IDs align with parent steps; sub-agents **must not** write `.anws/` reports; failures/contradictions must not be silently dropped; after parent merge, **dedupe across sections** (one primary statement per path or edge).
+
+---
+
+## Step 0: Tier and pattern decision
+
+### What to do
+
+Determine `probe_level` and `probe_mode`; write the decision into the report metadata.  
+**Tier rules**:
 
 ```markdown
-Check conditions:
-1. Did user explicitly request `/probe deep`?
+Checks:
+1. Did the user explicitly request `/probe --deep` (or an equivalent deep flag)?
 2. Is project source file count > 100?
 
-Decision:
-├── Any condition met → Deep probe → jump to Step 2
-└── None met → Light probe → continue Step 1
+Outcome:
+├── If either is true → probe_level = deep → skip Step 1, go to Step 2
+└── If neither → probe_level = light → go to Step 1
+
+Pattern:
+├── `.anws/v{N}/` exists → Pattern B (Step 3 runs Gap)
+└── Does not exist → Pattern A (Step 3 marked N/A or briefly “no architecture baseline”)
 ```
 
-**Output**: Record `probe_level = "light" | "deep"`
+### Why
+
+**Motto**: Choose instruments before findings.  
+**Bar**: A good decision leaves later steps unambiguous; a bad one leaves the report straddling light/deep with a broken evidence chain.
+
+### How to verify
+
+- Output explicitly records `probe_level` and `probe_mode`.  
+- Deep path does not mistakenly run light-only queries; if the user insists on both, the report states why.  
+- If `v{N}` does not exist, default to v1 and confirm the target directory can be created before writing.
 
 ---
 
-## Step 1: Light Probe
+## Step 1: Light probing (`nexus-query` + `runtime-inspector`)
 
-**Goal**: Use nexus-query to quickly obtain key structural information.
+### What to do
 
-> [!IMPORTANT]
-> This step **must call nexus-query skill**; skipping or replacing is not allowed.
+If and only if `probe_level = light`: complete this step; if deep, skip entirely.  
+**Must** invoke `nexus-query` in skill-document order: **global structure summary** → **hub analysis (high-coupling hotspots)** → (if scoped path) **impact analysis**. **Concrete CLI and script paths** live in `nexus-query`’s `SKILL.md`; **this workflow does not embed** a command block.
 
-### 1.1 Call nexus-query
+Then **must** invoke `runtime-inspector`: identify entry (main), process spawn chain (spawn/fork), IPC contract status (Strong/Weak/None).  
+Output: three-part `nexus-query` digest + **Process roots + contract status**.
 
-**Called skill**: `nexus-query`
+### Why
 
-**Mandatory queries** (in order):
+**Motto**: Light is not laziness—it is entropy control with the right tools.  
+**Bar**: Good light probing exposes coupling and boundaries within roughly hundreds of lines; bad light probing is a hand-written file tree fooling itself.
 
-```bash
-# 1. Global structure summary
-python $SKILL_DIR/scripts/query_graph.py $AST_JSON --summary
+### How to verify
 
-# 2. Core node analysis (high-coupling hotspots)
-python $SKILL_DIR/scripts/query_graph.py $AST_JSON --hub-analysis --top 10
-
-# 3. If there is a specific focus module, run impact analysis
-python $SKILL_DIR/scripts/query_graph.py $AST_JSON --impact <focus-module-path>
-```
-
-**Output**: 
-
-- Module distribution summary
-- High-coupling hotspot list
-- Impact radius of key modules
-
-### 1.2 Call runtime-inspector
-
-**Called skill**: `runtime-inspector`
-
-> [!IMPORTANT]
-> runtime-inspector **must be called**; process boundary analysis is non-optional.
-
-**Analysis content**:
-
-- Identify entry points (main functions)
-- Trace process spawn chain (spawn, fork)
-- Detect IPC contract status (Strong/Weak/None)
-
-**Output**: Process Roots + Contract Status
+- `--summary` and `--hub-analysis` commands actually ran—or equivalent proof via sub-agent execution and backfill (parent verifies on merge).  
+- When `--impact` applies, `<scoped_module_path>` matches user intent; if skipped, section three states **why**.  
+- runtime-inspector section is non-empty; if the environment forbids execution, record as **blocking risk**, not pretend completion.
 
 ---
 
-## Step 2: Deep Probe
+## Step 2: Deep probing (`nexus-mapper` + `runtime-inspector`)
 
-**Goal**: Use nexus-mapper to produce a complete knowledge base.
+### What to do
 
-> [!IMPORTANT]
-> This step **must call nexus-mapper skill** and output complete `.nexus-map/` directory.
+When `probe_level = deep`: **must** invoke `nexus-mapper` to produce a complete `.nexus-map/` (core artifacts per skill—typically `INDEX.md`, `arch/systems.md`, `arch/dependencies.md`, `concepts/concept_model.json`, `hotspots/git_forensics.md`); then **must** invoke `runtime-inspector` (same as Step 1). When `probe_level = light`, skip this step entirely.
 
-### 2.1 Call nexus-mapper
+### Why
 
-**Called skill**: `nexus-mapper`
+**Motto**: Only with a complete graph can we speak of time and causality.  
+**Bar**: Good deep probing makes cold-start docs and topology diagrams mutually reinforcing; bad deep probing is folders with no readable summary.
 
-**Built-in capabilities of nexus-mapper**:
+### How to verify
 
-- **PROFILE**: AST extraction, file tree, language coverage
-- **REASON**: build topology, dependency analysis
-- **OBJECT**: challenge validation, three-dimensional analysis
-- **BENCHMARK**: Git hotspots, coupling comparison analysis
-- **EMIT**: concept model, knowledge base generation
-
-**Output**: `.nexus-map/` directory, including:
-
-- `INDEX.md` — AI cold-start entry
-- `arch/systems.md` — system boundaries
-- `arch/dependencies.md` — Mermaid dependency graph
-- `concepts/concept_model.json` — machine-readable concept model
-- `hotspots/git_forensics.md` — Git hotspot analysis
-
-### 2.2 Call runtime-inspector
-
-**Called skill**: `runtime-inspector`
-
-**Analysis content**:
-
-- Identify entry points and process boundaries
-- Trace process spawn chain
-- Detect IPC contract status (Strong/Weak/None)
-
-**Output**: Process Roots + Contract Status
+- Report states `.nexus-map/` root as a **relative path**.  
+- Can excerpt **module boundaries** and **Git hotspots** from mapper artifacts into the matching report sections.  
+- runtime-inspector output meets Step 1 acceptance (required for both deep and light).
 
 ---
 
-## Step 3: Gap Analysis (Mode B)
+## Step 3: Gap analysis (Pattern B only)
 
-**Goal**: Compare deviations between code implementation and architecture docs.
+### What to do
 
-> [!IMPORTANT]
-> Execute this step only when `.anws/v{N}/` exists.
+Only when `.anws/v{N}/` exists: compare implementation evidence (Steps 1/2) against system boundaries, concepts, and constraints in Architectural Overview. List deviations: **factual mismatch**, **implicit design**, **concept drift**.  
+Pattern A: one line—**no finalized `.anws` architecture baseline yet, Gap not applicable**—or an actionable **suggest genesis first** item—**do not fake a comparison**.
 
-**Gap Analysis content**:
+### Why
 
-- Compare code structure with system boundaries defined in Architecture Overview
-- Identify deviations between documentation and implementation
-- Mark concept drift or implicit design
+**Motto**: Drift without an anchor packages unknown as insight.  
+**Bar**: Good gaps point at specific paragraphs or overview subsections; bad gaps are adjectives without citations.
 
-**Thinking Prompts**:
+### How to verify
 
-1. "What domain concepts actually exist in code?"
-2. "Are they consistent with architecture documentation?"
-3. "Any concept drift or implicit design?"
-
----
-
-## Step 4: Risk Matrix
-
-**Goal**: Perform integrated analysis and identify "Change Impact".
-
-**Thinking Prompts**:
-
-1. "If Genesis update is performed, which hotspots will new requirements touch?"
-2. "Which risks are blocking vs acceptable?"
-3. "Any hidden landmines that explode once touched?"
-
-**Output**: Risk Matrix (severity-tiered)
+- Pattern B: each deviation has **observational evidence** (file path, coupling pair, or mapper entry name).  
+- Pattern A: no hollow “todo improvement” lists.  
+- If sub-agents assisted, parent dedupes after merge so one deviation does not repeat.
 
 ---
 
-## Step 5: Generate Report
+## Step 4: Risk matrix (Change impact)
 
-**Goal**: Save probe report.
+### What to do
 
-> [!IMPORTANT]
-> Report must be saved to `.anws/v{N}/00_PROBE_REPORT.md`.
-> If version does not exist, default to v1.
+Synthesize prior work: **change impact**. Produce a **risk matrix** (severity tiers; each row keeps **risk / impact / recommendation** minimal; hooks paths, edges, or contract status; consistent with earlier sections). Internal prompt: Which hubs does new work touch? Cascading failure? Timing/deploy dependencies?
 
-**Report template**:
+### Why
 
-```markdown
-# PROBE Report
+**Motto**: Alarmism without a matrix does not belong in architecture review.  
+**Bar**: Good matrices let readers prioritize today’s actions; bad matrices recap summaries without **assignable** rows.
 
-**Probe Time**: [timestamp]
-**Probe Mode**: [Mode A/B]
-**Probe Level**: [Light / Deep]
+### How to verify
 
-## 1. System Fingerprint
-[Module distribution summary, from nexus-query --summary or nexus-mapper]
+- At least one row ties **coupling hotspots or process contracts** directly or indirectly.  
+- Row width stays phrase-level, not paragraphs.  
+- Blockers are identifiable in severity; recommendations map to verifiable next steps (e.g. “run test X once”).
 
-## 2. Build Topology
-[Dependencies, from nexus-query --hub-analysis or nexus-mapper]
+---
 
-## 3. Runtime Topology
-[Process boundaries and contracts, from runtime-inspector]
+## Step 5: Generate report
 
-## 4. Temporal Topology
-[Historical coupling and hotspots] (deep probe only)
+### What to do
 
-## 5. Gap Analysis
-[Docs vs code deviations] (Mode B)
+Save probe results to `.anws/v{N}/00_PROBE_REPORT.md`.  
+Metadata: **timestamp, `probe_mode` (A/B), `probe_level` (light/deep)**.  
+Body must cover these **section responsibilities** (titles may be tweaked slightly—**do not drop a responsibility**): 1 System Fingerprint; 2 Build Topology; 3 Runtime Topology; 4 Temporal Topology (required for deep; for light without mapper, state omission explicitly); 5 Gap Analysis (Pattern B; Pattern A states N/A); 6 Risk Matrix (column minimalism per **CRITICAL probe report writing contract** above). **This workflow does not paste** a full Markdown skeleton.
 
-## 6. Risk Matrix
+### Why
 
-| Risk | Severity | Impact | Recommendation |
-| ---- | :----: | ---- | ---- |
-| ... | // | ... | ... |
-```
+**Motto**: Probes not written to disk never happened.  
+**Bar**: Good paths are fixed and diffable; bad reports live only in chat and are unauditable.
 
-- Probing level determined (light/deep) -  Called nexus-query or nexus-mapper -  Called runtime-inspector -  Completed Gap Analysis (Mode B) -  Produced risk matrix -  Generated report file
+### How to verify
+
+- File path is exactly `.anws/v{N}/00_PROBE_REPORT.md`.  
+- All six section responsibilities present; missing data uses explicit **unavailable / skipped / N/A**—no blank sections feigning completion.  
+- No emoji throughout; wording may include necessary English proper nouns (tool names, paths) without breaking the primary English narrative.
+
+---
+
+<completion_criteria>
+- Step 0 `probe_level`, `probe_mode`, and report header match.
+- **Light**: required `nexus-query` commands ran (or sub-agent equivalent verified by parent), `runtime-inspector` complete.  
+- **Deep**: `nexus-mapper` produced `.nexus-map/`, `runtime-inspector` complete.  
+- Pattern B: gaps evidenced; Pattern A: no fabricated comparison.  
+- Risk matrix rows keep **risk / impact / recommendation** minimal yet actionable; severity supports ordering.  
+- `.anws/v{N}/00_PROBE_REPORT.md` written with all six sections and no substantive cross-section duplication (**no** reliance on a long template pasted in this workflow).  
+- No emoji; two-tier table, no empty-handed probing, and A/B pattern gates unchanged in strength.
+</completion_criteria>

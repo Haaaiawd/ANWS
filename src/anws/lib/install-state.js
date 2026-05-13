@@ -63,6 +63,17 @@ function dedupeTargets(targets) {
   return Array.from(map.values()).sort((a, b) => a.targetId.localeCompare(b.targetId));
 }
 
+function normalizeTemplateLocale(value) {
+  if (value == null || value === '') {
+    return 'zh';
+  }
+  const v = String(value).toLowerCase();
+  if (v === 'zh' || v === 'en') {
+    return v;
+  }
+  throw new Error('Invalid install-lock: templateLocale must be "zh" or "en"');
+}
+
 function normalizeInstallLock(input) {
   const source = ensureObject(input, 'install-lock');
   const schemaVersion = source.schemaVersion ?? source.lockVersion ?? INSTALL_LOCK_VERSION;
@@ -80,23 +91,26 @@ function normalizeInstallLock(input) {
         failedTargets: Array.from(new Set(ensureArray(source.lastUpdateSummary.failedTargets || [], 'lastUpdateSummary.failedTargets'))),
         updatedAt: ensureString(source.lastUpdateSummary.updatedAt, 'lastUpdateSummary.updatedAt')
       };
+  const templateLocale = normalizeTemplateLocale(source.templateLocale);
 
   return {
     schemaVersion,
     cliVersion,
     generatedAt,
     targets,
-    lastUpdateSummary
+    lastUpdateSummary,
+    templateLocale
   };
 }
 
-function createInstallLock({ cliVersion, generatedAt, targets = [], lastUpdateSummary = null }) {
+function createInstallLock({ cliVersion, generatedAt, targets = [], lastUpdateSummary = null, templateLocale }) {
   return normalizeInstallLock({
     schemaVersion: INSTALL_LOCK_VERSION,
     cliVersion,
     generatedAt,
     targets,
-    lastUpdateSummary
+    lastUpdateSummary,
+    templateLocale
   });
 }
 
@@ -201,6 +215,7 @@ module.exports = {
   getInstallLockPath,
   normalizeInstallLock,
   normalizeTargetInstallation,
+  normalizeTemplateLocale,
   readInstallLock,
   summarizeTargetState,
   writeInstallLock

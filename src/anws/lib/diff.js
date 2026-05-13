@@ -3,7 +3,7 @@
 const fs = require('node:fs/promises');
 const path = require('node:path');
 const { c } = require('./output');
-const { TEMPLATE_ROOT } = require('./resources');
+const { resolveCanonicalPath } = require('./resources');
 
 async function pathExists(targetPath) {
   return fs.access(targetPath).then(() => true).catch(() => false);
@@ -128,9 +128,11 @@ async function collectManagedFileDiffs({
   projectionEntries = [],
   srcAgents,
   shouldWriteRootAgents,
-  agentsUpdatePlan = null
+  agentsUpdatePlan = null,
+  resolveCanonicalPath: resolveCanonicalPathFn = null
 }) {
   const results = [];
+  const resolveSrc = resolveCanonicalPathFn || ((rel) => resolveCanonicalPath(rel, 'zh'));
   const normalizedProjectionEntries = projectionEntries.length > 0
     ? projectionEntries
     : projectionPlan.flatMap((item) => item.projectionEntries || []);
@@ -165,7 +167,7 @@ async function collectManagedFileDiffs({
         };
     const srcPath = rel === 'AGENTS.md'
       ? srcAgents
-      : path.join(TEMPLATE_ROOT, entry.source);
+      : resolveSrc(entry.source);
 
     if (rel !== 'AGENTS.md' && !(await pathExists(srcPath))) {
       throw new Error(

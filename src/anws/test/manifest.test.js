@@ -96,6 +96,11 @@ test('resource registry exposes workflows and skills', () => {
   assert(skills.some((item) => item.id === 'code-reviewer'));
   assert(skills.some((item) => item.id === 'craft-authoring'));
   assert(skills.some((item) => item.id === 'output-contract'));
+  assert(skills.some((item) => item.id === 'craft-authoring-bundle-policy'));
+  assert(skills.some((item) => item.id === 'craft-authoring-prompt-quality-rubric'));
+  assert(skills.some((item) => item.id === 'craft-authoring-scorecard-template'));
+  assert(skills.some((item) => item.id === 'nexus-query'));
+  assert(skills.some((item) => item.id === 'nexus-query-extract-ast'));
 });
 
 test('all supported targets expose the expected projection shapes', () => {

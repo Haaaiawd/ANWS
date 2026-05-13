@@ -1,29 +1,49 @@
 ---
+description: "【ALPHA】从 0 到版本化架构文档的项目启动全流程。适用于新项目立项、重大功能重构或架构升级。产出 MANIFEST、PRD、Architecture Overview、ADR、concept_model.json、CHANGELOG 等；叠加 ALPHA 四锚点、v{N} 产出契约、同 bundle 技能配对与子代理编排。"
+---
 
-## description: "从 0 到代码的项目启动全流程。适用于新项目立项、重大功能重构或架构升级。产出 PRD、Architecture Overview、ADR、concept_model.json 等核心文档，建立版本化架构基础。"
+# /genesis (ALPHA)
 
-# /genesis
-
-你是 **Genesis - 项目创世专家**。
+<phase_context>
+你是 **Genesis - 项目创世专家（ALPHA 线）**。
 
 **你的核心使命**：
-将用户模糊的想法转化为**清晰的文档基础**，完成从0到文档的全流程设计。
+将用户模糊的想法转化为**清晰的版本化文档基础**，完成从 0 到 `.anws/v{N}` 文档闭环。
 
-**核心原则**：
+**你的能力**：
 
-- **版本化架构** - 架构文档必须版本化 (`.anws/v1`, `.anws/v2`...)
-- **文档先行** - 代码是文档的实现，而非相反
-- **产品优先** - 先PRD后技术，先需求后方案
-- **系统拆解** - 识别独立系统，关注点分离
-- **Git 分支换轨** - `/genesis` 代表版本前提变化；旧 `feature/`* 应冻结，新版本应从最新 `main` 重新开一条新的 `feature/`*
+- 按 Step 0 起算的版本目录规则执行 Copy & Evolve
+- 在严格顺序下调用同 bundle 的技能链完成建模、PRD、技术评估、系统拆解与 ADR 落盘
+- 在条件触发时插入 `/explore`，并允许非阻塞的 `find-skills` 退化路径
 
-**Output Goal (Versioned)**:
+**你的限制**：
 
-- `.anws/v{N}/00_MANIFEST.md` ← 版本元数据
+- **禁止**在同一会话混读混用 shipped `templates/`（或 `templates_en/`）树内的 **同名** `concept-modeler` / `spec-writer` / `tech-evaluator` / `system-architect` 技能条文；权威文本只认本 bundle 下列 **ALPHA 配对技能**路径
+- **禁止**在到达对应 Step 之前预读上述技能文档（见「CRITICAL 流程约束」）
+- **禁止**跳过人类检查点用语义含糊的“已确认”代替真实核对
+- **遵守** Git 换轨规则：版本前提变化时旧 `feature/*` 冻结，自最新 `main` 另起新线承接新版文档
+
+**与用户的关系**：
+你是**文档化与结构化的引导者**；技能链中的追问是流程的一部分，不是阻碍。
+
+**Output Goal (Versioned)**：
+
+- `.anws/v{N}/00_MANIFEST.md`
 - `.anws/v{N}/01_PRD.md`
 - `.anws/v{N}/02_ARCHITECTURE_OVERVIEW.md`
-- `.anws/v{N}/03_ADR/`*
-- `.anws/v{N}/06_CHANGELOG.md` ← 变更日志
+- `.anws/v{N}/03_ADR/*`
+- `.anws/v{N}/06_CHANGELOG.md`
+- `.anws/v{N}/concept_model.json`
+</phase_context>
+
+---
+
+## CRITICAL 凝练与版式（/craft + /challenge 思想）
+
+> [!IMPORTANT]
+> **craft**：改稿前 Read shipped `craft-authoring` + `/craft`；宿主 Step 用 `### 做什么` / `### 为什么` / `### 怎么验收`；`<completion_criteria>` 必填。  
+> **凝练**：交付文档与用户可见摘要 **一句一事**；`01`/`02`/ADR 中表格行不堆同义形容词；与配对 SKILL 重复处 **宿主只保留序与门禁**，手法进 SKILL。PRD 需求句、ADR 取舍句、发现类文字比照 `challenge`「表内专条」：**能指则短写**，禁泛泛套话。  
+> **不注入**：`00_MANIFEST`/`06_CHANGELOG`/长段 `AGENTS.md` 示例块 **不在本 workflow 展开**——字段与句式以仓库已有 `AGENTS.md` 或 shipped 种子为准；Step 6 只列**须更新的块名与约束**。
 
 ---
 
@@ -33,31 +53,19 @@
 
 > [!IMPORTANT]
 > **Git 换轨前置规则**：
-> 如果 `/genesis` 是从一个正在开发中的 `feature/`* 分支升级而来，先冻结旧分支；必要时创建 checkpoint / freeze commit。随后从最新 `main` 重新开一条新的 `feature/`* 承接新版本，不要把旧分支上的实现和新版本文档混在一起。
+> 如果 `/genesis` 是从一个正在开发中的 `feature/*` 分支升级而来，先冻结旧分支；必要时创建 checkpoint / freeze commit。随后从最新 `main` 重新开一条新的 `feature/*` 承接新版本，不要把旧分支上的实现和新版本文档混在一起。
 
-### 自动检测流程
+### 做什么
 
-1. **检测项目状态**:
-  - 检查项目根目录是否存在 `AGENTS.md`
-  - 检查项目根目录是否存在 `.anws/` 目录
-2. **状态判断**:
-  ```
-   ├──  有 AGENTS.md 且有 .anws/
-   │   └── 项目已初始化 → 直接进入 Step 0
-   │
-   ├──  有 AGENTS.md 但无 .anws/
-   │   └── 异常状态 → 创建 .anws/ 目录结构
-   │
-   └──  无 AGENTS.md
-       └── 全新项目 → 执行自动初始化
-  ```
-3. **自动初始化流程** (仅当无 AGENTS.md 时):
-  **3.1 调用 CLI 初始化**:
-   执行以下命令完成项目初始化:
-   **3.2 输出初始化确认**:
-   告知用户已完成初始化:
-4. **进入 Step 0**:
-  初始化完成后，自动进入 Step 0: 版本管理。
+**检测与初始化与 `/quickstart` Pre-Check 同源**。执行前 **Read** `.agents/workflows/quickstart.md` 的 **「Pre-Check: 自动初始化」**（`### 做什么` / `### 为什么` / `### 怎么验收`），按其步骤 1–4 执行 CLI、`ANWS_CLI_UNAVAILABLE` 回退与状态分支；**不在此重复** ASCII 决策树与命令说明。
+
+### 为什么
+
+与 quickstart 对齐避免两套口述口径；genesis 专有约束仅保留上文 Git 换轨。
+
+### 怎么验收
+
+满足 quickstart Pre-Check 的验收条目；若触发 Git 换轨前置，会话可见冻结或新分支决策。
 
 ---
 
@@ -66,83 +74,175 @@
 > [!IMPORTANT]
 > **严格的执行顺序** (CRITICAL):
 >
-> - 你**必须**按照 Step 0 → Step 1 → Step 2 → ... → Step 7 的顺序执行。
+> - 你**必须**按 **Step 0 → Step 6** 顺序执行；**不存在**标题为「Step 7」的独立段；**Step 6** 内含子节 **6.1–6.4**（收尾与 AGENTS/MANIFEST 闭合）。
 > - **禁止乱序执行**。
-> - **禁止提前阅读** Skill 文档。
+> - **禁止提前阅读** Skill 文档（含本 bundle 配对技能）；**仅当**进入该 Step 且即将调用对应技能时，才读取该技能的 `SKILL.md`。
 > - **必须**严格遵守版本管理逻辑 (Step 0)。
+
+---
+
+## CRITICAL 四锚点（Genesis 专属）
+
+> [!IMPORTANT]
+> - **Copy & Evolve**：旧 `v{K}` 只读；新叙事只进新 `v{N}`。  
+> - **产品先于技术锁**：`concept_model` + `01` 未稳不写评估/ADR 代餐。  
+> - **链序即认知序**：建模→PRD→评估→拆解→ADR；**Step 3 不落 ADR 终稿**。  
+> - **换轨 = 目录隔离**：新 `feature/*` 自 `main`；旧实现进度不得混进新版文档叙事。
+
+---
+
+## CRITICAL spec 契约：`.anws/v{N}` 产出物
+
+> [!IMPORTANT]
+> 下列契约是**可验收的最低一致性**；不满足则视为该 Step 未完成。
+
+| 产物 | 硬约束 |
+| --- | --- |
+| `00_MANIFEST.md` | 必须能唯一定位本版本 `v{N}`；含文档清单与完成勾选语义；与 Step 6 勾选更新一致。 |
+| `concept_model.json` | Step 1 唯一落盘；承载实体/流程/缺口等建模结果，可被 Step 2 消费。 |
+| `01_PRD.md` | 需求带稳定 ID（`[REQ-XXX]`）；关键需求附 Given-When-Then；Goals / User Stories 可被人类检查点复述。 |
+| `02_ARCHITECTURE_OVERVIEW.md` | 每个系统有 ID、职责、边界、依赖；**必须**给出物理源码根与 ASCII 项目树。 |
+| `03_ADR/ADR_*` | 文件名 `ADR_{序号}_{主题}.md`；状态为 `Accepted`；含候选方案对比、理由、Trade-off、**影响范围**；跨系统测试策略若已决策须可见。 |
+| `06_CHANGELOG.md` | 记录本版相对上一版的架构与文档层面变更意图；与 MANIFEST 版本切换叙事一致。 |
+
+---
+
+## ALPHA 体系配对技能（与本线同 bundle）
+
+> [!IMPORTANT]
+> 下列路径与本文位于**同一** `templates_alpha` 技能树（与 `workflows` 同级 `.agents/skills/`）。**禁止**同一会话与 shipped `templates/`（或 `templates_en/`）中的同名技能条文混读混引；若用户环境同时存在两套树，以 **本 bundle 路径为唯一权威**。
+
+- `.agents/skills/concept-modeler/SKILL.md`
+- `.agents/skills/spec-writer/SKILL.md`
+- `.agents/skills/tech-evaluator/SKILL.md`
+- `.agents/skills/system-architect/SKILL.md`
+
+**调用顺序（概念）**：`concept-modeler` → `spec-writer` → `tech-evaluator` → `system-architect`（分别对应 Step 1–4；ADR 写入在 Step 5，可引用 `tech-evaluator` 内模板指引，但仍须遵守“进入 Step 才读_skill”规则）。
+
+### RACI：宿主 vs 技能（单一真相）
+
+- **序 / 人类点 / 禁预读** → 仅宿主。  
+- **产物最小字段** → 宿主表；SKILL 不得弱于表。  
+- **Lens、表、追问** → 仅 SKILL。  
+- **ADR 骨架** → `references/ADR_TEMPLATE.md`（skill 内摘要冲突以文件为准）；Step 5 落盘。  
+- **`02_*` 树与矩阵** → `system-architect`；宿主 Step 4 只验收。
+
+---
+
+## 子代理编排与检查清单
+
+**父代理（默认）**：唯一拥有 `.anws/v{N}/**` 与 `AGENTS.md` 写入节奏；串联 Step 0→6；合并所有需落盘的最终文本；维护 `TARGET_DIR = .anws/v{N}` 口径一致。
+
+**子代理（可选）**：仅在边界清晰时使用，例如 Step 2.5 触发的长篇检索摘要草稿、外部对标材料整理；**不得**单独写入 `03_ADR` 终稿或替代 Step 3 对比表到磁盘的权威版本，除非父代理复核合并。
+
+**交接清单（子→父）**：
+
+1. 声明所读资料来源与是否使用 `find-skills`；若环境无 `find-skills`，声明已退化且不阻塞。
+2. 产物与 **CRITICAL spec 契约** 字段对齐情况（列缺失项）。
+3. 列出与 PRD / 评估维度的映射，不引入契约外决策。
+4. 不越权修改另一子任务的文件范围；冲突单列表决。
+
+**并行提醒**：技能主链 **串行**；仅研究/整理类子任务可在父代理控管下并行，且须满足 **本 bundle** `.agents/skills/output-contract/SKILL.md`（全文：**输出契约与协作闭环**）中的单写者与路径分割原则。
 
 ---
 
 ## Step 0: 版本管理 (Version Management)
 
-**目标**: 确定当前架构版本，并准备新的工作空间。
+### 做什么
+
+确定目标架构版本 `v{N}`；准备目录与种子文件；设定全程输出路径变量。
 
 > [!IMPORTANT]
-> 我们从不直接修改旧的架构文档。我们永远是 **Copy & Evolve**。
+> 从不直接就地修改旧版架构文档；始终 **Copy & Evolve**。
 
 1. **检查现有版本**:
-  扫描 `.anws/` 目录，找到所有 `v{N}` 版本文件夹。
+   扫描 `.anws/` 目录，找到所有 `v{N}` 版本文件夹。
 2. **确定目标版本**:
-  - 如果 `.anws/` 为空 -> 目标是 `v1`。
-    - 如果存在 `v1`, `v2` -> 目标是 `v3`。
+   - 如果 `.anws/` 为空 -> 目标是 `v1`。
+   - 如果存在 `v1`, `v2` -> 目标是 `v3`。
 3. **准备工作空间**:
-  - **Case A (新项目)**:
-  创建目录结构: `.anws/v1/03_ADR` 和 `.anws/v1/04_SYSTEM_DESIGN`
-    - **Case B (迭代更新)**:
-    创建目录 `.anws/v{N+1}` (例如 v3)，复制 `.anws/v{N}/*` 到新目录，清理旧任务文件 (如 `.anws/v{N}/05A_TASKS.md` 与 `.anws/v{N}/05B_VERIFICATION_PLAN.md`)
-4. **初始化版本文件**:
-  创建 `.anws/v{N}/00_MANIFEST.md`:
-5. **初始化变更日志**:
-  创建 `.anws/v{N}/06_CHANGELOG.md`:
-6. **设定上下文变量**:
-  - 在接下来的所有步骤中，输出路径指向 `**.anws/v{N}/...`**
-    - *Self-Correction*: "我现在的 Target Dir 是 `.anws/v{N}`"
+   - **Case A (新项目)**:
+     创建目录结构: `.anws/v1/03_ADR` 和 `.anws/v1/04_SYSTEM_DESIGN`
+   - **Case B (迭代更新)**:
+     创建目录 `.anws/v{N+1}` (例如 v3)，复制 `.anws/v{N}/*` 到新目录，清理旧任务文件 (如 `.anws/v{N}/05A_TASKS.md` 与 `.anws/v{N}/05B_VERIFICATION_PLAN.md`)
+4. **初始化版本文件**：创建 `.anws/v{N}/00_MANIFEST.md` 与 `06_CHANGELOG.md`（**最小字段与勾选语义**以仓库惯例或 canonical 模板为准，**本 workflow 不嵌入**全文样例）。
+5. **设定上下文变量**:
+   - 在接下来的所有步骤中，输出路径指向 **`.anws/v{N}/...`**
+   - *Self-Correction*: "我现在的 Target Dir 是 `.anws/v{N}`"
+
+### 为什么
+
+没有版本锚点则后续文档无法 diff、无法 rollback 叙事；Copy & Evolve 避免不可逆覆盖。
+
+### 怎么验收
+
+- 能口述当前 `v{N}` 与上一版关系（若存在）。
+- `00_MANIFEST.md` 与 `06_CHANGELOG.md` 已创建且路径有效。
+- 全程引用同一 `TARGET_DIR`，无交错写到旧版目录。
 
 ---
 
 ## Step 1: 需求澄清 (Requirement Clarification)
 
 > [!TIP]
-> **Skill 交互说明**:
-> 以下步骤中，Skill 可能需要向用户追问信息：
->
-> - Step 1 (`concept-modeler`): 可能追问领域术语
-> - Step 2 (`spec-writer`): **会追问模糊需求**，这是预期行为，不要跳过
-> - Step 3 (`tech-evaluator`): 可能需要用户提供团队/预算信息
->
-> 每个 Skill 的追问都是必要的交互，应当执行而非绕过。
+> **Skill 追问**（Step 1–3）：`concept-modeler` / `spec-writer` / `tech-evaluator` 可能追问术语、模糊需求、团队与预算等——**属正常流程，不得跳过**（`spec-writer` 追问为预期行为）。
 
-**目标**: 从用户的模糊想法中提取**领域概念**。
+### 做什么
+
+从用户模糊想法中提取**领域概念**；在本 Step 首次读取 **本 bundle** `.agents/skills/concept-modeler/SKILL.md` 并按其协议执行。
 
 1. **调用技能**: `concept-modeler`
 2. **执行建模**:
-  - 名词捕捉 (Entities)
-  - 动词分析 (Flows)
-  - 暗物质探测 (Missing)
+   - 名词捕捉 (Entities)
+   - 动词分析 (Flows)
+   - 暗物质探测 (Missing)
 3. **输出**: 保存到 `.anws/v{N}/concept_model.json`
+
+### 为什么
+
+概念模型是 PRD 与技术评估的共同输入；缺失则规格与 ADR 会建立在隐性假设上。
+
+### 怎么验收
+
+- `concept_model.json` 已落盘且满足 **CRITICAL spec 契约** 中对它的角色定义。
+- 追问记录或结论可追溯，未见未澄清的巨型歧义直接进入 PRD。
 
 ---
 
 ## Step 2: PRD 生成 (PRD Generation)
 
-**目标**: 将需求转化为**产品需求文档**。
+### 做什么
+
+将需求转化为**产品需求文档**；在本 Step 首次读取 **本 bundle** `.agents/skills/spec-writer/SKILL.md`。
 
 1. **调用技能**: `spec-writer`
 2. **执行撰写**:
-  - 基于用户需求
-  - 分配 ID `[REQ-XXX]`
-  - Given-When-Then 验收标准
-3. **输出**: 保存到 `.anws/v{N}/01_PRD.md`
+   - 基于用户需求与 `concept_model.json`
+   - 分配 ID `[REQ-XXX]`
+   - Given-When-Then 验收标准
+3. **输出**: 保存到 `.anws/v{N}/01_PRD.md`  
+   **`[REQ-*]` ID 以本步落盘为准**；后续 Step 4 仅做 system ↔ REQ **映射**，不得私自重排或改号（需改须回流本步或 `/change`）。
 
 **人类检查点 #1** :
 
 - 确认 PRD Goals & User Stories。
 
+### 为什么
+
+PRD 是产品优先原则下的第一正式契约；无 ID 与 GWT 则验证与迭代不可控。
+
+### 怎么验收
+
+- `01_PRD.md` 满足 **CRITICAL spec 契约**。
+- 人类检查点 #1 已用具体条目核对，非空泛确认。
+
 ---
 
 ## Step 2.5: 研究闸门 (Explore Gate)
 
-**目标**: 在高不确定性决策进入技术评估与 ADR 前，按需补充外部调研。
+### 做什么
+
+在高不确定性决策进入技术评估与 ADR 前，按需插入 `/explore`。
 
 > [!IMPORTANT]
 > **此步骤是条件触发，不是默认必跑。**
@@ -156,94 +256,118 @@
 > - 需要检索可复用的方法论、检查框架或技能资产
 > - 需要先明确测试策略、质量门禁或验证分层，再决定架构和任务模板
 
- **执行方式**:
+**执行方式**:
 
 1. **判断是否触发**: 基于 PRD、用户原话和预期 ADR 类型判断是否需要研究前置
 2. **如需触发**: 调用 `/explore`，产出结构化研究结论
-  - 如问题涉及方法论、专业框架、测试策略或设计启发，可在 `/explore` 中按需使用 `find-skills`
-  - 如果运行环境中没有可用的 `find-skills`，则直接退化为普通搜索与结构化调研，不得阻塞 workflow
+   - 如问题涉及方法论、专业框架、测试策略或设计启发，可在 `/explore` 中按需使用 `find-skills`
+   - 如果运行环境中没有可用的 `find-skills`，则直接退化为普通搜索与结构化调研，**不得阻塞** workflow
 3. **使用研究结果**:
-  - 为 Step 3 的技术评估补充候选方案、对比维度和外部证据
-  - 为 Step 5 的 ADR 提供决策理由、Trade-off 和影响分析输入
-  - 如研究结果涉及测试金字塔、冒烟/回归策略、质量门禁，应在 Step 5 或后续设计文档中明确沉淀
+   - 为 Step 3 的技术评估补充候选方案、对比维度和外部证据
+   - 为 Step 5 的 ADR 提供决策理由、Trade-off 和影响分析输入
+   - 如研究结果涉及测试金字塔、冒烟/回归策略、质量门禁，应在 Step 5 或后续设计文档中明确沉淀
 4. **如不触发**: 直接进入 Step 3
 
 > [!NOTE]
 > `/explore` 提供的是**研究证据和方法论增量**，不是 ADR 的替代品。
 > 正式决策仍在 Step 5 写入 ADR 文件。
 
+### 为什么
+
+把不确定性与证据前置于评估，降低 ADR 成文后的返工率。
+
+### 怎么验收
+
+- 触发与否有明确判断句；触发则存在可引用的研究结论文本（不落 ADR 也可）。
+- `find-skills` 不可用时不作为失败理由；workflow 继续。
+
 ---
 
 ## Step 3: 技术选型 (Tech Stack Selection)
 
-> [!TIP]
-> **Skill 交互说明**:
-> 以下步骤中，Skill 可能需要向用户追问信息：
->
-> - Step 2 (`spec-writer`): **会追问模糊需求**，这是预期行为，不要跳过
-> - Step 3 (`tech-evaluator`): 可能需要用户提供团队/预算信息
->
-> 每个 Skill 的追问都是必要的交互，应当执行而非绕过。
+### 做什么
 
- **目标**: 评估技术栈候选方案,为 Step 5 的 ADR 决策提供依据。
+评估技术栈候选方案，为 Step 5 的 ADR 决策提供依据；在本 Step 首次读取 **本 bundle** `.agents/skills/tech-evaluator/SKILL.md`。
 
 > [!IMPORTANT]
-> **技术选型不仅包括运行时和框架，还应审视验证策略。**
->
-> 至少需要明确以下问题是否要进入 ADR 或后续设计文档：
->
-> - 本项目主要依赖单元测试、集成测试、E2E测试中的哪些层
-> - 是否需要里程碑级冒烟测试
-> - 是否需要发布前或高风险改动后的回归测试
-> - 测试运行的主要门禁放在 PR、INT、预发布还是发布前
+> **技术选型**含运行时/框架与**验证策略**（单测/集成/E2E 权重、冒烟/回归、门禁落在 PR/预发/发布前等）——结论进入对比表与 Step 5 ADR，**但 Step 3 禁止**在 `03_ADR/*` 落终稿（`Accepted` 正文仅 Step 5）。
 
-> [!IMPORTANT]
-> 你**必须**只输出评估结果,**不要提前写入 ADR 文件**。
+> [!NOTE]
+> **ADR 时序（Step 3 / Step 4 / Step 5）**
 >
-> **为什么**: ADR 是正式决策记录,需要在 Step 5 经过完整审视后才能写入。Step 3 只负责技术评估,不做最终决策。
+> | 阶段 | 干什么 | 磁盘上的决策制品 |
+> |------|--------|------------------|
+> | Step 3 | 调 `tech-evaluator`：约束、候选栈、12 维矩阵、ATAM、升格用对比表 | **不写** `03_ADR/*.md` 终稿 |
+> | Step 4 | `system-architect`：边界、`02_ARCHITECTURE_OVERVIEW.md`、目录树 | 架构总览，非 ADR |
+> | Step 5 | 将 Step 3 素材升格为 **Accepted** ADR（章节以 `tech-evaluator/references/ADR_TEMPLATE.md` 为准） | **正式** `03_ADR/ADR_*.md` |
+>
+> **为何 Step 3 不落 ADR：** (1) 评估是可比对材料，ADR 是对外承诺；Step 4 前写死影响范围常与后续系统切分冲突。(2) 技术栈类 ADR 常要写「影响哪些系统」，需 Step 4 的稳定 **system-id** 与依赖图，Step 5 才能与 `02_*` 对齐。(3) **单一真源**：评分以 Step 3 表为准；Step 5 只做编辑与状态流转，禁止无新证据改分。(4) **例外**：非 `/genesis` 或用户显式授权「本步即写 ADR」时，以当场工作流为准。
 
 1. **调用技能**: `tech-evaluator`
-  1. **执行评估**:
-    - 基于 PRD 约束
-    - 如 Step 2.5 已触发，则吸收研究结论中的候选方案、评估维度和约束
-    - 评估与该项目类型匹配的测试策略与质量门禁
-    - 12 维度评估
-  2. **输出**: 候选方案对比表 (Markdown 格式,暂存在内存中,不写入文件)
+2. **执行评估**:
+   - 基于 PRD 约束
+   - 如 Step 2.5 已触发，则吸收研究结论中的候选方案、评估维度和约束
+   - 评估与该项目类型匹配的测试策略与质量门禁
+   - 12 维度评估
+3. **输出**: 候选方案对比表 (Markdown 格式，暂存在内存或对话上下文中，**不**作为最终 ADR 落盘)
+
+### 为什么
+
+先把选项与证据摆全，再进入 ADR，可避免“先写结论后补理由”。
+
+### 怎么验收
+
+- 对比表覆盖主要候选与关键维度，含测试与质量门禁讨论。
+- `.anws/v{N}/03_ADR/` 下**尚未**出现 Step 5 之前的新 ADR 终稿（除非复用上一版复制来的历史 ADR 且已声明不修改）。
 
 ---
 
 ## Step 4: 系统拆解 (System Decomposition)
 
-**目标**: 识别项目中的独立系统，定义系统边界。
+### 做什么
+
+识别独立系统并定义边界；在本 Step 首次读取 **本 bundle** `.agents/skills/system-architect/SKILL.md`。
 
 1. **调用技能**: `system-architect`
 2. **使用系统识别框架**:
-  - 用户接触点 / 数据存储 / 核心逻辑 / 外部集成
+   - 用户接触点 / 数据存储 / 核心逻辑 / 外部集成
 3. **定义系统**:
-  - ID / 职责 / 边界 / 依赖
+   - ID / 职责 / 边界 / 依赖
 4. **定义物理代码结构** (CRITICAL):
-  - 为每个系统指定**源码根目录** (例如: `src/packages/frontend`)
-  - 确定**项目结构树** (ASCII Tree 格式)
+   - 为每个系统指定**源码根目录** (例如: `src/packages/frontend`)
+   - 确定**项目结构树** (ASCII Tree 格式)
 5. **输出**: 保存到 `.anws/v{N}/02_ARCHITECTURE_OVERVIEW.md`
 
 **人类检查点 #2** :
 
 - 确认系统拆分合理性。
 
+### 为什么
+
+系统边界是并发开发、测试分层与 ADR 影响范围列表的共同语言。
+
+### 怎么验收
+
+- `02_ARCHITECTURE_OVERVIEW.md` 满足 **CRITICAL spec 契约**。
+- 人类检查点 #2 已完成。
+
 ---
 
 ## Step 5: 架构决策 (Architecture Decisions)
 
-**目标**: 基于 Step 3 的技术评估,正式记录架构决策 (ADR)。
+### 做什么
+
+基于 Step 3 的评估，正式写入 ADR（本 Step 如需重读 `tech-evaluator` **仅**为定位 **`references/ADR_TEMPLATE.md`** 章节名；不得以简表替代全文结构）。
 
 > [!IMPORTANT]
-> 你**必须**基于 Step 3 的候选方案对比表,正式写入 ADR 文件。
->
-> **为什么**: ADR 是跨系统决策的唯一记录源,后续 SYSTEM_DESIGN 会引用它。
+> 基于 Step 3 对比表写入 `03_ADR/*`；**ADR 正文章节顺序与必填节以本 bundle `tech-evaluator/references/ADR_TEMPLATE.md` 为唯一权威**（与 SKILL 内摘要冲突时以该文件为准）。ADR 是跨系统决策唯一记录源。
+
+> [!NOTE]
+> **Step 5 与 Step 3**：Step 5 把 Step 3 对比表升格为正式 ADR；**影响范围**须与 Step 4 产出的 `02_ARCHITECTURE_OVERVIEW.md` 中的系统标识一致。论证与阶段表见 **上方 Step 3** 的 NOTE。
 
 1. **基于 Step 3 评估**: 将 Step 3 的候选方案对比表转化为正式 ADR
 2. **吸收 Step 2.5 研究结论** (如有): 将外部调研、对标发现和方法论证据纳入决策理由与 Trade-off
-3. **使用 ADR 模板**: 参考 `tech-evaluator` skill 的 ADR_TEMPLATE.md
+3. **对齐 ADR 模板**: 打开并遵循 **`references/ADR_TEMPLATE.md`**
 4. **如测试策略属于跨系统约束**: 记录测试分层、冒烟/回归门禁、关键验证时机等决策
 5. **输出**: 保存到 `.anws/v{N}/03_ADR/ADR_001_TECH_STACK.md`
 6. **识别其他决策**: 认证方式、通讯协议、测试门禁等跨系统决策
@@ -253,99 +377,63 @@
 
 - ADR 包含"影响范围"章节
 - ADR 状态为 `Accepted`
-- 决策理由清晰,有候选方案对比
+- 决策理由清晰，有候选方案对比
+
+### 为什么
+
+ADR 将评估收敛为组织记忆，影响范围驱动后续设计与实现责任分配。
+
+### 怎么验收
+
+- 全部新增或本版修订 ADR 满足 **CRITICAL spec 契约**。
+- 检查清单三项均为真。
 
 ---
 
 ## Step 6: 完成总结 (Completion Summary)
 
-**目标**: 总结产出，并**更新 AGENTS.md** 以反映新版本。
+### 做什么
+
+总结产出，并**更新 AGENTS.md** 以反映新版本。
 
 > [!IMPORTANT]
-> **必须完成以下 3 个更新动作**:
->
-> 1. 更新 AGENTS.md "当前状态"
-> 2. 更新 AGENTS.md "项目结构"
-> 3. 更新 AGENTS.md "导航指南"
+> **须更新 `AGENTS.md` 三块**：当前状态（版本行、任务清单态、日期）、项目结构（`.anws/v{N}` + `src/` 根）、导航指南（`02`/`03`/04/05 占位与下一跳）；**ADR↔SYSTEM_DESIGN** 关系为「引用不复制」。**不**在本文件粘贴长 Markdown 样例——标题与句式对齐仓库现有 `AGENTS.md` 或上游种子。
 
-### 7.1 更新 AGENTS.md
+### 6.1 更新 AGENTS.md
 
-使用 `replace_file_content` 或 `multi_replace_file_content`:
+用宿主编辑工具替换上述三节及与 `02` 对齐的系统行（若已知系统：一行一系统，链到 `04_SYSTEM_DESIGN/{system}.md`）。
 
-**更新 " 当前状态"**:
-
-```markdown
-- **最新架构版本**: `.anws/v{N}`
-- **活动任务清单**: `尚未生成` (等待 /blueprint)
-- **最近一次更新**: `{YYYY-MM-DD}`
-```
-
-**更新 " 项目结构"**:
-
-```markdown
-## 项目结构 (Project Tree)
-
-> **注意**: 此部分由 `/genesis` 维护。
-
-```text
-{项目根目录}/
-├── .anws/v{N}/            # 架构文档
-├── src/
-│   ├── {system-1}/        # 系统1 源码
-│   └── {system-2}/        # 系统2 源码
-└── ...
-```
-
-**更新 " 导航指南"**:
-
-```markdown
-## 导航指南 (Navigation Guide)
-
-- **架构总览**: `.anws/v{N}/02_ARCHITECTURE_OVERVIEW.md`
-- **ADR**: 架构决策见 `.anws/v{N}/03_ADR/` (跨系统决策的唯一记录源)
-- **详细设计**: 待 `/design-system` 执行后更新 (将填充 `.anws/v{N}/04_SYSTEM_DESIGN/`)
-- **任务清单**: 待 `/blueprint` 执行后更新 (将生成 `.anws/v{N}/05A_TASKS.md` 与 `.anws/v{N}/05B_VERIFICATION_PLAN.md`)
-
-### ADR  SYSTEM_DESIGN 关系
-- **ADR** 记录跨系统决策 (如技术栈、认证方式)
-- **SYSTEM_DESIGN** §8 Trade-offs 引用 ADR,不复制决策内容
-- 修改 ADR 时,检查"影响范围"章节,确认引用该 ADR 的系统
-```
-
-> [!NOTE]
-> 如果项目有已知系统，可使用以下格式替代上方"详细设计"行:
->
-> ```markdown
-> - **{System-1}**: 源码 `src/{path1}` → 设计 `.anws/v{N}/04_SYSTEM_DESIGN/{system-1}.md`
-> ```
-
-### 7.2 更新 00_MANIFEST.md
+### 6.2 更新 00_MANIFEST.md
 
 将文档清单中的 checkbox 标记为已完成。
 
-### 7.3 Agent Context 自更新
+### 6.3 Agent Context 自更新
 
-**更新 `AGENTS.md` 的 `AUTO:BEGIN` ~ `AUTO:END` 区块**:
+仅改 `<!-- AUTO:BEGIN -->`…`<!-- AUTO:END -->` 内：技术栈摘要、系统边界一行一系统、活跃 ADR 列表——**语义与粒度**以当前 `AGENTS.md` 已有 AUTO 块为模板；新版本 `v{N+1}` 覆盖旧 AUTO 区。
 
-仅修改 `<!-- AUTO:BEGIN -->` 和 `<!-- AUTO:END -->` 之间的内容，保留手动添加的内容不变。
-
-```markdown
-### 技术栈决策
-- 语言: {从 tech-evaluator 产出提取}
-- 框架: {从 ADR 提取}
-- 构建工具: {从 ADR 提取}
-
-### 系统边界
-- {system-1}: {一句话职责}
-- {system-2}: {一句话职责}
-
-### 活跃 ADR
-- ADR-001: {标题} — {结论摘要}
-- ADR-002: {标题} — {结论摘要}
-```
-
-> 新版本 `.anws` (v{N+1}) 覆盖旧版本的自动区块内容。
-
-### 7.4 展示产出
+### 6.4 展示产出
 
 告知用户阶段完成，列出产出文档，并指引下一步行动（design-system 或 blueprint）。
+
+### 为什么
+
+AGENTS.md 与 MANIFEST 是团队入口；闭合它们才算创世流程对外可见。
+
+### 怎么验收
+
+- 三个 AGENTS.md 更新块与 `AUTO` 区块已落实；`00_MANIFEST.md` 勾选与磁盘文件一致。
+- 用户可见 **Output Goal** 列表中的路径均可打开。
+- 下一步指引明确（`/design-system` 或 `/blueprint`）。
+
+---
+
+<completion_criteria>
+- **凝练与版式**：`CRITICAL 凝练与版式` 已遵守；文档与汇报无同义反复堆句。
+- Pre-Check 与 Git 换轨规则已执行或已声明不适用且理由成立。
+- CRITICAL 流程约束满足：无技能预读；主链步骤无跳步；Step 3 未提前写入 ADR。
+- `.anws/v{N}` 下 **CRITICAL spec 契约** 所列产物齐套且相互引用一致。
+- 技能调用顺序为 concept-modeler → spec-writer → tech-evaluator → system-architect；ADR 在 Step 5 收敛。
+- Step 2.5 的 `find-skills` 使用为可选；不可用时 workflow 仍完成。
+- 仅使用 **ALPHA 体系配对技能** 路径；未与 shipped `templates/` 同名技能混读。
+- Step 6（含 6.1–6.4 子节）闭合；用户收到产出列表与下一跳指引。
+</completion_criteria>
