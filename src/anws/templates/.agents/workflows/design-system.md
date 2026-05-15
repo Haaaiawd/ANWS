@@ -1,11 +1,11 @@
 ---
-description: "【ALPHA】/design-system：单系统详细设计；宿主管序、门禁与路径；章节、L0/L1 拆分与 6D 细节以 **本 overlay** `.agents/skills/system-designer/`（与 shipped `templates/` 同源镜像）为唯一权威。"
+description: "/design-system：单系统详细设计；宿主管序、门禁与路径；章节、L0/L1 拆分与 6D 细节以工作区 **`.agents/skills/system-designer/`** 为权威。"
 ---
 
-# /design-system (ALPHA)
+# /design-system
 
 <phase_context>
-你是 **SYSTEM DESIGNER（系统设计专家）— ALPHA 线**。
+你是 **SYSTEM DESIGNER（系统设计专家）**。
 
 **使命**：为单个 `<system-id>` 产出（必要时双层）系统设计文档，并满足调研、追溯与条件审查门禁。  
 **能力**：版本定位、上下文加载、`/explore` 调研、`sequential-thinking` 选型、按模板落盘 L0/L1、条件触发 `/challenge`、更新 `AGENTS.md` 导航。  
@@ -19,7 +19,7 @@ description: "【ALPHA】/design-system：单系统详细设计；宿主管序�
 ## CRITICAL 凝练与版式（/craft + /challenge 思想）
 
 > [!IMPORTANT]
-> **craft**：改稿前 Read shipped `.agents/skills/craft-authoring/SKILL.md` 与 `.agents/workflows/craft.md`；各 `## Step …` 使用 **`### 做什么` / `### 为什么` / `### 怎么验收`**；`<completion_criteria>` 必填。  
+> **craft**：改稿前 Read **`.agents/skills/craft-authoring/SKILL.md`** 与 **`.agents/workflows/craft.md`**；各 `## Step …` 使用 **`### 做什么` / `### 为什么` / `### 怎么验收`**；`<completion_criteria>` 必填。  
 > **凝练**：落盘正文 **一句一事**；表内专条对齐 `/challenge` 精神（不粘贴 challenge 正文）。  
 > **不注入**：不展开 6D 全文、长 FAQ、可选 skill 目录大表；**权威**为 **`.agents/skills/system-designer/SKILL.md`** 与 `references/system-design-template.md`、`system-design-detail-template.md`（路径以 **`.agents/skills/`** 为准，**纠正**旧版 workflow 中 `.agent/` 笔误）。
 
@@ -48,7 +48,7 @@ description: "【ALPHA】/design-system：单系统详细设计；宿主管序�
 
 > [!IMPORTANT]
 > 当本设计定义公共接口、CLI 语义、配置/文件格式、错误语义或跨系统协议时，Step 6 **必须**跑 `/challenge`（对 `{system-id}.md`）。  
-> 若当前宿主挂载 **`templates_alpha` / `templates_alpha_en`** 的 `challenge.md`，审查用 skill **只读同 bundle** `.agents/skills/*` 中与 challenge 配对的路径；**禁止**同一会话与 shipped `templates/` 同名 reviewer skill 混读。
+> 当宿主执行 **`/challenge`** 时，审查用 skill 读取与当前 `challenge.md` **同一工作区** `.agents/skills/*` 中的配对路径。
 
 ---
 
@@ -196,7 +196,7 @@ description: "【ALPHA】/design-system：单系统详细设计；宿主管序�
 <completion_criteria>
 - **凝练与版式**：各 Step 三小节齐备；未粘贴 SKILL/模板大段替代读盘。  
 - `system_id` + `TARGET_DIR` 明确；输入缺失时已正确停止。  
-- `/explore` 已执行且 `_research` 可引用；Step 5 已读 shipped `system-designer` 与模板并落盘 L0（+ 条件 L1）。  
+- `/explore` 已执行且 `_research` 可引用；Step 5 已读 **`.agents/skills/system-designer/`** 与模板并落盘 L0（+ 条件 L1）。  
 - 契约类系统已执行 Step 6 或声明不适用理由成立。  
 - Step 7 人类提示与 `AGENTS.md` 一行入口已完成。  
 </completion_criteria>

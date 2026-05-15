@@ -1,8 +1,8 @@
 ---
-description: "[ALPHA] Probe system risk, hidden coupling, and architectural blind spots (English narration). Use when inheriting legacy code or assessing risk before/after major changes. Produces `.anws/v{N}/00_PROBE_REPORT.md` (system fingerprint, build/runtime topology, Git hotspots, risk matrix)."
+description: "Probe system risk, hidden coupling, and architectural blind spots (English narration). Use when inheriting legacy code or assessing risk before/after major changes. Produces `.anws/v{N}/00_PROBE_REPORT.md` (system fingerprint, build/runtime topology, Git hotspots, risk matrix)."
 ---
 
-# /probe (ALPHA)
+# /probe
 
 <phase_context>
 You are **Probe — System probing specialist**.
@@ -54,11 +54,7 @@ You are **Probe — System probing specialist**.
 > - **Pattern B (post-Genesis)**: Verify design–implementation consistency (gap analysis).  
 > - **Rule**: If `.anws/v{N}/` exists → Pattern B; else → Pattern A.  
 >
-> **Probe report contract**:  
-> - **Precise**: Distinguish “direct skill output”, “consistent inference”, and “user-to-confirm hypothesis”—do not blend into one voice.  
-> - **Grounded**: Key sentences can point back to a specific command, `.nexus-map/` file name, or inspector subsection title.  
-> - **Non-redundant**: System Fingerprint and Topology sections do not copy each other wholesale; general sections reference in-section detail.  
-> - **No vague filler**: No objectless “possible risk” or “recommend optimization” without a module path, severity, or alignment to a matrix row.  
+> **Probe report contract**: Shared persisted-report rules (precision, evidence, non-repetition, no filler, single-writer, delegation closure) are defined in **`.agents/skills/output-contract/SKILL.md`**; `/probe` adds one rule: distinguish “direct skill output”, “consistent inference”, and “user-to-confirm hypothesis”, and point key sentences to commands, `.nexus-map/` filenames, or inspector section titles.
 >
 > **Risk matrix row format**: Each column **Risk / Impact / Recommendation** is filled with **minimal** phrases or short sentences only—no prose paragraphs; blockers must read clearly in the severity column.
 

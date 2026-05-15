@@ -1,99 +1,150 @@
 ---
 name: runtime-inspector
-description: 分析运行时行为、进程边界和 IPC 机制，检测"协议漂移"风险和进程生命周期问题。
+description: 当 `/probe` 需要识别运行时入口、进程边界、spawn 链、IPC 通道、协议强度与生命周期风险时加载。只做静态/可观察探测，不修改代码。
 ---
 
-# 窃听者手册 (The Wiretapper's Casebook)
+# Runtime Inspector（ALPHA）
 
-> "代码会骗人，但进程不会。一个 `.spawn()` 暴露的比一千行注释还多。" —— 老窃听者箴言
+<phase_context>
+你是 **RUNTIME INSPECTOR（运行时边界探测者）**。
 
-本技能的工作是**追踪进程间的通信线路**。
-
-**老师傅核心定律**: 如果两个进程说话，但没人规定它们说什么语言、什么版本、什么格式，那就是一场等待爆发的**协议漂移 (Protocol Mismatch)** 灾难。
+**使命**：识别项目实际如何启动、生成进程、通信与失败；为 `/probe` 的 Runtime Topology 与 Risk Matrix 提供证据。  
+**能力**：入口点搜索、spawn/fork 链识别、IPC surface 盘点、协议强度分级、生命周期与平台安全风险标注。  
+**限制**：不启动长驻服务、不修改代码、不把静态推断写成运行事实；无法确认时明确标注 `Cannot confirm`。  
+**Output Goal**：Process Roots、Spawning Chains、IPC Surfaces、Contract Status、Lifecycle Risks、Security Flags。
+</phase_context>
 
 ---
 
-## 深度思考要求
+## CRITICAL 输出契约
 
 > [!IMPORTANT]
-> **运行时分析需要深度思考，思考方式基于模型能力和任务复杂度。**
-> 
-> **核心判断规则**：
-> - **无 CoT 模型** → **必须调用** `sequential-thinking` CLI
-> - **有 CoT 模型 + 简单项目**（单进程、通信清晰）→ 用思考引导问题组织自然 CoT
-> - **有 CoT 模型 + 复杂项目**（多进程、需要修正前提）→ 调用 `sequential-thinking` CLI
-> 
-> 思考内容例如：
-> 1.  "这个项目有多少个入口点（`main` 函数）？它们是一个进程还是多个？"
-> 2.  "进程之间用什么通信？Pipe？HTTP？共享数据库？"
-> 3.  "如果我只更新了 A 进程的通信模块，B 进程会崩吗？有版本握手吗？"
+> 持久化报告、证据、单写者与去重复规则遵守 `.agents/skills/output-contract/SKILL.md`。本 skill 输出为 `/probe` 的证据切片。
+>
+> - 强结论必须有路径、关键词或命令结果锚点。
+> - 运行时行为若未实测，只能写“静态证据显示”或 `Cannot confirm`。
+> - IPC 契约分级必须说明依据：通道、消息 schema、版本握手或缺失项。
+> - Windows Named Pipe、权限、父子进程生命周期是高风险优先检查项。
 
 ---
 
-## 任务目标
-识别**运行时边界 (Runtime Boundaries)** 和 **通信契约 (Communication Contracts)**。
+## sequential-thinking 规则
+
+- 无 CoT 模型：必须调用 `sequential-thinking` CLI。
+- 有 CoT + 简单单进程项目：可用自然 CoT，仍须回答入口、通信、失败三个问题。
+- 有 CoT + 多进程、IPC、spawn/fork、协议推断：调用 `sequential-thinking` CLI。
 
 ---
 
-## 探索流程 (The Investigation)
+## Step 1: 识别入口点
 
-### 第一步：识别入口点 (Identify Entry Points)
-每个 `main` 函数可能代表一个独立的进程。
-*   **搜索目标**:
-    *   Rust: `fn main()`, `#[tokio::main]`
-    *   Python: `if __name__ == "__main__":`
-    *   Node: `require.main === module`, package.json 的 `bin`
-    *   Go: `func main()`
-*   **老师傅直觉**: 找到多个入口点？立刻问："它们是独立运行的，还是被一个父进程管控的？"
+### 做什么
+搜索可能代表独立进程的入口：
 
-### 第二步：追踪生成链 (Trace Spawning)
-如果进程 A 拉起了进程 B，这就是一条"血缘线"。
-*   **搜索目标**:
-    *   Rust: `Command::new(...)`, `std::process::Stdio`, `tauri-plugin-shell`
-    *   Python: `subprocess.Popen`, `multiprocessing.Process`
-    *   Node: `child_process.spawn`, `child_process.fork`
-*   **老师傅警报 (Lifecycle Risks)**:
-    *    "父进程死了，子进程知道吗？有心跳吗？" -> **僵尸进程风险 (Zombie Child)**
-    *    "子进程崩溃了，父进程会重启它吗？还是静默失败？" -> **静默故障风险**
+| 语言/平台 | 搜索线索 |
+| --- | --- |
+| Rust | `fn main()`, `#[tokio::main]` |
+| Python | `if __name__ == "__main__":` |
+| Node | `require.main === module`, `package.json` 的 `bin` |
+| Go | `func main()` |
 
-### 第三步：窃听通信 (Tap the Wire)
-进程之间用什么"说话"？协议在哪里定义？
+### 为什么
+入口点决定进程边界；多个入口点通常意味着部署、IPC 或生命周期风险。
 
-*   **搜索 Channels (通道)**:
-    *   `Pipe`, `NamedPipe`, `unix_stream`, `zmq`
-    *   `TcpListener`, `UdpSocket`, `websocket`, `http::server`
-*   **搜索 Protocols (协议)**:
-    *   `Handshake`, `Version`, `MagicBytes`, `schema`
-    *   `protobuf`, `serde_json`, `JSON.parse`, `enum Message`
-
-*   **老师傅核心判断 (Contract Status)**:
-
-    | 发现 | 状态 | 老师傅建议 |
-    | :--- | :---: | :--- |
-    | 找到 Channel + 找到 `enum Message` 或 Protobuf 定义 |  **Strong** | 契约存在，相对安全。 |
-    | 找到 Channel + 找到 `Version` 或 `Handshake` 检查 |  **Strong** | 有版本协商，很好。 |
-    | 找到 Channel + 只有 raw JSON/字符串 |  **Weak** | 无显式契约。改动一端可能炸另一端。 |
-    | 找到 Channel + 无任何协议定义 |  **None** | **通信黑洞！** 这是高危风险。 |
+### 怎么验收
+- 输出 `Process Roots`：路径、入口类型、推断角色。
+- 多入口时标注“独立进程 / 父进程管理 / Cannot confirm”。
 
 ---
 
-## IPC 风险模式速查 (来自安全研究)
+## Step 2: 追踪进程生成链
 
-| 风险模式 | 检测特征 | 老师傅建议 |
-| :--- | :--- | :--- |
-| **协议漂移 (Protocol Mismatch)** | Channel 存在，但无 Handshake/Version | 在新功能规划中**强制添加版本握手任务** |
-| **僵尸进程 (Zombie Child)** | `spawn` 存在，但无 `Kill on Drop` 或心跳 | 标记进程生命周期管理风险 |
-| **单点故障 (SPOF)** | 一个进程管控所有 IPC，无容错 | 建议添加重连/重启逻辑 |
-| **Named Pipe 权限漏洞 (Windows)** | 使用 Named Pipe 但未显式设置 Security Descriptor |  高危：默认可能允许 Everyone 访问！ |
-| **竞态条件 (Race Condition)** | 多进程快速交互，无明确的消息顺序控制 | 建议添加消息序列号或锁机制 |
+### 做什么
+搜索父进程启动子进程的线索：
+
+| 平台 | 搜索线索 |
+| --- | --- |
+| Rust | `Command::new`, `std::process::Stdio`, `tauri-plugin-shell` |
+| Python | `subprocess.Popen`, `multiprocessing.Process` |
+| Node | `child_process.spawn`, `child_process.fork` |
+
+### 为什么
+spawn 链是生命周期风险来源：父进程退出、子进程崩溃、重启策略、清理策略都需要显式契约。
+
+### 怎么验收
+- 输出 `Spawning Chains`：父路径、子命令/模块、stdio/环境传递方式。
+- 标注 zombie child、silent failure、restart gap、cleanup gap。
 
 ---
 
-## 输出清单
+## Step 3: 识别 IPC Surface
 
-1.  **Process Roots**: 发现的入口点列表（文件路径、角色）。
-2.  **Spawning Chains**: 进程生成关系 (A spawns B)。
-3.  **IPC Surfaces**: 发现的通信通道（类型、关键词、位置）。
-4.  **Contract Status**: `[Strong / Weak / None]`，并说明依据。
-5.  **Lifecycle Risks**: 僵尸进程、静默崩溃等风险。
-6.  **Security Flags (Windows)**: 如果是 Named Pipe，是否有 ACL 设置？
+### 做什么
+搜索通信通道与协议定义：
+
+| 类别 | 搜索线索 |
+| --- | --- |
+| Channel | `Pipe`, `NamedPipe`, `unix_stream`, `zmq`, `TcpListener`, `UdpSocket`, `websocket`, `http::server` |
+| Protocol | `Handshake`, `Version`, `MagicBytes`, `schema`, `protobuf`, `serde_json`, `JSON.parse`, `enum Message` |
+
+### 为什么
+有通道但无 schema、版本或握手，会导致协议漂移；这是多进程项目的核心隐性风险。
+
+### 怎么验收
+- 输出 `IPC Surfaces`：通道类型、位置、协议线索。
+- 每个 IPC surface 有 `Contract Status`。
+
+---
+
+## Contract Status 分级
+
+| 状态 | 判定 |
+| --- | --- |
+| Strong | 找到通道 + 显式消息 schema / enum / protobuf，或存在版本握手 |
+| Weak | 找到通道 + raw JSON/string，但缺少集中 schema 或版本 |
+| None | 找到通道，但找不到协议定义 |
+| Cannot confirm | 静态证据不足以确认通道或协议 |
+
+---
+
+## 风险模式
+
+| 风险 | 检测特征 | 建议 |
+| --- | --- | --- |
+| Protocol Mismatch | Channel 存在但无 schema/version/handshake | 添加协议 schema 或版本握手任务 |
+| Zombie Child | spawn 存在但无退出清理或心跳 | 增加 kill-on-exit/heartbeat/cleanup 契约 |
+| Silent Failure | 子进程失败无错误传播或重启策略 | 增加错误传播、重试或 supervisor 策略 |
+| Named Pipe Permission Risk | Windows Named Pipe 无显式 ACL | 增加权限边界设计与验证 |
+| Race Condition | 多进程消息无顺序、锁或 idempotency 语义 | 增加序列号、锁或幂等契约 |
+
+---
+
+## Required Output
+
+```markdown
+## Runtime Inspector Findings
+
+### Process Roots
+| Path | Entrypoint | Role | Confidence |
+
+### Spawning Chains
+| Parent | Child | Channel / stdio | Lifecycle Risk |
+
+### IPC Surfaces
+| Path | Channel | Protocol Evidence | Contract Status |
+
+### Lifecycle Risks
+| Risk | Evidence | Impact | Suggested follow-up |
+
+### Security Flags
+| Flag | Evidence | Severity | Suggested follow-up |
+```
+
+---
+
+<completion_criteria>
+- Process Roots、Spawning Chains、IPC Surfaces、Contract Status、Lifecycle Risks 均已输出或显式 `N/A + 理由`。
+- Strong/Weak/None/Cannot confirm 分级均带依据。
+- 未把静态推断冒充为运行事实。
+- 输出可直接并入 `/probe` 的 Runtime Topology 与 Risk Matrix。
+</completion_criteria>

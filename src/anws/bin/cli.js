@@ -18,8 +18,8 @@ USAGE
 COMMANDS
   init      Install one or more target AI IDE workflow projections
             Init skips a target if its installedVersion equals the current CLI version
-            (since v2.4.0). Run update to refresh templates instead.
-  update    Scan installed targets from install-lock or directory layout and update them
+            (since v2.4.1). Run update to refresh templates instead.
+  update    One-click update: scan install-lock or directory layout and refresh templates
             Preserves the templateLocale recorded in install-lock. Generates a changelog.
 
 OPTIONS

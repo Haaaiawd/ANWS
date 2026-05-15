@@ -1,11 +1,11 @@
 ---
-description: "[ALPHA] /change: controlled in-version changes and 05A/05B backflow after /forge; permission + ten-question gates preserved; align edits with task-planner; no long signature templates in host."
+description: "/change: controlled in-version changes and 05A/05B backflow after /forge; permission + ten-question gates preserved; align edits with task-planner; no long signature templates in host."
 ---
 
-# /change (ALPHA)
+# /change
 
 <phase_context>
-You are **CHANGE MANAGER (ALPHA track)**.
+You are **CHANGE MANAGER**.
 
 **Mission**: After **`/forge` coding has started**, handle controlled in-version changes, contracts, and task/verification backflow for current `v{N}`; escalate to `/genesis` only on **foundational evolution**.  
 **Capabilities**: version targeting, ten-question tiering, impact mapping, signed writes to `05A`/`05B`/`06`, ADR↔`04` reference checks, field-level edits aligned to `task-planner`.  
@@ -19,7 +19,7 @@ You are **CHANGE MANAGER (ALPHA track)**.
 ## CRITICAL concision & layout (/craft + /challenge spirit)
 
 > [!IMPORTANT]
-> **craft**: Before editing, Read shipped `.agents/skills/craft-authoring/SKILL.md` and `.agents/workflows/craft.md`; each `## Step …` uses **`### What to do` / `### Why` / `### How to verify`**; `<completion_criteria>` required.  
+> **craft**: Before editing, Read **`.agents/skills/craft-authoring/SKILL.md`** and **`.agents/workflows/craft.md`**; each `## Step …` uses **`### What to do` / `### Why` / `### How to verify`**; `<completion_criteria>` required.  
 > **Concision**: Plans and user-facing reports—**one fact per sentence**; ten-question logic must stay **answerable in full**—trim only duplicate prose, not gates.  
 > **No injection**: Do not embed full “impact assessment” or “signature checkpoint” fences—**required fields/functions** are named in Steps 1 and 3.
 
@@ -28,7 +28,7 @@ You are **CHANGE MANAGER (ALPHA track)**.
 ## CRITICAL permission boundaries (gates cannot be weakened)
 
 > [!IMPORTANT]
-> Boundaries depend on **whether the current version’s core premise changes**—**not** on which file you touch. This table is **semantically equivalent** to shipped `.agents/workflows/change.md`; if it conflicts, shipped wins and this alpha should be fixed.
+> Boundaries depend on **whether the current version’s core premise changes**—**not** on which file you touch. This table is the **normative gate** for `/change`.
 
 | Capability | Allowed | Forbidden |
 |------------|:-------:|:---------:|
@@ -78,7 +78,7 @@ No `05A` → no anchored task backflow.
 
 ### What to do
 
-Answer **all ten** questions (session or compact table; **no** full sample table pasted from shipped):
+Answer **all ten** questions (session or compact table; **no** pasting a full sample table into this workflow):
 
 1. Change requirement goals / user-story set / boundary?  
 2. Change system boundary / key execution model / arch baseline?  
@@ -145,7 +145,7 @@ Signature is the only legitimate pre-write gate.
 
 ### What to do
 
-Explain why `/change` cannot absorb the change, need new `v{N+1}`, and Git track-switch (freeze `feature/*`, new line from `main`) per shipped `change` intent—**without** embedding a long notification template here.
+Explain why `/change` cannot absorb the change, need new `v{N+1}`, and Git track-switch (freeze `feature/*`, new line from `main`) per **Step 4 intent**—**without** embedding a long notification template here.
 
 ### Why
 

@@ -4,7 +4,7 @@
 <img src="assets/logo-cli.png" width="260" alt="Anws">
 
 [![License: MIT](https://opensource.org/licenses/MIT)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-v2.4.0-7FB5B6)](https://github.com/Haaaiawd/ANWS/releases)
+[![Version](https://img.shields.io/badge/version-v2.4.1-7FB5B6)](https://github.com/Haaaiawd/ANWS/releases)
 [![Targets](https://img.shields.io/badge/Targets-Windsurf%20%7C%20Claude%20Code%20%7C%20Copilot%20%7C%20Cursor%20%7C%20Codex%20Preview%20%7C%20OpenCode%20%7C%20Trae%20%7C%20Qoder%20%7C%20Kilo%20Code-blueviolet)](https://github.com/Haaaiawd/ANWS)
 
 [English](./README.md) | [中文](./README_CN.md)
@@ -102,51 +102,6 @@ anws update
   - every successful update refreshes `.anws/changelog/`
   - target state is written back to `.anws/install-lock.json`
 
-## CLI Reference
-
-### `anws init` vs `anws update`
-
-| Command | When to use | Key behavior |
-|--------|-------------|--------------|
-| `anws init` | First-time install or installing a new target IDE | Selects targets, writes `install-lock.json`. Skips a target if its `installedVersion` already matches the current CLI version (since v2.4.0). |
-| `anws update` | Refresh templates after a CLI upgrade | Reads `install-lock.json`, detects drift, rewrites templates, generates changelog. Keeps the same `templateLocale` recorded in the lock. |
-
-> **Rule of thumb**: run `init` once per target; run `update` when a new version is released.
-
-### Target selection
-
-```bash
-# Interactive (recommended for first use)
-anws init
-
-# Non-interactive with pre-selected targets
-anws init --target windsurf,opencode
-
-# Pre-select target + locale
-anws init --target windsurf --locale zh
-```
-
-### Locale / template bundle
-
-- `--locale zh` (default) — Chinese templates from `templates/`
-- `--locale en` — English templates from `templates_en/`
-
-Locale is recorded in `install-lock.json` under `templateLocale`. `anws update` preserves the recorded locale; use `anws init` with `--locale` to switch.
-
-> Since v2.4.0, `templates_en/` is included in the npm publish bundle, so `--locale en` works out of the box without falling back to Chinese sources.
-
-### Re-init guard (v2.4.0+)
-
-`anws init` now checks `install-lock.json` before overwriting:
-
-- If the target is already installed **and** its `installedVersion` equals the current CLI version, `init` skips it and prints:
-  ```
-  Windsurf already installed at v2.4.0. Skipping — run `anws update` to refresh templates.
-  ```
-- If the lock shows an older version, `init` proceeds normally (equivalent to a fresh install / upgrade).
-
-This prevents accidental repeated installs that can corrupt version tracking.
-
 ---
 
 ## Feature demos
@@ -202,25 +157,6 @@ Use Anws as a lifecycle, not just a folder pack.
 ## Contributing
 
 Contributions are welcome. Before opening a PR, make sure changes align with the spec-driven workflow and the target projection model.
-
----
-
-## Maintainer notes: npm “channels” (stable vs experimental)
-
-npm does **not** mirror Git branches inside a single package version. Use **dist-tags** instead:
-
-| Goal | What users run | Typical setup |
-|------|----------------|---------------|
-| **Default / stable** (e.g. `2.3.1`, canonical `templates/`) | `npm install -g @haaaiawd/anws` | Tag **`latest`** points at the stable release. |
-| **Experimental / alpha bundle** (`templates_alpha/`, etc.) | `npm install -g @haaaiawd/anws@alpha` | Publish a prerelease **semver** (e.g. `2.4.0-alpha.1`) with **`npm publish --tag alpha`**. Do **not** rely on the default tag for prereleases—otherwise **`latest`** may move and casual installs pull alpha. |
-
-After publishing alpha, keep **`latest`** on stable if needed:
-
-```bash
-npm dist-tag add @haaaiawd/anws@2.3.1 latest
-```
-
-The published tarball contents are controlled by **`package.json` → `files`**. Today the npm package ships **`templates/`** only; adding **`templates_alpha/`** for alpha builds should stay **off** the default `files` list until you intentionally publish an alpha artifact (separate version + `--tag alpha`).
 
 ---
 

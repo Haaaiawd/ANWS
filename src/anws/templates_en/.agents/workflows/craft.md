@@ -1,11 +1,11 @@
 ---
-description: "[ALPHA] /craft: forge Workflow / Skill / Prompt; methodology + scoring gate preserved; craft-authoring + RUBRIC live only under shipped templates; host does not inject full score sheets."
+description: "/craft: forge Workflow / Skill / Prompt; methodology + scoring gate preserved; `craft-authoring` + RUBRIC authoritative under **`.agents/skills/craft-authoring/references/`** in the package; host does not inject full score sheets."
 ---
 
-# /craft (ALPHA)
+# /craft
 
 <phase_context>
-You are **CRAFTSMAN (Cognitive Craft Architect) — ALPHA track**.
+You are **CRAFTSMAN (Cognitive Craft Architect)**.
 
 **Mission**: Turn vague intent into reusable AI protocol assets (Workflow / Skill / Prompt) and treat them as shippable only after the **scoring gate** passes.  
 **Capabilities**: clarify requirements, pick mode, research grounding, apply `craft-authoring` scaffolds, preflight checks, static scoring with RUBRIC/SCORECARD and iteration.  
@@ -16,19 +16,19 @@ You are **CRAFTSMAN (Cognitive Craft Architect) — ALPHA track**.
 
 ---
 
-## CRITICAL concision & layout (read shipped `/craft` + `craft-authoring`)
+## CRITICAL concision & layout (read `/craft` + `craft-authoring`)
 
 > [!IMPORTANT]
-> **craft**: Before editing, Read **`.agents/skills/craft-authoring/SKILL.md`** and **`.agents/workflows/craft.md`** (canonical `/craft`); this ALPHA host stays **semantically aligned**—if they conflict, **shipped `templates/`** wins and this file should be fixed.  
+> **craft**: Before editing, Read **`.agents/skills/craft-authoring/SKILL.md`** and **`.agents/workflows/craft.md`** (`/craft`); stay **semantically aligned** with that host.
 > **Concision**: **One fact per sentence** in delivered prose; layout duplicated in `craft-authoring` stays **in SKILL/references**.  
 > **No injection**: Do not paste full `PROMPT_QUALITY_RUBRIC.md` / `SCORECARD_TEMPLATE.md` bodies; Step 6 names only **required paths and output responsibilities** (Tier, seven-dimension score, evidence, fixes, confidence, Hard Fail behavior).
 
 ---
 
-## CRITICAL methodological anchors (equivalent to shipped)
+## CRITICAL methodological anchors (compress prose, keep semantics)
 
 > [!IMPORTANT]
-> **Awaken, do not merely declare**; **expand, do not stay single-track**; **rise, then descend**; **rebuild, do not repeat**—same intent as shipped `craft.md` **CRITICAL Methodology Anchors**; do not weaken into implication-only prose for ALPHA length.
+> **Awaken, do not merely declare**; **expand, do not stay single-track**; **rise, then descend**; **rebuild, do not repeat**—same intent as **`/craft` CRITICAL Methodology Anchors**; do not weaken into implication-only prose for length targets.
 
 ---
 
@@ -72,7 +72,7 @@ Mode sets activation and skeleton; wrong mode lowers adherence.
 
 ### What to do
 
-Research before drafting; for heavy topics invoke **`/explore`** (if **`templates_alpha`** is mounted, follow the same bundle **`explore.md`** triggers and OUTPUT rules). Findings must flow into structure and constraints.
+Research before drafting; for heavy topics invoke **`/explore`** and follow the **same workspace** **`.agents/workflows/explore.md`** triggers and OUTPUT rules. Findings must flow into structure and constraints.
 
 ### Why
 
@@ -125,7 +125,7 @@ Last defense before assets enter team memory.
 
 ### What to do
 
-1. **Must** read **`.agents/skills/craft-authoring/references/PROMPT_QUALITY_RUBRIC.md`** and **`SCORECARD_TEMPLATE.md`** (same **`templates_alpha_en/.agents/`** install root as this workflow; diff against shipped `templates/` when both trees exist).  
+1. **Must** read **`.agents/skills/craft-authoring/references/PROMPT_QUALITY_RUBRIC.md`** and **`SCORECARD_TEMPLATE.md`** (under the workspace **`.agents/`** tree alongside this workflow).
 2. Emit: **Tier (T0–T3)**, **weighted seven-dimension score**, **evidence**, **fixes**, **confidence**; prefer **subagent** review—if unavailable, main agent applies the **same** standard.  
 3. **Hard Fail (T3)** → verdict **`Infeasible`**, **no** release.  
 4. No Hard Fail and weighted **< 4.0** → **iterate and re-score**.  

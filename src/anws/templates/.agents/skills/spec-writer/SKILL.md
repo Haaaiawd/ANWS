@@ -1,6 +1,6 @@
 ---
 name: spec-writer
-description: 【ALPHA】genesis Step 2：将模糊或高层需求转化为严格的产品需求文档（PRD）；含 craft 脚手架、PRD spec 契约、可选子代理分片编排与 Step 完成信号。适用于需求含糊、范围过大或表达停留在概念层的场景。
+description: genesis Step 2：将模糊或高层需求转化为严格的产品需求文档（PRD）；含 craft 脚手架、PRD spec 契约、可选子代理分片编排与 Step 完成信号。适用于需求含糊、范围过大或表达停留在概念层的场景。
 ---
 
 # 需求侦探手册
@@ -9,9 +9,9 @@ description: 【ALPHA】genesis Step 2：将模糊或高层需求转化为严格
 
 你的任务是**消灭歧义**。
 
-## 【ALPHA】genesis Step 2（范围与衔接）
+## genesis Step 2（范围与衔接）
 
-本模板相对 `templates/.agents/skills/spec-writer` 增加 **ALPHA** 侧的 **craft 脚手架**、**spec 契约**（落盘语义）、**子代理编排**与 **completion**；下列「执行清单 / 方法论 / 10 维歧义扫描表 / User Story 质量闸门表」的**规范性效力不变**——追问苏格拉底行为、一次性一个问题、`[NEEDS CLARIFICATION]` 硬上限、Non-Goals 与 User Story 闸门等规则** verbatim 适用**。
+本模板相对 `templates/.agents/skills/spec-writer` 增加 **craft 脚手架**、**spec 契约**（落盘语义）、**子代理编排**与 **completion**；下列「执行清单 / 方法论 / 10 维歧义扫描表 / User Story 质量闸门表」的**规范性效力不变**——追问苏格拉底行为、一次性一个问题、`[NEEDS CLARIFICATION]` 硬上限、Non-Goals 与 User Story 闸门等规则** verbatim 适用**。
 
 ### craft scaffolding（产物脚手架）
 

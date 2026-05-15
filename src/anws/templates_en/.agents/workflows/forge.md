@@ -1,12 +1,12 @@
 ---
-description: "[ALPHA] Forge design into code per architecture docs and task list (Forge system line); wave/AUTO/code-reviewer/e2e/delivery index is equivalent to canonical forge, layered with ALPHA execution contract and subagent orchestration."
+description: "Forge design into code per architecture docs and task list (Forge system line); wave/AUTO/code-reviewer/e2e/delivery index is equivalent to the standard forge flow, layered with execution contract and subagent orchestration."
 ---
 
-# /forge (ALPHA)
+# /forge
 
 <phase_context>
 You are the **FORGE executor (FORGEMASTER)**.  
-**ALPHA host constraints**: Read only this overlay `.agents/skills/code-reviewer/SKILL.md` and `.agents/skills/e2e-testing-guide/SKILL.md`; **do not** in the same session also apply shipped `templates/` (or `templates_en/`) counterpart skill clauses in parallel.
+**Host constraints**: For §3.6 / §3.7 read only **`.agents/skills/code-reviewer/SKILL.md`** and **`.agents/skills/e2e-testing-guide/SKILL.md`** in this workspace.
 
 **Your mission**:
 Faithfully forge the design docs into runnable code. You do not make design decisions—design is already finished by `/genesis` and `/design-system`. Your value is **precise, reliable implementation**.
@@ -42,9 +42,9 @@ You are the user’s **faithful executor**, not a free-form creator.
 ## CRITICAL writing constraints (/craft + concision)
 
 > [!IMPORTANT]
-> **Layout**: `craft-authoring` Workflow scaffold + `/craft`; each `## Step …` only **What to do / Why / How to verify** (`### What to do` etc.); `<completion_criteria>` required. Before editing, **Read** shipped `.agents/skills/craft-authoring/SKILL.md` and `.agents/workflows/craft.md` (or `templates_en`).  
+> **Layout**: `craft-authoring` Workflow scaffold + `/craft`; each `## Step …` only **What to do / Why / How to verify** (`### What to do` etc.); `<completion_criteria>` required. Before editing, Read **`.agents/skills/craft-authoring/SKILL.md`** and **`.agents/workflows/craft.md`**.
 > **Concision (same spirit as `/challenge`; do not edit challenge itself)**: session recap, Wave close template, §3.8 notes, blocker text—**one fact per sentence**; §3.6 Issues follow this bundle `code-reviewer` single-line field contract; **no** synonym-stacking or long paste from `07`. **§3.4** does not inject verification commands/sample tables (authority: `05A` / `05B`).  
-> Following `## CRITICAL …` blocks are **ALPHA domain**; on conflict, **craft scaffold + challenge-style concision** win.
+> Following `## CRITICAL …` blocks are **CRITICAL domain**; on conflict, **craft scaffold + challenge-style concision** win.
 
 ---
 
@@ -117,10 +117,10 @@ You are the user’s **faithful executor**, not a free-form creator.
 
 ---
 
-## ALPHA paired skills (same bundle as this line)
+## Paired skills (same bundle as this line)
 
 > [!IMPORTANT]
-> §3.6 / §3.7 recognize only **`.agents/skills/code-reviewer/SKILL.md`** and **`.agents/skills/e2e-testing-guide/SKILL.md`** (peer tree to this doc). **Do not** mix-read shipped `templates/` **same-named** skill clauses in the same session. Orchestration skills (e.g. **`nexus-mapper`**) **prefer** this bundle **`.agents/skills/<id>/`**; fall back to shipped **`templates/`** only if the full alpha tree is not mounted. Authoritative text for §3.6/§3.7 remains only **code-reviewer** / **e2e-testing-guide**.
+> §3.6 / §3.7 recognize only **`.agents/skills/code-reviewer/SKILL.md`** and **`.agents/skills/e2e-testing-guide/SKILL.md`** (peer tree to this doc). Orchestration skills (e.g. **`nexus-mapper`**) read **`.agents/skills/nexus-mapper/SKILL.md`** when installed by `anws`. Authoritative text for §3.6/§3.7 remains only **code-reviewer** / **e2e-testing-guide**.
 
 ---
 
@@ -645,7 +645,7 @@ When a Sprint or Phase completes all tasks, run integration validation and miles
 - `TARGET_DIR` and Wave semantics challenge gate normal/AUTO boundary Git mantra match canonical forge **and are implementably equivalent**.  
 - §3.4 per `05A`/`05B` (no command templates in workflow) §3.5 persistence §3.6 AGENT-first + disk + waiver Step 1.3 only §3.7 guide→browser §3.8 eight rows Step 4.0 **list dir** **remain complete**.  
 - **/craft alignment**: Read **`.agents/skills/craft-authoring/SKILL.md`** and **`.agents/workflows/craft.md`**; each `## Step …` has **`### What to do` / `### Why` / `### How to verify`**; substeps use `####` under **`### What to do`**; `<completion_criteria>` present; no emoji.  
-- ALPHA: `<phase_context>`, **writing constraints + concision**, domain CRITICAL (methodology / spec), paired skills, subagent handoff.  
-- This bundle’s **`.agents/workflows/forge.md`** hosts `/forge`, pairs with `.agents/skills/code-reviewer` and `.agents/skills/e2e-testing-guide` in the same overlay without mixing shipped `templates/` in-session.
+- **Focus**: `<phase_context>`, **writing constraints + concision**, domain CRITICAL (methodology / spec), paired skills, subagent handoff.  
+- This repo’s **`.agents/workflows/forge.md`** hosts `/forge` and pairs with **`.agents/skills/code-reviewer`** and **`.agents/skills/e2e-testing-guide`** in the workspace.
 
 </completion_criteria>

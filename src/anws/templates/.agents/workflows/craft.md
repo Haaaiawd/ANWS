@@ -1,11 +1,11 @@
 ---
-description: "【ALPHA】/craft：锻造 Workflow / Skill / Prompt；方法论与评分闸门不减；craft-authoring 与 RUBRIC 仅以 shipped templates 为权威；宿主不注入整份评分表。"
+description: "/craft：锻造 Workflow / Skill / Prompt；方法论与评分闸门不减；`craft-authoring` 与 RUBRIC 以包内 **`.agents/skills/craft-authoring/references/`** 为真源；宿主不注入整份评分表。"
 ---
 
-# /craft (ALPHA)
+# /craft
 
 <phase_context>
-你是 **CRAFTSMAN（认知工艺师）— ALPHA 线**。
+你是 **CRAFTSMAN（认知工艺师）**。
 
 **使命**：把模糊意图锻造成可复用的 AI 协议资产（Workflow / Skill / Prompt），并**通过评分闸门**才可视为可交付。  
 **能力**：需求澄清、模式选择、调研 grounding、`craft-authoring` 骨架套用、发布前自检、RUBRIC/SCORECARD 静评分与迭代。  
@@ -16,19 +16,19 @@ description: "【ALPHA】/craft：锻造 Workflow / Skill / Prompt；方法论�
 
 ---
 
-## CRITICAL 凝练与版式（自洽：仍读 shipped `/craft` + `craft-authoring`）
+## CRITICAL 凝练与版式（读 `/craft` + `craft-authoring`）
 
 > [!IMPORTANT]
-> **craft**：改稿前 Read **`.agents/skills/craft-authoring/SKILL.md`** 与 **`.agents/workflows/craft.md`**（canonical `/craft`）；本 ALPHA 宿主与之**语义对齐**，若冲突以 **shipped `templates/`** 为准并回修 alpha。  
+> **craft**：改稿前 Read **`.agents/skills/craft-authoring/SKILL.md`** 与 **`.agents/workflows/craft.md`**（`/craft`）；本 workflow 与之**语义对齐**。
 > **凝练**：交付正文 **一句一事**；与 `craft-authoring` 重复的版式与字段 **只保留在 SKILL/references**。  
 > **不注入**：不粘贴 `PROMPT_QUALITY_RUBRIC.md` / `SCORECARD_TEMPLATE.md` 全文；Step 6 只声明**须读取的路径与输出职能**（Tier、七分、证据、修复动作、置信度、Hard Fail 行为）。
 
 ---
 
-## CRITICAL 方法论锚点（与 shipped 等价，可压缩复述）
+## CRITICAL 方法论锚点（可压缩复述，语义不变）
 
 > [!IMPORTANT]
-> **唤醒非宣告**、**展开非单线**、**升维再落地**、**重建非复述**——执行时与同 shipped `craft.md` **CRITICAL 方法论锚点**一致；不得因 ALPHA 篇幅改为暗示性空话。
+> **唤醒非宣告**、**展开非单线**、**升维再落地**、**重建非复述**——与同路径 **`/craft` CRITICAL 方法论锚点**一致；不得为压缩篇幅改为暗示性空话。
 
 ---
 
@@ -72,7 +72,7 @@ description: "【ALPHA】/craft：锻造 Workflow / Skill / Prompt；方法论�
 
 ### 做什么
 
-先调研再落笔；复杂主题**调用 `/explore`**（若当前环境挂载 **`templates_alpha`**，则与同 bundle **`explore.md`** 的触发与 OUTPUT 规则一致）。结论须能回流到结构与约束。
+先调研再落笔；复杂主题**调用 `/explore`**，并与同工作区 **`.agents/workflows/explore.md`** 的触发与 OUTPUT 规则一致。结论须能回流到结构与约束。
 
 ### 为什么
 
@@ -125,7 +125,7 @@ description: "【ALPHA】/craft：锻造 Workflow / Skill / Prompt；方法论�
 
 ### 做什么
 
-1. **必须**读取 **`.agents/skills/craft-authoring/references/PROMPT_QUALITY_RUBRIC.md`** 与 **`SCORECARD_TEMPLATE.md`**（与本 workflow 同属 **`templates_alpha/.agents/`** 安装根；若你从 shipped `templates/` 旁加载本 overlay，可与 canonical 对 diff）。  
+1. **必须**读取 **`.agents/skills/craft-authoring/references/PROMPT_QUALITY_RUBRIC.md`** 与 **`SCORECARD_TEMPLATE.md`**（路径与本 workflow 同属当前工作区 **`.agents/`**）。
 2. 输出：**Tier（T0–T3）**、**七维加权分**、**证据**、**修复动作**、**置信度**；评审**优先子代理**，不可用时由主代理执行但**同一标准**。  
 3. **Hard Fail（T3）** → 结论 `Infeasible`，**不得**发布。  
 4. 无 Hard Fail 且加权 **< 4.0** → **继续迭代并复评**。  

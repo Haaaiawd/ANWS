@@ -1,17 +1,17 @@
 ---
 name: tech-evaluator
-description: [ALPHA] Serves `/genesis` Step 3 "Technical selection": evaluates candidate stacks with ATAM and a 12-dimension weighted matrix, producing traceable comparison conclusions and ADR promotion material; does not author formal ADR files (persisted in Step 5). Same lineage as the same-named skill in shipped `templates/`; prefer references at the same relative path inside this bundle.
+description: Serves `/genesis` Step 3 "Technical selection": evaluates candidate stacks with ATAM and a 12-dimension weighted matrix, producing traceable comparison conclusions and ADR promotion material; does not author formal ADR files (persisted in Step 5). Prefer `references/` beside this SKILL.
 ---
 
-# Technical Evaluator Handbook — [ALPHA] Genesis Step 3
+# Technical Evaluator Handbook — Genesis Step 3
 
 > "There is no best technology stack—only the most suitable stack." — ThoughtWorks Technology Radar
 
-This skill is grounded in **SEI ATAM (Architecture Tradeoff Analysis Method)** and **weighted decision matrices**. In **`templates_alpha/`** / **`templates_alpha_en/`** ALPHA workflows it binds to **`/genesis`** as **Step 3**; formal **ADR authoring** and numbering are governed by **Step 5** and `genesis.md`.
+This skill is grounded in **SEI ATAM (Architecture Tradeoff Analysis Method)** and **weighted decision matrices**. In **`/genesis`** it binds as **Step 3**; formal **ADR authoring** and numbering are governed by **Step 5** and `genesis.md`.
 
 ---
 
-## CRITICAL /genesis gates (difference from shipped skill)
+## CRITICAL /genesis gates (this track only)
 
 > [!IMPORTANT]
 >
@@ -206,7 +206,7 @@ The parent agent can open `references/ADR_TEMPLATE.md` in Step 5 and align secti
 
 ## references and bundle paths
 
-This bundle includes **`templates_alpha_en/.agents/skills/tech-evaluator/references/ADR_TEMPLATE.md`** mirrored from shipped **`templates/`**. Read **only** `references/` beside this SKILL; **do not** mix-read shipped `templates/.agents/skills/tech-evaluator/` in the same session.
+This bundle ships **`references/ADR_TEMPLATE.md`** beside this SKILL. Read **only** `references/` next to this SKILL.
 
 | File | Purpose |
 |------|---------|
@@ -248,5 +248,5 @@ Merged draft still meets spec; no contradictory scores or duplicate candidate na
 - Deliverables meet **CRITICAL spec delivery contract** (verifiable / countable / deducible / promotable / explicit verification strategy).
 - On the default `/genesis` Step 3 path, **no** ADR persisted under `.anws/v{N}/03_ADR/`.
 - Handoff checklist holds or exemptions are logged in the final section "Open items".
-- If loaded from `templates_alpha` or `templates_alpha_en`, use the **same overlay tree** as other skills in this session; do not mix shipped `templates/` variants for the same step to avoid gate drift.
+- Use the workspace **`.agents/skills/`** tree consistently with other skills in the session.
 </completion_criteria>

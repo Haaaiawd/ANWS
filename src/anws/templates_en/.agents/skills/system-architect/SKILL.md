@@ -1,9 +1,9 @@
 ---
 name: system-architect
-description: [ALPHA] Dedicated to `/genesis` Step 4: identify independent systems, define boundaries and dependencies, produce `.anws/v{N}/02_ARCHITECTURE_OVERVIEW.md` (including source roots and physical layout); supply input for Step 5 ADR and subsequent contract-level `references/rfc_template.md`; this skill does **not** write `03_ADR/*.md`. Do **not** mix-read the same-named skill from shipped `templates/` in the same session.
+description: Dedicated to `/genesis` Step 4: identify independent systems, define boundaries and dependencies, produce `.anws/v{N}/02_ARCHITECTURE_OVERVIEW.md` (including source roots and physical layout); supply input for Step 5 ADR and subsequent contract-level `references/rfc_template.md`; this skill does **not** write `03_ADR/*.md`.
 ---
 
-# system-architect ([ALPHA] `/genesis` Step 4–5 handoff)
+# system-architect ( `/genesis` Step 4–5 handoff)
 
 > Good architecture is mostly “splitting the problem into the right systems,” not building a perfect monolith.
 
@@ -12,7 +12,7 @@ You are the **system architect for `/genesis` Step 4**.
 **Mission**: Inside the versioned directory `TARGET_DIR = .anws/v{N}`, produce an actionable system inventory, boundaries, dependency view, and mapping to physical repository roots.  
 **Capability**: Six-dimension identification, C4 Level 1 and dependency visualization, split rationale and complexity narrative aligned with human checkpoint #2.  
 **Constraints**: Strictly follow genesis step order; **do not** write or alter `03_ADR/*.md`, `01_PRD.md`, or task lists in this skill session (ADR belongs only to **Step 5**); do not weaken the CRITICAL blocks, severity table, RFC/ADR split, or Overview template structure below.  
-**Relationship to subflows**: If the host workflow is the ALPHA overlay, only the skill under **`templates_alpha/`** (and mirror `templates_alpha_en/`) is authoritative; **do not** parallel-mix clauses with `templates/.agents/skills/system-architect/`.
+**Relationship to subflows**: Authoritative text is **`.agents/skills/system-architect/SKILL.md`** in this workspace.
 </phase_context>
 
 ---
@@ -480,7 +480,7 @@ Use only when you need **API / function signatures / DDL** fidelity; **do not de
 | Implementation steps | Atomic, ordered |
 | Security & risk | Explicit auth and validation |
 
-Full template: shipped bundle `.agents/skills/system-architect/references/rfc_template.md` (ALPHA host: if localized, keep equivalent chapters).
+Full template: **`.agents/skills/system-architect/references/rfc_template.md`** (if you localize `references/`, keep equivalent chapters).
 
 ---
 
@@ -533,6 +533,6 @@ Host **Step 6** refreshes **`AGENTS.md`** to match this Overview; host **must no
 - Architecture Overview **template §1–8** (incl. boundary matrix + main tech tables), **four decomposition guardrails**, **severity table**, **RFC excerpt rules + ADR/RFC responsibilities + ADR_TEMPLATE section table** remain in normative shape with no emoji.  
 - **CRITICAL** blocks present: **methodological anchors**, **spec output contract**, **genesis order + ADR/RFC split**, **sequential-thinking**.  
 - **Sub-agent orchestration** and handoff checklist present; top-level **five Step 4 phases** + **Step 5 input readiness** each include **Do / Why / Done when**.  
-- **phase_context** applied; wording reflects **[ALPHA]** and same-session prohibition on mixing canonical `templates/` skill with same name.  
+- **phase_context** applied; wording matches constraints (no early read, single path).
 - Output path still **`{TARGET_DIR}/02_ARCHITECTURE_OVERVIEW.md`**.  
 </completion_criteria>

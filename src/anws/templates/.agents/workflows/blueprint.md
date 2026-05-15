@@ -1,11 +1,11 @@
 ---
-description: "【ALPHA】编排 /blueprint：基于已批准设计输入生成 05A/05B；宿主只保留序、门禁与移交契约；字段与模板以 **本 overlay** `.agents/skills/task-planner/`（与 shipped `templates/` 同源镜像）为唯一权威。"
+description: "编排 /blueprint：基于已批准设计输入生成 05A/05B；宿主只保留序、门禁与移交契约；字段与模板以工作区 **`.agents/skills/task-planner/`** 为权威。"
 ---
 
-# /blueprint (ALPHA)
+# /blueprint
 
 <phase_context>
-你是 **TASK ARCHITECT（任务规划师）— ALPHA 线**。
+你是 **TASK ARCHITECT（任务规划师）**。
 
 **使命**：把已批准的设计输入编排为可执行的 `05A_TASKS.md` 与 `05B_VERIFICATION_PLAN.md`，并跑通收口门禁。  
 **能力**：版本定位、前置校验、契约映射、调用 `task-planner`、收口检查、`AGENTS.md` 双文档入口更新。  
@@ -19,7 +19,7 @@ description: "【ALPHA】编排 /blueprint：基于已批准设计输入生成 0
 ## CRITICAL 凝练与版式（/craft + /challenge 思想）
 
 > [!IMPORTANT]
-> **craft**：改稿前 Read shipped `.agents/skills/craft-authoring/SKILL.md` 与 `.agents/workflows/craft.md`；各 `## Step …` 使用 **`### 做什么` / `### 为什么` / `### 怎么验收`**；文末 `<completion_criteria>` 必填。  
+> **craft**：改稿前 Read **`.agents/skills/craft-authoring/SKILL.md`** 与 **`.agents/workflows/craft.md`**；各 `## Step …` 使用 **`### 做什么` / `### 为什么` / `### 怎么验收`**；文末 `<completion_criteria>` 必填。  
 > **凝练**：会话与对用户的说明 **一句一事**；与 `task-planner` 重复的表格口径 **只保留在 SKILL/references**。  
 > **不注入**：不在本 workflow 粘贴 `TASK_TEMPLATE_05A` / `TASK_TEMPLATE_05B` 大段或示例任务块——**唯一权威**见下文 **task-planner 路径**。
 
@@ -29,7 +29,7 @@ description: "【ALPHA】编排 /blueprint：基于已批准设计输入生成 0
 
 > [!IMPORTANT]
 > **task-planner 唯一权威（字段 / 表结构）**  
-> 读取 **本 overlay** `.agents/skills/task-planner/SKILL.md`（与 shipped `templates/` 同名路径**同源镜像**；**禁止**同会话混读 shipped 树与 alpha 树两套条文）。  
+> 读取 **`.agents/skills/task-planner/SKILL.md`**（与当前 workflow 同级 `.agents/` 树）。
 > `.agents/skills/task-planner/references/TASK_TEMPLATE_05A.md`  
 > `.agents/skills/task-planner/references/TASK_TEMPLATE_05B.md`  
 >

@@ -9,9 +9,22 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { RESOURCE_REGISTRY } = require('../lib/manifest');
-const { TEMPLATE_ROOT } = require('../lib/resources');
+const { TEMPLATE_ROOT, TEMPLATE_ROOT_EN } = require('../lib/resources');
 
-const FORBIDDEN_SUBSTRINGS = ['05-language-customization'];
+const FORBIDDEN_SUBSTRINGS = [
+  '05-language-customization',
+  '.agent/skills',
+  '.agent\\skills',
+  'search_web',
+  'read_url_content',
+  'Happy Designing',
+  '老师傅',
+  '窃听者',
+  'Wiretapper',
+  'Old wiretapper',
+  'report-template',
+  'REPORT_TEMPLATE'
+];
 
 function collectRegistrySources() {
   const set = new Set(RESOURCE_REGISTRY.map((r) => r.source));
@@ -19,22 +32,22 @@ function collectRegistrySources() {
   return set;
 }
 
-function assertFilesExist(sources, errors) {
+function assertFilesExist(root, label, sources, errors) {
   for (const rel of sources) {
-    const abs = path.join(TEMPLATE_ROOT, rel);
+    const abs = path.join(root, rel);
     if (!fs.existsSync(abs)) {
-      errors.push(`Missing canonical template: ${rel} (expected ${abs})`);
+      errors.push(`Missing ${label} canonical template: ${rel} (expected ${abs})`);
       continue;
     }
     const st = fs.statSync(abs);
     if (!st.isFile()) {
-      errors.push(`Canonical path is not a regular file: ${rel}`);
+      errors.push(`${label} canonical path is not a regular file: ${rel}`);
     }
   }
 }
 
-function scanWorkflowYamlFrontmatter(errors) {
-  const wfDir = path.join(TEMPLATE_ROOT, '.agents', 'workflows');
+function scanWorkflowYamlFrontmatter(root, label, errors) {
+  const wfDir = path.join(root, '.agents', 'workflows');
   if (!fs.existsSync(wfDir)) {
     return;
   }
@@ -47,26 +60,26 @@ function scanWorkflowYamlFrontmatter(errors) {
     try {
       text = fs.readFileSync(full, 'utf8');
     } catch {
-      errors.push(`Unreadable workflow: .agents/workflows/${name}`);
+      errors.push(`Unreadable ${label} workflow: .agents/workflows/${name}`);
       continue;
     }
     if (/^##\s+description:/m.test(text)) {
       errors.push(
-        `.agents/workflows/${name}: use YAML \`description:\` inside frontmatter, not markdown \`## description:\``
+        `${label} .agents/workflows/${name}: use YAML \`description:\` inside frontmatter, not markdown \`## description:\``
       );
     }
     const fm = text.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n/);
     if (!fm) {
-      errors.push(`.agents/workflows/${name}: missing YAML frontmatter (--- ... ---)`);
+      errors.push(`${label} .agents/workflows/${name}: missing YAML frontmatter (--- ... ---)`);
       continue;
     }
     if (!/^description:\s/m.test(fm[1])) {
-      errors.push(`.agents/workflows/${name}: frontmatter must include a \`description:\` key`);
+      errors.push(`${label} .agents/workflows/${name}: frontmatter must include a \`description:\` key`);
     }
   }
 }
 
-function scanTemplatesForForbiddenStrings(errors) {
+function scanTemplatesForForbiddenStrings(root, label, errors) {
   function walk(dir) {
     const entries = fs.readdirSync(dir, { withFileTypes: true });
     for (const ent of entries) {
@@ -80,35 +93,38 @@ function scanTemplatesForForbiddenStrings(errors) {
       try {
         text = fs.readFileSync(full, 'utf8');
       } catch {
-        errors.push(`Unreadable file under templates: ${path.relative(TEMPLATE_ROOT, full)}`);
+        errors.push(`Unreadable file under ${label} templates: ${path.relative(root, full)}`);
         continue;
       }
       for (const bad of FORBIDDEN_SUBSTRINGS) {
         if (text.includes(bad)) {
           errors.push(
-            `Forbidden substring ${JSON.stringify(bad)} in ${path.relative(TEMPLATE_ROOT, full)}`
+            `Forbidden substring ${JSON.stringify(bad)} in ${label}:${path.relative(root, full)}`
           );
         }
       }
     }
   }
-  walk(TEMPLATE_ROOT);
+  walk(root);
 }
 
 function main() {
   const errors = [];
   const sources = collectRegistrySources();
 
-  assertFilesExist(sources, errors);
-  scanTemplatesForForbiddenStrings(errors);
-  scanWorkflowYamlFrontmatter(errors);
+  assertFilesExist(TEMPLATE_ROOT, 'zh', sources, errors);
+  assertFilesExist(TEMPLATE_ROOT_EN, 'en', sources, errors);
+  scanTemplatesForForbiddenStrings(TEMPLATE_ROOT, 'zh', errors);
+  scanTemplatesForForbiddenStrings(TEMPLATE_ROOT_EN, 'en', errors);
+  scanWorkflowYamlFrontmatter(TEMPLATE_ROOT, 'zh', errors);
+  scanWorkflowYamlFrontmatter(TEMPLATE_ROOT_EN, 'en', errors);
 
   if (errors.length) {
     console.error('check-canonical-templates failed:\n' + errors.join('\n'));
     process.exit(1);
   }
   console.log(
-    `check-canonical-templates: OK (${sources.size} paths under templates/, workflow YAML + forbidden-pattern scan)`
+    `check-canonical-templates: OK (${sources.size} paths per locale under templates/ + templates_en/, workflow YAML + forbidden-pattern scan)`
   );
 }
 

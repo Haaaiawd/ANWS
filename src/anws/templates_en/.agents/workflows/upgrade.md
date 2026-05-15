@@ -1,11 +1,11 @@
 ---
-description: "[ALPHA] /upgrade: after anws update, read changelog, classify Minor/Major, produce a human-reviewable plan, route to /change or /genesis; host does not embed long checkpoint templates."
+description: "/upgrade: after anws update, read changelog, classify Minor/Major, produce a human-reviewable plan, route to /change or /genesis; host does not embed long checkpoint templates."
 ---
 
-# /upgrade (ALPHA)
+# /upgrade
 
 <phase_context>
-You are **UPGRADE ORCHESTRATOR (ALPHA track)**.
+You are **UPGRADE ORCHESTRATOR**.
 
 **Mission**: After **`anws update` has completed**, read the latest `.anws/changelog/vX.Y.Z.md`, classify **Minor vs Major**, produce a reviewable upgrade plan, and after explicit human approval **route** to `/change` or `/genesis` (those workflows own writes).  
 **Capabilities**: locate changelog + current `v{N}`, classify, map framework deltas to business docs, routing recommendation, WARNING tagging for inferred sections.  
@@ -19,8 +19,8 @@ You are **UPGRADE ORCHESTRATOR (ALPHA track)**.
 ## CRITICAL concision & layout (/craft + /challenge spirit)
 
 > [!IMPORTANT]
-> **craft**: Before editing, Read shipped `.agents/skills/craft-authoring/SKILL.md` and `.agents/workflows/craft.md`; each `## Step …` uses **`### What to do` / `### Why` / `### How to verify`**; `<completion_criteria>` required.  
-> **Concision**: Plans and narration—**one fact per sentence**; ordering and classification gates must stay **as strong** as shipped `templates/.../upgrade.md`.  
+> **craft**: Before editing, Read **`.agents/skills/craft-authoring/SKILL.md`** and **`.agents/workflows/craft.md`**; each `## Step …` uses **`### What to do` / `### Why` / `### How to verify`**; `<completion_criteria>` required.  
+> **Concision**: Plans and narration—**one fact per sentence**; ordering and classification gates must stay **as strong** as the hard constraints in this workflow file.
 > **No injection**: Human checkpoint content must cover **functions** (changelog path, current `v{N}`, tier, route, impacted files + reasons, inference risks, approve/reject/adjust)—**not** a multi-screen fenced sample copied into the host.
 
 ---
@@ -54,7 +54,7 @@ No changelog → no upgrade fact base.
 
 ### What to do
 
-Apply shipped `upgrade` rules (**Minor / Major only**): whether a **new architecture version** is needed, directory/multi-workflow protocol shifts, structural semantics of `01`/`02`/`03`, need to keep prior version as compatibility narrative. Record yes/no + one-line rationale each.
+Apply this workflow’s **Minor / Major** tier rules only: whether a **new architecture version** is needed, directory/multi-workflow protocol shifts, structural semantics of `01`/`02`/`03`, need to keep prior version as compatibility narrative. Record yes/no + one-line rationale each.
 
 ### Why
 
@@ -105,8 +105,8 @@ Human is the last gate for upgrade blast radius.
 
 ### What to do
 
-- **Minor**: Read the mounted **`/change`** workflow (if using `templates_alpha` overlay, read the **same tree** `change.md`), feed Step 2 mapping; all subsequent edits obey `/change` permissions and signatures; if execution exceeds `/change`, stop and switch to `/genesis`.  
-- **Major**: Read **`/genesis`** (same overlay rule), feed Step 2 as new-version input; obey Copy & Evolve and versioning.  
+- **Minor**: Read the mounted **`/change`** workflow (**`.agents/workflows/change.md`** in this workspace), feed Step 2 mapping; all subsequent edits obey `/change` permissions and signatures; if execution exceeds `/change`, stop and switch to `/genesis`.  
+- **Major**: Read **`/genesis`**, feed Step 2 as new-version input; obey Copy & Evolve and versioning.  
 - For AI-filled non-mechanical text: prefix with **`> [!WARNING] AI-generated content—inferential; human review required.`** (English default for this bundle; use Chinese phrasing only when the repo explicitly standardizes on it).  
 - **Business constants** (domain terms, product goals, story intent, team constraints, custom boundaries) must **not** be overwritten by framework upgrades.
 

@@ -40,7 +40,7 @@ python $SKILL_DIR/scripts/git_detective.py $repo_path --days 90 \
   > $repo_path/.nexus-map/raw/git_stats.json
 ```
 
-> `$SKILL_DIR` is this Skill's installation path (`.agent/skills/nexus-mapper` or independent repo path).
+> `$SKILL_DIR` is this Skill's installation path (`.agents/skills/nexus-mapper` or independent repo path).
 > `$repo_path` is absolute path to target repo.
 > `extract_ast.py --file-tree-out` by default excludes `.git/`, `.nexus-map/`, `node_modules/`, `__pycache__/`, `.venv/`, `dist/`, `build/` and other noise directories and files.
 

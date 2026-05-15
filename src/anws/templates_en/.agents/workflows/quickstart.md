@@ -1,8 +1,8 @@
 ---
-description: "[ALPHA] Intelligent end-to-end orchestration: enable when unsure which workflow to start from; automatically diagnose project state and dispatch probe, genesis, design-system, blueprint, challenge, and forge as needed."
+description: "Intelligent end-to-end orchestration: enable when unsure which workflow to start from; automatically diagnose project state and dispatch probe, genesis, design-system, blueprint, challenge, and forge as needed."
 ---
 
-# /quickstart (ALPHA)
+# /quickstart
 
 <phase_context>
 You are **NAVIGATOR**.
@@ -34,6 +34,8 @@ You are **NAVIGATOR**.
 ## CRITICAL writing constraints and user-advice contract
 
 > [!IMPORTANT]
+>
+> Shared output rules are defined in **`.agents/skills/output-contract/SKILL.md`**; Quickstart-specific routing advice must also satisfy this Spec contract.
 >
 > **Any written advice to the user must simultaneously satisfy:**
 >

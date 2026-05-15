@@ -1,101 +1,150 @@
 ---
 name: runtime-inspector
-description: Analyze runtime behavior, process boundaries, and IPC mechanisms to detect protocol drift risk and process lifecycle issues.
+description: Load when `/probe` needs to identify runtime entrypoints, process boundaries, spawn chains, IPC channels, protocol strength, and lifecycle risks. Observes and reports only; does not modify code.
 ---
 
-# The Wiretapper's Casebook
+# Runtime Inspector (ALPHA)
 
-> "Code can lie, but processes do not. A single `.spawn()` reveals more than a thousand lines of comments." -- Old wiretapper proverb
+<phase_context>
+You are **RUNTIME INSPECTOR**.
 
-This skill's job is to **trace communication lines between processes**.
-
-**Master rule**: If two processes are talking but no one defines their language, version, or format, that is a **Protocol Mismatch** disaster waiting to happen.
+**Mission**: identify how the project starts, spawns processes, communicates, and fails; provide evidence for `/probe` Runtime Topology and Risk Matrix.  
+**Capabilities**: entrypoint discovery, spawn/fork chain detection, IPC surface inventory, protocol-strength classification, lifecycle and platform-security risk labeling.  
+**Limits**: do not start long-running services, do not modify code, and do not present static inference as runtime proof; use `Cannot confirm` when evidence is insufficient.  
+**Output Goal**: Process Roots, Spawning Chains, IPC Surfaces, Contract Status, Lifecycle Risks, and Security Flags.
+</phase_context>
 
 ---
 
-## Deep Thinking Requirement
+## CRITICAL Output Contract
 
 > [!IMPORTANT]
-> **Runtime analysis requires deep thinking; choose thinking mode based on model capability and task complexity.**
+> Persisted-report rules, evidence rules, single-writer rules, and de-duplication rules follow `.agents/skills/output-contract/SKILL.md`. This skill returns an evidence slice for `/probe`.
 >
-> **Core decision rules:**
-> - **No CoT model** -> **must call** `sequential-thinking` CLI
-> - **CoT model + simple project** (single process, clear communication) -> use guided natural CoT
-> - **CoT model + complex project** (multi-process, premise corrections needed) -> call `sequential-thinking` CLI
->
-> Example thinking prompts:
-> 1. "How many entry points (`main` functions) are in this project? One process or many?"
-> 2. "How do processes communicate? Pipe? HTTP? Shared DB?"
-> 3. "If I only update process A's communication module, will process B break? Is there version handshake?"
+> - Strong conclusions require a path, keyword, or command-output anchor.
+> - Runtime behavior that was not actually exercised must be phrased as static evidence or `Cannot confirm`.
+> - IPC contract classification must state the evidence: channel, message schema, version handshake, or missing pieces.
+> - Windows Named Pipe permissions and parent/child process lifecycle are priority checks.
 
 ---
 
-## Task Goal
-Identify **Runtime Boundaries** and **Communication Contracts**.
+## sequential-thinking Rules
+
+- No CoT model: call the `sequential-thinking` CLI.
+- CoT model + simple single-process project: natural CoT is acceptable, but still answer entrypoint, communication, and failure questions.
+- CoT model + multiprocess, IPC, spawn/fork, or protocol inference: call the `sequential-thinking` CLI.
 
 ---
 
-## Investigation Flow
+## Step 1: Identify Entrypoints
 
-### Step 1: Identify Entry Points
-Each `main` function may represent an independent process.
+### What
+Search for entrypoints that may represent independent processes:
 
-* **Search targets**:
-  * Rust: `fn main()`, `#[tokio::main]`
-  * Python: `if __name__ == "__main__":`
-  * Node: `require.main === module`, `bin` in package.json
-  * Go: `func main()`
-* **Expert intuition**: Found multiple entry points? Immediately ask: "Do they run independently, or are they managed by one parent process?"
+| Language / Platform | Search Signals |
+| --- | --- |
+| Rust | `fn main()`, `#[tokio::main]` |
+| Python | `if __name__ == "__main__":` |
+| Node | `require.main === module`, `package.json` `bin` |
+| Go | `func main()` |
 
-### Step 2: Trace Spawning Chains
-If process A starts process B, that is a lineage link.
+### Why
+Entrypoints define process boundaries; multiple entrypoints usually imply deployment, IPC, or lifecycle risks.
 
-* **Search targets**:
-  * Rust: `Command::new(...)`, `std::process::Stdio`, `tauri-plugin-shell`
-  * Python: `subprocess.Popen`, `multiprocessing.Process`
-  * Node: `child_process.spawn`, `child_process.fork`
-* **Expert alerts (Lifecycle Risks)**:
-  * `spawn` without parent-death handling -> **Zombie Child risk**
-  * child crash without restart strategy -> **Silent failure risk**
-
-### Step 3: Tap the Wire
-How do processes "talk"? Where is the protocol defined?
-
-* **Search channels**:
-  * `Pipe`, `NamedPipe`, `unix_stream`, `zmq`
-  * `TcpListener`, `UdpSocket`, `websocket`, `http::server`
-* **Search protocols**:
-  * `Handshake`, `Version`, `MagicBytes`, `schema`
-  * `protobuf`, `serde_json`, `JSON.parse`, `enum Message`
-
-* **Contract status rules**:
-
-  | Finding | Status | Recommendation |
-  | :--- | :---: | :--- |
-  | Channel + `enum Message` or Protobuf definition | Strong | Contract exists; relatively safe. |
-  | Channel + `Version` or `Handshake` check | Strong | Version negotiation exists; good. |
-  | Channel + only raw JSON/string | Weak | No explicit contract; one-sided changes may break peer. |
-  | Channel + no protocol definition | None | Communication black hole; high risk. |
+### Acceptance
+- Output `Process Roots`: path, entrypoint type, inferred role.
+- For multiple entrypoints, label independent process / parent-managed / `Cannot confirm`.
 
 ---
 
-## IPC Risk Pattern Cheat Sheet (from security research)
+## Step 2: Trace Spawn Chains
 
-| Risk Pattern | Detection Signal | Recommendation |
-| :--- | :--- | :--- |
-| **Protocol Mismatch** | Channel exists but no Handshake/Version | Force version-handshake tasks in planning |
-| **Zombie Child** | `spawn` exists but no Kill-on-Drop/heartbeat | Flag process lifecycle management risk |
-| **SPOF** | One process controls all IPC, no fault tolerance | Add reconnect/restart logic |
-| **Named Pipe permission flaw (Windows)** | Named Pipe used without explicit Security Descriptor | High severity: default may allow Everyone access |
-| **Race Condition** | Rapid multi-process interactions without ordering control | Add message sequence IDs or locking |
+### What
+Search for parent processes launching children:
+
+| Platform | Search Signals |
+| --- | --- |
+| Rust | `Command::new`, `std::process::Stdio`, `tauri-plugin-shell` |
+| Python | `subprocess.Popen`, `multiprocessing.Process` |
+| Node | `child_process.spawn`, `child_process.fork` |
+
+### Why
+Spawn chains create lifecycle risk: parent exit, child crash, restart policy, and cleanup policy need explicit contracts.
+
+### Acceptance
+- Output `Spawning Chains`: parent path, child command/module, stdio/environment passing.
+- Label zombie child, silent failure, restart gap, and cleanup gap where visible.
 
 ---
 
-## Output Checklist
+## Step 3: Identify IPC Surfaces
 
-1. **Process Roots**: Entry points found (file path, role).
-2. **Spawning Chains**: Process creation relationships (A spawns B).
-3. **IPC Surfaces**: Communication channels found (type, keywords, locations).
-4. **Contract Status**: `[Strong / Weak / None]` with justification.
-5. **Lifecycle Risks**: Risks such as zombie processes and silent crashes.
-6. **Security Flags (Windows)**: For Named Pipes, whether ACL is configured.
+### What
+Search for communication channels and protocol definitions:
+
+| Category | Search Signals |
+| --- | --- |
+| Channel | `Pipe`, `NamedPipe`, `unix_stream`, `zmq`, `TcpListener`, `UdpSocket`, `websocket`, `http::server` |
+| Protocol | `Handshake`, `Version`, `MagicBytes`, `schema`, `protobuf`, `serde_json`, `JSON.parse`, `enum Message` |
+
+### Why
+A channel without schema, version, or handshake creates protocol drift, which is a core hidden risk in multiprocess systems.
+
+### Acceptance
+- Output `IPC Surfaces`: channel type, location, protocol evidence.
+- Every IPC surface has `Contract Status`.
+
+---
+
+## Contract Status
+
+| Status | Rule |
+| --- | --- |
+| Strong | channel + explicit message schema / enum / protobuf, or a version handshake |
+| Weak | channel + raw JSON/string, but no centralized schema or version |
+| None | channel exists, but no protocol definition is found |
+| Cannot confirm | static evidence is insufficient |
+
+---
+
+## Risk Patterns
+
+| Risk | Detection Signal | Recommendation |
+| --- | --- | --- |
+| Protocol Mismatch | channel exists without schema/version/handshake | add protocol schema or version handshake task |
+| Zombie Child | spawn exists without exit cleanup or heartbeat | add kill-on-exit, heartbeat, or cleanup contract |
+| Silent Failure | child failure has no error propagation or restart policy | add error propagation, retry, or supervisor strategy |
+| Named Pipe Permission Risk | Windows Named Pipe lacks explicit ACL | add permission-boundary design and verification |
+| Race Condition | multiprocess messages lack ordering, locks, or idempotency | add sequence numbers, locks, or idempotency contract |
+
+---
+
+## Required Output
+
+```markdown
+## Runtime Inspector Findings
+
+### Process Roots
+| Path | Entrypoint | Role | Confidence |
+
+### Spawning Chains
+| Parent | Child | Channel / stdio | Lifecycle Risk |
+
+### IPC Surfaces
+| Path | Channel | Protocol Evidence | Contract Status |
+
+### Lifecycle Risks
+| Risk | Evidence | Impact | Suggested follow-up |
+
+### Security Flags
+| Flag | Evidence | Severity | Suggested follow-up |
+```
+
+---
+
+<completion_criteria>
+- Process Roots, Spawning Chains, IPC Surfaces, Contract Status, and Lifecycle Risks are present or explicitly `N/A + reason`.
+- Strong/Weak/None/Cannot confirm classifications include evidence.
+- Static inference is not presented as runtime proof.
+- Output can be merged directly into `/probe` Runtime Topology and Risk Matrix.
+</completion_criteria>

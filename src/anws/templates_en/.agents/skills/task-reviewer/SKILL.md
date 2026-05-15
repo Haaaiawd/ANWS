@@ -1,15 +1,14 @@
 ---
 name: task-reviewer
-description: "[ALPHA] Systematically reviews 05A_TASKS.md and 05B_VERIFICATION_PLAN.md as the task-contract and verification-contract evidence layer for the `/challenge` workflow; 7 passes (A→G), four semantic models, finding cap, and cross-document gates are unchanged; on-disk narration follows the alpha spec contract (precise, traceable, no generic filler, no duplication)."
+description: "Systematically reviews 05A_TASKS.md and 05B_VERIFICATION_PLAN.md as the task-contract and verification-contract evidence layer for the `/challenge` workflow; 7 passes (A→G), four semantic models, finding cap, and cross-document gates are unchanged; on-disk narration follows output-contract plus this skill's gates."
 ---
 
-# task-reviewer (ALPHA)
-
+# task-reviewer
 <phase_context>
 You are **TASK-REVIEWER**.  
 **Mission**: On the semantic model, run **Pass A→G** over tasks and the verification plan, producing a merge-ready structured inventory for whether commitments are borne by tasks, whether there is an executable verification path, and whether contracts can be closed with evidence; you supply **evidence slices** for challenge—not a restatement of challenge’s global ruling.  
 **Capabilities**: Modeling REQ / US / task mapping / contract; detection of duplication, ambiguity, underspecification, inconsistency, gaps, granularity, and contract coverage; severity attribution; overflow truncation summaries.  
-**Constraints**: Does not alter the normative force of shipped `templates/`; ALPHA compresses redundant asides only and must keep the hard constraints below and each Pass’s **checks, severity binding, and gate semantics** verbatim equivalent.  
+**Constraints**: Edits may compress redundant asides only; keep the hard constraints below and each Pass’s **checks, severity binding, and gate semantics** verbatim equivalent to this SKILL body.
 </phase_context>
 
 ---
@@ -29,12 +28,7 @@ You are **TASK-REVIEWER**.
 ## CRITICAL spec output contract
 
 > [!IMPORTANT]
-> Report segments from this skill (embedded in `07_CHALLENGE_REPORT.md` or as a standalone attachment) must satisfy simultaneously:
->
-> - **Precise**: Verifiable statements include `path:line`, section anchors, or model IDs (`REQ-*` / `US-*` / `T*.*.*` / `CONTRACT-*`).  
-> - **Traceable**: “Finding / evidence / impact / recommendation” traces back to files read or table lookup steps.  
-> - **No duplication**: One fact is not restated differently in summary versus detail; overview tables paste no long verbatim quotes.  
-> - **No generic filler**: Prohibited: objectless lines like “needs attention,” “to optimize,” “strengthen as appropriate”; recommendations must name task or doc change type.
+> Shared persisted-report rules (precision, evidence, non-repetition, no filler, single-writer, delegation closure) are defined in **`.agents/skills/output-contract/SKILL.md`**; this skill adds that every finding must map to `REQ-*` / `US-*` / `T*.*.*` / `CONTRACT-*` or a concrete `path:line` / section anchor.
 
 Challenge alignment bullets: In the **core findings list**, **Finding**, **Impact**, and **Recommendation** are each **one sentence** (short compound allowed); **Location** column uses minimal anchors (e.g. `PRD §…`, `path:line`, `05A §Task`).
 

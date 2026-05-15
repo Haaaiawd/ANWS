@@ -1,9 +1,9 @@
 ---
 name: concept-modeler
-description: 【ALPHA】当用户需求模糊、术语不清晰时使用。通过交互式追问澄清领域概念，提取实体、流程与暗物质（missing_components）。由 **alpha `/genesis` Step 1** 在 Step 0 已确定 `TARGET_DIR = .anws/v{N}` 后调用；与同 bundle 的 `templates_alpha` 工作流连用，**禁止**同会话混用 shipped `templates/` 下同名 skill。
+description: 当用户需求模糊、术语不清晰时使用。通过交互式追问澄清领域概念，提取实体、流程与暗物质（missing_components）。由 **`/genesis` Step 1** 在 Step 0 已确定 `TARGET_DIR = .anws/v{N}` 后调用；与 **同工作区 `/genesis`** 连用。
 ---
 
-# 领域建模师 (Domain Modeler)【ALPHA】
+# 领域建模师 (Domain Modeler)
 
 > "如果你描述不清楚，你就造不出来。" —— Eric Evans
 
@@ -16,7 +16,7 @@ description: 【ALPHA】当用户需求模糊、术语不清晰时使用。通�
 
 **使命**：在 `/genesis` **Step 1** 中，将用户的模糊表述收敛为 **Ubiquitous Language** 与可机器读写的 `concept_model.json`；为 PRD 撰写提供无歧义名词、动词与已知缺口。  
 **能力**：模糊点扫描（实体/动词/暗物质/边界）、受控追问（多选或极短答）、每答即写的增量模型维护、`glossary` 与 `clarifications` 追溯。  
-**限制**：**一次只向用户输出一个问题**（问题队列仅内部维护，不得整表甩给用户）；不得跳过追问而凭印象填 JSON；不得与同路径 shipped `templates/` 版 `concept-modeler` 混会话；若宿主提供结构化提问工具（如 `ask question`），**优先用工具**发问。  
+**限制**：**一次只向用户输出一个问题**（问题队列仅内部维护，不得整表甩给用户）；不得跳过追问而凭印象填 JSON；若宿主提供结构化提问工具（如 `ask question`），**优先用工具**发问。
 **与子代理（可选）**：仅允许有界切片（例如「仅生成模糊点候选」「仅校对 glossary 同义冲突」）；合并后由**父代理**唯一写盘 `.anws/v{N}/concept_model.json`，子代理不得竞争同一文件。  
 **Output Goal**：`.anws/v{N}/concept_model.json`，字段语义与下文 **spec 契约**一致；用户侧完成关键术语确认闭环。
 </phase_context>
@@ -115,7 +115,7 @@ description: 【ALPHA】当用户需求模糊、术语不清晰时使用。通�
 
 ## 触发与宿主配对
 
-- **主路径**：alpha **`/genesis` Step 1**：在 Step 0 已设定 `TARGET_DIR` 后加载本 skill，执行需求澄清并写出 `concept_model.json`。  
+- **主路径**：**`/genesis` Step 1**：在 Step 0 已设定 `TARGET_DIR` 后加载本 skill，执行需求澄清并写出 `concept_model.json`。  
 - **辅助路径**：用户脱离 genesis 仅做领域扫盲时，仍可遵循本 skill，但仍须写入当前活动版本的 `concept_model.json`（路径规则不变）。
 
 ---
@@ -193,7 +193,7 @@ description: 【ALPHA】当用户需求模糊、术语不清晰时使用。通�
 
 ---
 
-## 老师傅守则（与 ALPHA 契约叠加）
+## ALPHA 执行守则（与本 SKILL 契约叠加）
 
 1. **不要假设**：永远不默认理解用户词汇；问的即是契约来源。  
 2. **一次一个**：对外仅展示单个问题。  
@@ -227,4 +227,4 @@ description: 【ALPHA】当用户需求模糊、术语不清晰时使用。通�
 - [ ] **`clarifications`** 与对外追问条数一致或可解释缺口。  
 - [ ] 模型已保存到 **`TARGET_DIR/concept_model.json`**（等价路径 **`.anws/v{N}/concept_model.json`**）。  
 - [ ] 用户已确认术语理解（口头或「继续」类指令等价于进入下一 genesis 步的前提由宿主裁定）。  
-- [ ] 未与同会话 shipped **`templates/`** `concept-modeler` 混用。
+- [ ] 会话内仅使用工作区 **`.agents/skills/concept-modeler/SKILL.md`**，无跨路径替代表述。

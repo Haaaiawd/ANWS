@@ -1,9 +1,9 @@
 ---
 name: system-architect
-description: 【ALPHA】`/genesis` Step 4 专用：识别独立系统、定义边界与依赖，产出 `.anws/v{N}/02_ARCHITECTURE_OVERVIEW.md`（含源码根目录与物理结构）；为 Step 5 ADR 与后续 `references/rfc_template.md` 级契约提供输入，本人不写入 `03_ADR/*.md`。与 shipped `templates/` 同名 skill 禁止同会话混读。
+description: `/genesis` Step 4 专用：识别独立系统、定义边界与依赖，产出 `.anws/v{N}/02_ARCHITECTURE_OVERVIEW.md`（含源码根目录与物理结构）；为 Step 5 ADR 与后续 `references/rfc_template.md` 级契约提供输入，本人不写入 `03_ADR/*.md`。
 ---
 
-# system-architect（【ALPHA】 /genesis Step 4–5 衔接）
+# system-architect（/genesis Step 4–5 衔接）
 
 > 好的架构多半是「把问题拆成对的系统」，而不是造出完美单片。
 
@@ -12,7 +12,7 @@ description: 【ALPHA】`/genesis` Step 4 专用：识别独立系统、定义�
 **使命**：在版本化目录 `TARGET_DIR = .anws/v{N}` 内，产出可执行的系统清单、边界、依赖图与物理代码树根映射。  
 **能力**：六维识别、C4 Level 1 与依赖可视化、与人类检查点 #2 对齐的拆分理由与复杂度自述。  
 **限制**：严守 genesis 既定步骤序位；**不得**在本 skill 会话内写入或篡改 `03_ADR/*.md`、`01_PRD.md`、任务清单（ADR 只属于 **Step 5**）；不得削弱下文 CRITICAL、严重度表、RFC/ADR 分工与 Overview 模板结构。  
-**与子流程关系**：宿主工作流若为 ALPHA overlay，仅以 **`templates_alpha/`**（及镜像 `templates_alpha_en/`）下本路径 skill 为准，**禁止**与 `templates/.agents/skills/system-architect/` 条文并行混用。
+**与子流程关系**：以工作区 **`.agents/skills/system-architect/SKILL.md`** 为准。
 </phase_context>
 
 ---
@@ -480,7 +480,7 @@ graph TD
 | 实施步骤 | 原子、有序 |
 | 安全与风险 | 认证、校验显式 |
 
-> 全文模板见：**shipped bundle** `.agents/skills/system-architect/references/rfc_template.md`（ALPHA 宿主若本地化 references，须保持等价章节）。
+> 全文模板见：**`.agents/skills/system-architect/references/rfc_template.md`**（若本地化 `references/`，须保持等价章节）。
 
 ---
 
@@ -533,6 +533,6 @@ graph TD
 - Architecture Overview **模板§1–8**（含边界矩阵与技术栈两张主表）、**拆解守则四章**、**严重度四章表**、**RFC 节选规范表 + ADR 发射分工 + ADR_TEMPLATE 章节表**均以规范形态保留且无 emoji。  
 - **CRITICAL** 块齐备：**方法论锚点**、**spec 产出契约**、**genesis 序位与 ADR/RFC 分工**、**sequential-thinking**。  
 - **子代理编排**与交接清单齐备；顶级 **五阶段 Step 4** + **Step 5 输入就绪** 均含「做什么／为什么／怎么验收」。  
-- **phase_context** 已落地；文稿体现 **ALPHA** 与同会话禁混 canonical `templates/` 同名 skill 的约束口径。  
+- **phase_context** 已落地；文稿与约束口径一致（禁预读、单一路径）。
 - 输出路径约定仍指向 **`{TARGET_DIR}/02_ARCHITECTURE_OVERVIEW.md`**。  
 </completion_criteria>

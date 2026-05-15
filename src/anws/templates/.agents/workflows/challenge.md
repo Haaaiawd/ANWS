@@ -1,8 +1,8 @@
 ---
-description: "【ALPHA】对设计/任务/实现做契约忠实度挑战，证据优先、门禁不减；产出 07_CHALLENGE_REPORT.md。"
+description: "对设计/任务/实现做契约忠实度挑战，证据优先、门禁不减；产出 07_CHALLENGE_REPORT.md。"
 ---
 
-# /challenge (ALPHA)
+# /challenge
 
 <phase_context>
 你是 **CHALLENGER（质疑者）**。
@@ -31,14 +31,8 @@ description: "【ALPHA】对设计/任务/实现做契约忠实度挑战，证�
 ## CRITICAL 写作约束与报告契约
 
 > [!IMPORTANT]
-> **规范闸门不可削弱**：契约来源与承诺模型、严重度定义、`REVIEW_MODE` 与各 reviewer skill 的全文遵从、Step 4.5 审查门禁、`/blueprint` 先于 `/forge` 的路由逻辑、轮次归档协议，均属规范硬约束；不得因「ALPHA」或篇幅目标而删减、改弱或改为暗示性表述。允许收紧的只有重复说明、空话、与表格已承载的复述性叙述。
->
-> **产出文档（spec / 报告）书写契约**：
->
-> - **精确**：可核实陈述附来源、`path:line` 或章节锚点。  
-> - **有据可查**：发现、证据、建议可回溯到具体文件、接口或检索步骤。  
-> - **不重复**：同一事实不多次换述；总览不得粘贴详情大段。  
-> - **禁止泛泛填充**：禁止无对象的「需关注」「待优化」「建议加强」套话。  
+> 共用持久化报告契约（精确、有据、不重复、禁泛泛、单写者、子代理闭环）以 **`.agents/skills/output-contract/SKILL.md`** 为准；本节只保留 `/challenge` 专属门禁。
+> **规范闸门不可削弱**：契约来源与承诺模型、严重度定义、`REVIEW_MODE` 与各 reviewer skill 的全文遵从、Step 4.5 审查门禁、`/blueprint` 先于 `/forge` 的路由逻辑、轮次归档协议，均属规范硬约束；不得因篇幅目标而删减、改弱或改为暗示性表述。允许收紧的只有重复说明、空话、与表格已承载的复述性叙述。
 >
 > **Challenge 表内专条**：`核心发现清单` 中 **发现**、**影响**、**建议** 各占 **一句**（极短复合句允许）；**位置** 列用最小锚点（如 `PRD §x`、`path:line`、`05A §Task`）。
 
@@ -79,11 +73,11 @@ description: "【ALPHA】对设计/任务/实现做契约忠实度挑战，证�
 
 ---
 
-## ALPHA 体系配对技能（与本线同 bundle）
+## 配对技能（与本线同 bundle）
 
 > [!IMPORTANT]
-> 使用 **`templates_alpha/`** / **`templates_alpha_en/`** 作 overlay 时，Step 3 / 3.5 / 3.7 读取的 **`design-reviewer`**、**`task-reviewer`**、**`code-reviewer`** 必须以 **同一目录树** 为准：`.agents/skills/<id>/SKILL.md`（与 `workflows/challenge.md` 同级），**禁止**在同一会话与 shipped `templates/` 下的 skill 版本混用，以免闸门与表格口径漂移。  
-> **`nexus-mapper`**：优先读本 bundle **`.agents/skills/nexus-mapper/`**；未挂载完整 alpha 树时再使用 shipped **`templates/`** 副本。
+> Step 3 / 3.5 / 3.7 读取的 **`design-reviewer`**、**`task-reviewer`**、**`code-reviewer`** 以 **工作区** `.agents/skills/<id>/SKILL.md` 为准（与 `workflows/challenge.md` 同级）。
+> **`nexus-mapper`**：读取 **`.agents/skills/nexus-mapper/SKILL.md`**（若已由 `anws` 安装）。
 
 ---
 

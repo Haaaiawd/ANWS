@@ -241,8 +241,8 @@ Allowed to honestly write uncertainty, but must explain which missing evidence c
 
 ```bash
 # Set SKILL_DIR (adjust based on actual installation path)
-# Scenario A: Installed as .agent/skills
-SKILL_DIR=".agent/skills/nexus-mapper"
+# Scenario A: Installed as .agents/skills
+SKILL_DIR=".agents/skills/nexus-mapper"
 # Scenario B: Independent repo (during development/debugging)
 SKILL_DIR="/path/to/nexus-mapper"
 

@@ -1,12 +1,12 @@
 ---
-description: "【ALPHA】按架构文档与任务清单将设计锻造为代码（Forge system line）；波次/AUTO/code-reviewer/e2e/交付索引与 canonical forge 等价，叠加 ALPHA 执行契约与子代理编排。"
+description: "按架构文档与任务清单将设计锻造为代码（Forge system line）；波次/AUTO/code-reviewer/e2e/交付索引与标准 forge 流程等价，叠加执行契约与子代理编排。"
 ---
 
-# /forge (ALPHA)
+# /forge
 
 <phase_context>
 你是 **FORGE 执行者（FORGEMASTER / 锻造师）**。  
-**ALPHA 宿主约束**：仅读取本 overlay `.agents/skills/code-reviewer/SKILL.md` 与 `.agents/skills/e2e-testing-guide/SKILL.md`，**禁止**同会话并行采用 shipped `templates/`（或 `templates_en/`）同名 skill 条文。
+**宿主约束**：§3.6 / §3.7 仅读取工作区 **`.agents/skills/code-reviewer/SKILL.md`** 与 **`.agents/skills/e2e-testing-guide/SKILL.md`**。
 
 **你的使命**：
 忠实地将设计文档锻造为可运行的代码。你不做设计决策——设计已经由 `/genesis` 和 `/design-system` 完成。你的价值在于**精准、可靠地实现**。
@@ -42,9 +42,9 @@ description: "【ALPHA】按架构文档与任务清单将设计锻造为代码�
 ## CRITICAL 写作约束（/craft + 凝练）
 
 > [!IMPORTANT]
-> **版式**：`craft-authoring`「Workflow 骨架」+ `/craft`；每 `## Step …` 仅 `### 做什么` / `### 为什么` / `### 怎么验收`；`<completion_criteria>` 必填。改稿前 **Read** shipped `.agents/skills/craft-authoring/SKILL.md` 与 `.agents/workflows/craft.md`。  
+> **版式**：`craft-authoring`「Workflow 骨架」+ `/craft`；每 `## Step …` 仅 `### 做什么` / `### 为什么` / `### 怎么验收`；`<completion_criteria>` 必填。改稿前 Read **`.agents/skills/craft-authoring/SKILL.md`** 与 **`.agents/workflows/craft.md`**。  
 > **凝练（对齐 `/challenge` 思想，不改 challenge 本文）**：会话汇报、Wave 完成模板、§3.8 表外说明、对用户的阻塞描述——**一句一事**；§3.6 Issues 遵从本 bundle `code-reviewer` 单行字段契约；**禁止**同义反复与长段复述 `07`。**§3.4** 不注入验证命令/示例表（权威在 `05A`/`05B`）。  
-> 下文 `## CRITICAL …` 为 **ALPHA 域契约**，与上两行冲突时以 **craft 骨架** 与 **challenge 式凝练** 为准回流。
+> 下文 `## CRITICAL …` 为 **CRITICAL 域契约**，与上两行冲突时以 **craft 骨架** 与 **challenge 式凝练** 为准回流。
 
 ---
 
@@ -117,10 +117,10 @@ description: "【ALPHA】按架构文档与任务清单将设计锻造为代码�
 
 ---
 
-## ALPHA 体系配对技能（与本线同 bundle）
+## 配对技能（与本线同 bundle）
 
 > [!IMPORTANT]
-> §3.6 / §3.7 只认 **`.agents/skills/code-reviewer/SKILL.md`** 与 **`.agents/skills/e2e-testing-guide/SKILL.md`**（与本文同级树）。**禁止**同会话与 shipped `templates/` 下 **同名** skill 条文混读。编排类 skill（如 **`nexus-mapper`**）**优先**读本 bundle **`.agents/skills/<id>/`**；宿主未挂载完整 alpha 树时再回退 shipped **`templates/`**。上述两者的权威条文仍仅限 **code-reviewer** / **e2e-testing-guide**。
+> §3.6 / §3.7 只认 **`.agents/skills/code-reviewer/SKILL.md`** 与 **`.agents/skills/e2e-testing-guide/SKILL.md`**（与本文同级树）。编排类 skill（如 **`nexus-mapper`**）读 **`.agents/skills/nexus-mapper/SKILL.md`**（若已由 `anws` 安装）。上述审查与测试条文的权威来源仍仅限 **code-reviewer** / **e2e-testing-guide**。
 
 ---
 
@@ -644,7 +644,7 @@ chore(wave): settle wave {N} progress
 - `TARGET_DIR` 与 Wave 语义、challenge 门禁、普通/AUTO 边界、Git 分支口诀与 canonical forge **等价可实现**。  
 - §3.4 依 `05A`/`05B` 验证（workflow 不注入命令模板）、§3.5 持久化、§3.6 AGENT-first + 落盘 + 豁免仅 Step 1.3、§3.7 guide→浏览器、§3.8 八行 + Step 4.0 **列目录** **完整保留**。  
 - **/craft 对齐**：已 Read **`.agents/skills/craft-authoring/SKILL.md`** 与 **`.agents/workflows/craft.md`**；`<phase_context>`、`## CRITICAL 写作约束（/craft 对齐）`、各 `## Step …` 下 **`### 做什么` / `### 为什么` / `### 怎么验收`** 三小节齐备（子步骤用 `####` 收在 `### 做什么` 内）；文末 `<completion_criteria>` 存在；无 emoji。  
-- ALPHA：域 CRITICAL（方法论 / spec）、**凝练产出**专条、配对技能、子代理与交接清单完整。  
-- `templates_alpha/.agents/workflows/forge.md`（英文镜像：`templates_alpha_en/.agents/workflows/forge.md`）单文件可被宿主挂载为 `/forge`，并与同 bundle `.agents/skills/code-reviewer`、`.agents/skills/e2e-testing-guide` 联用而不与 `templates/` 混会话。
+- **域内要点**：域 CRITICAL（方法论 / spec）、**凝练产出**专条、配对技能、子代理与交接清单完整。  
+- 本包 **`.agents/workflows/forge.md`** 可被宿主挂载为 `/forge`，并与工作区内 **`.agents/skills/code-reviewer`**、**`.agents/skills/e2e-testing-guide`** 联用。
 
 </completion_criteria>

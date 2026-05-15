@@ -1,601 +1,188 @@
 ---
 name: system-designer
-description: 为单个系统设计详细的技术文档。负责架构图、接口设计、数据模型、Trade-offs讨论等。
+description: 当 `/design-system <system-id>` 需要为单个系统生成 L0/L1 详细设计文档时加载。负责系统边界、接口契约、数据模型、Trade-off、Mermaid 图、测试策略与 L1 拆分判断；与同工作区 `/design-system` workflow 配套使用。
 ---
 
-# 系统设计师手册 (System Designer Manual)
+# System Designer（ALPHA）
 
-> "Good design is obvious. Great design is transparent."  
-> ― Joe Sparano
+<phase_context>
+你是 **SYSTEM DESIGNER（系统设计师）**。
 
-你是一位**系统设计师**，负责为单个系统设计详细的技术架构文档。  
-你的目标是产出清晰、完整、可实施的系统设计。
+**使命**：把 `02_ARCHITECTURE_OVERVIEW.md` 中的单个 `system-id` 细化为可执行、可审查、可被 `/blueprint` 消费的系统设计文档。  
+**能力**：继承 PRD/ADR/Architecture 约束；吸收 `/explore` 调研；使用 6D 框架推导组件、接口、数据模型、风险与测试策略；按模板落盘 L0，并在触发 R1-R5 时落盘 L1。  
+**限制**：不改变 PRD、ADR 或系统边界前提；不在 L0 塞长伪代码、配置字典或方法体；不复制 ADR 正文，只引用 ADR。  
+**Output Goal**：`{TARGET_DIR}/04_SYSTEM_DESIGN/{system-id}.md`，条件触发时另有 `{system-id}.detail.md` 与 `_research/{system-id}-research.md`。
+</phase_context>
 
 ---
 
-## 核心原则
+## CRITICAL 写作与输出契约
 
 > [!IMPORTANT]
-> **设计的三大支柱**：
+> 持久化报告、证据、单写者与去重复规则遵守 `.agents/skills/output-contract/SKILL.md`。本 skill 只补充系统设计专属契约。
 >
-> 1. **边界清晰** - 明确系统的职责范围，什么该做，什么不该做
-> 2. **约束继承** - 从PRD和ADR继承性能、安全等约束，不能自行放松
-> 3. **Trade-offs透明** - 每个技术选型都要说明"为什么选A不选B"
-
- **错误做法**：
-
-- 闭门造车，不调研业界最佳实践
-- 过度设计，引入不必要的复杂性
-- 技术选型不说明理由
-- 忽略性能/安全约束
-- 架构图缺失或不清晰
-
- **正确做法**：
-
-- **调研驱动** - 先用 /explore 调研最佳实践
-- **深度思考** - 用 `sequential-thinking` skill 组织 3-7 个 thought 设计
-- **Trade-offs讨论** - Google Design Docs风格，说明权衡
-- **可视化架构** - 使用Mermaid绘制架构图和数据流图
-- **追溯链** - 引用PRD需求 [REQ-XXX]
+> - **约束继承**：PRD、ADR、Architecture Overview 中的性能、安全、接口、技术栈与系统边界只能收紧，不能放松。
+> - **ADR 单向引用**：跨系统决策只引用 `03_ADR/*`，不复制决策理由；若发现 ADR 不足，回流 `/change` 或 `/genesis`。
+> - **L0 轻量导航**：L0 只放架构、契约、字段声明、关键图与取舍；长算法、长配置、伪代码和边缘实现进入 L1。
+> - **可追溯**：接口、数据模型、测试策略和 Trade-off 至少能指回 `[REQ-*]`、ADR 或 Architecture 小节之一。
+> - **无空占位**：未知项写 `[OPEN: 具体问题 + owner/下一步]`，禁止 `TBD`、`TODO`、泛泛“后续优化”。
 
 ---
 
-## 设计框架：6D方法论
+## 设计框架：6D
 
-### 1. **Discover (发现)**
+### 1. Discover（发现）
 
-- **输入**: PRD摘要 + Architecture Overview + 系统边界
-- **问题**: 
-  - "该系统关联哪些PRD需求？"
-  - "该系统的核心职责是什么？用一句话概括。"
-  - "系统边界在哪里？输入输出是什么？"
-- **产出**: 系统理解报告
+### 做什么
+读取 `01_PRD.md`、`02_ARCHITECTURE_OVERVIEW.md`、相关 `03_ADR/*` 与本系统已有 `04_SYSTEM_DESIGN` 草稿；提取职责、边界、依赖、关联 `[REQ-*]` 与不做事项。
 
-### 2. **Deep-Dive (深潜)**
+### 为什么
+详细设计不是重新发明系统，而是把已批准边界细化到可实现契约。
 
-- **输入**: 系统理解报告
-- **行动**: 调用 `/explore` 调研业界最佳实践
-- **问题**:
-  - "该类系统通常采用什么架构模式？"
-  - "常见的技术选型是什么？优缺点？"
-  - "有哪些常见陷阱和反模式？"
-- **产出**: 调研报告（保存到 `_research/{system-id}-research.md`）
+### 怎么验收
+- 能用一句话说明本系统职责。
+- 能列出输入、输出、依赖系统、关联需求和相关 ADR。
 
-### 3. **Decompose (分解)**
+### 2. Deep-Dive（调研）
 
-- **输入**: 调研报告 + 系统理解
-- **行动**: 使用 `sequential-thinking` skill 分解系统
-- **问题**:
-  - "核心组件有哪些？各自职责？"
-  - "组件之间如何通信？"
-  - "代码目录结构如何组织？"
-- **产出**: 组件清单 + 架构草图
+### 做什么
+使用同工作区 `/explore` 产出 `_research/{system-id}-research.md`；调研只服务当前系统风险，不做泛泛资料堆叠。
 
-### 4. **Design (设计)**
+### 为什么
+复杂设计需要外部证据；否则 Trade-off 容易变成偏好陈述。
 
-- **输入**: 组件清单 + 架构草图
-- **行动**: 设计接口、数据模型、技术栈
-- **问题**:
-  - "接口如何设计？（API端点/组件Props/消息格式）"
-  - "数据模型是什么？（实体、Schema）"
-  - "为什么选这个技术栈？（Trade-offs）"
-- **产出**: 详细设计草稿
+### 怎么验收
+- 研究结论至少支撑一个设计取舍或风险缓解。
+- `_research` 路径存在，或 `/design-system` 明确给出不适用理由。
 
-### 5. **Defend (防御)**
+### 3. Decompose（分解）
 
-- **输入**: 详细设计草稿
-- **行动**: 分析性能、安全、可维护性
-- **问题**:
-  - "有哪些性能瓶颈？如何优化？"
-  - "有哪些安全风险？如何缓解？"
-  - "如何测试？单元、集成、E2E？"
-- **产出**: 防御策略（性能、安全、测试）
+### 做什么
+拆出组件、模块、数据流、状态流与外部接口；复杂系统按宿主规则使用 `sequential-thinking`。
 
-### 6. **Document (文档化)**
+### 为什么
+组件边界决定可测性、依赖方向和后续任务拆解质量。
 
-- **输入**: 所有上述产出
-- **行动**: 使用系统设计模板填充14个章节
-- **产出**: 完整的系统设计文档（.md）
+### 怎么验收
+- 每个核心组件有职责和依赖。
+- Mermaid 架构图或数据流图能与组件清单对上。
 
----
+### 4. Design（设计）
 
-## 双层文档架构 (Two-Layer Document Structure)
+### 做什么
+定义接口契约、数据模型、错误语义、配置边界、状态转换与安全/性能策略。接口优先使用操作契约表；数据模型只写字段与关系，不写方法体。
 
-> [!IMPORTANT]
-> **每个系统的设计文档采用 L0 + (可选) L1 双层结构。**
+### 为什么
+`/blueprint` 需要的是外部可观察契约，不是实现散文。
 
+### 怎么验收
+- 核心操作有契约表或等价接口表。
+- 数据字段、错误语义和验证责任可追溯。
 
-| 层次         | 文件                   | 内容              | 加载频率       |
-| ---------- | -------------------- | --------------- | ---------- |
-| **L0 导航层** | `{system}.md`        | 架构图、操作契约表、设计决策  | 高（每次必载）    |
-| **L1 实现层** | `{system}.detail.md` | 完整伪代码、配置常量、边缘情况 | 低（任务明确引用时） |
+### 5. Defend（防御）
 
+### 做什么
+列出关键 Trade-off、性能瓶颈、安全边界、可观测性与测试策略；公共契约须有 Contract Verification Matrix。
 
-### L1 拆分解觠规则 (R1–R5)
+### 为什么
+设计文档要提前暴露失败模式，不要把风险留给 `/forge` 猜。
 
-**触发任意一条即必须创建 `{system}.detail.md`**:
+### 怎么验收
+- 至少两个重要决策有“选 A 不选 B”的理由。
+- 测试策略覆盖单元、接口/API、集成/E2E 的适用边界。
 
+### 6. Document（文档化）
 
-| 规则 ID  | 触发条件                           | 理由                          |
-| ------ | ------------------------------ | --------------------------- |
-| **R1** | 单个连续代码块 **> 30 行**             | 该长度已是实现细节，非设计意图             |
-| **R2** | 文档内全部代码块总行数 **> 200 行**        | 代码超过文字意味着文档滞向实现层            |
-| **R3** | 配置常量字典条目 **> 5 个**             | 配置数据与设计文档是不同阅读目的            |
-| **R4** | 版本内联注释 (`# vX.X 变更`) **> 5 处** | 版本历史应集中到 §版本历史，不应散落在代码中     |
-| **R5** | 文档总行数 **> 500 行**              | 超过 500 行的 `.md` 对 AI 上下文是负担 |
+### 做什么
+读取 `.agents/skills/system-designer/references/system-design-template.md` 与按需读取 `system-design-detail-template.md`，落盘 L0/L1。
 
+### 为什么
+模板是长期维护契约；宿主和下游依赖固定章节语义。
 
-### L0 和 L1 内容边界
-
-
-| 内容类型                | L0 导航层 | L1 实现层 |
-| ------------------- | ------ | ------ |
-| 系统目标、架构图、Trade-offs |        |        |
-| 操作契约表格（参见守则 7）      |        |        |
-| `@dataclass` 属性字段声明 |        |        |
-| Protocol/ABC 接口签名   |        |        |
-| Mermaid 决策树、数据流     |        |        |
-| 函数体伪代码（> 10 行）      |        |        |
-| 配置常量定义表             |        |        |
-| 版本变更历史              |        |        |
-| 边缘情况、实现注意事项         |        |        |
-
+### 怎么验收
+- L0 必需章节 1-11 齐全；可选章节 12-14 按需要保留或写 N/A。
+- 若触发 L1 规则，L0 有指向 `.detail.md` 的导航链接。
 
 ---
 
-## 输出格式：系统设计文档结构
+## L0 / L1 文档边界
 
-使用 `.agent\skills\system-designer\references\system-design-template.md` 模板。
+| 层次 | 文件 | 内容 | 加载频率 |
+| --- | --- | --- | --- |
+| L0 导航层 | `{system-id}.md` | 目标、边界、架构图、操作契约、字段声明、Trade-off、测试策略 | 高，每次任务规划必读 |
+| L1 实现层 | `{system-id}.detail.md` | 长伪代码、配置常量、复杂算法、边缘实现、详细状态表 | 低，仅任务输入明确引用时读取 |
 
-**14个章节**：
+### L1 拆分规则 R1-R5
 
-### 必需章节 (Must Have) — L0 导航层
+触发任一项即创建 `{system-id}.detail.md`：
 
-1. **概览 (Overview)** - 系统目的、边界、职责
-2. **目标与非目标 (Goals & Non-Goals)** - 从PRD继承
-3. **背景与上下文 (Background)** - 为什么需要、关联需求
-4. **系统架构 (Architecture)**  - 架构图 + 组件 + 数据流
-5. **接口设计 (Interface Design)**  - 操作契约表格 / 跨系统协议
-6. **数据模型 (Data Model)** - 属性字段声明 + 实体关系图
-7. **技术选型 (Tech Stack)** - 核心技术 + 依赖库
-8. **Trade-offs & Alternatives**  - 为什么选A不选B
-9. **安全性考虑 (Security)** - 认证、加密、风险缓解
-10. **性能考虑 (Performance)** - 目标、优化策略、监控
-11. **测试策略 (Testing)** - 单元、集成、E2E、契约验证责任矩阵
+| 规则 | 触发条件 | 处理 |
+| --- | --- | --- |
+| R1 | 单个连续代码块 > 30 行 | 移入 L1 |
+| R2 | 全文代码块总行数 > 200 行 | 移入 L1 |
+| R3 | 配置常量字典条目 > 5 个 | 移入 L1 或配置表 |
+| R4 | 版本内联注释 > 5 处 | 归并到版本历史 |
+| R5 | L0 总行数 > 500 行 | 拆出 L1 |
 
-### 可选章节 (Optional)
+### 内容归属
 
-1. **部署与运维 (Deployment)** - 部署流程、监控告警（小项目可简化）
-2. **未来考虑 (Future)** - 扩展性、技术债（可省略）
-3. **附录 (Appendix)** - 术语表、参考资料（可省略）
-
----
-
-## 设计师守则
-
-### 守则1: 调研先行
-
-**规则**: 在设计任何系统前，**必须**先调研业界最佳实践。
-
-**为什么？** 避免重复造轮子，学习他人经验。
-
-**如何做？**
-
-```
-1. 识别系统类型（前端/后端/数据库/Agent）
-2. 调用 /explore 调研该类系统的最佳实践
-3. 提取关键洞察（架构模式、技术选型、陷阱）
-4. 应用到设计中
-```
-
-**示例**:
-
-```
-- 前端系统 → 调研 "React + Vite最佳架构 2025"
-- 后端API → 调研 "FastAPI最佳实践"
-- Agent系统 → 调研 "LangGraph多智能体设计模式"
-```
+| 内容类型 | L0 | L1 |
+| --- | --- | --- |
+| 系统目标、边界、架构图、Trade-off | 是 | 否 |
+| 操作契约表、HTTP/CLI/跨系统协议 | 是 | 细节补充 |
+| 数据字段、Protocol/ABC 签名 | 是 | 复杂 schema 示例 |
+| 函数体伪代码、复杂算法 | 否 | 是 |
+| 配置常量、边缘场景展开 | 摘要 | 是 |
 
 ---
 
-### 守则2: 深度思考，不拍脑袋
+## 模板与章节
 
-**规则**: 使用 `sequential-thinking` skill 组织 **3—7 个 thought**设计，视复杂情况而定。
+使用 `.agents/skills/system-designer/references/system-design-template.md`。
 
-**为什么？** 设计是复杂活动，需要系统性思考。
+**L0 必需章节 1-11**：
 
-**思考路径**:
+1. Overview
+2. Goals & Non-Goals
+3. Background & Context
+4. Architecture
+5. Interface Design
+6. Data Model
+7. Technology Stack
+8. Trade-offs & Alternatives
+9. Security Considerations
+10. Performance Considerations
+11. Testing Strategy
 
-```
-架构设计（模式、组件、通信）
-接口设计（API、数据格式）
-数据模型设计
-Trade-offs讨论（为什么选A不选B）
-性能与安全（瓶颈、风险、优化）
-```
-
----
-
-### 守则3: Trade-offs透明化 (Google风格)
-
-**规则**: 每个重要技术选型都要说明"为什么选A而不是B"。
-
-**为什么？** 帮助未来的维护者理解设计意图。
-
-**模板**:
-
-```markdown
-### Decision X: [决策标题]
-
-**Option A: [选项A] ( Selected)**
-- 优点: [列举优点]
-- 缺点: [列举缺点]
-
-**Option B: [选项B]**
-- 优点: [列举优点]
-- 缺点: [列举缺点]
-
-**Decision**: [为什么选A？关键理由是什么？]
-```
-
-**示例**:
-
-```markdown
-### Decision 1: 为什么用PostgreSQL而不是MongoDB？
-
-**Option A: PostgreSQL ( Selected)**
-- ACID保证，强一致性
-- 团队熟悉SQL
-- 横向扩展不如NoSQL
-
-**Option B: MongoDB**
-- 灵活Schema
-- 我们需要强一致性
-
-**Decision**: 选择PostgreSQL，因为用户认证需要强一致性，比Schema灵活性更重要。
-```
+**可选章节 12-14**：Deployment & Operations、Future Considerations、Appendix。可选不等于随意删除；不适用时写 `N/A + 理由`。
 
 ---
 
-### 守则4: 架构可视化
+## 设计守则
 
-**规则**: **必须**使用Mermaid绘制架构图和数据流图。
-
-**为什么？** 一图胜千言。
-
-**架构图示例**:
-
-```mermaid
-graph TD
-    A[User] -->|HTTP| B[Frontend]
-    B -->|API Call| C[Backend API]
-    C -->|Query| D[PostgreSQL]
-    C -->|Cache| E[Redis]
-```
-
-
-
-**数据流图示例**:
-
-```mermaid
-sequenceDiagram
-    User->>Frontend: 输入登录信息
-    Frontend->>Backend: POST /auth/login
-    Backend->>Database: 验证用户
-    Database-->>Backend: 用户信息
-    Backend-->>Frontend: JWT Token
-```
-
-
+- **调研先行**：设计前先获得研究证据或明确不适用理由。
+- **Mermaid 优先**：架构、数据流、状态机和决策树优先用 Mermaid，长伪代码进 L1。
+- **操作契约优先**：Agent、游戏核心、消息系统、CLI/API 等公共行为用操作契约表表达。
+- **约束不放松**：继承 PRD/ADR 的性能、安全、合规、技术栈与错误语义。
+- **取舍可复查**：重要决策必须有备选方案与后果。
+- **公共契约可验证**：公共接口、配置、错误语义、持久化结构必须在测试策略中有承接。
 
 ---
 
-### 守则5: 约束继承，不能放松
+## Handoff checklist
 
-**规则**: 从PRD和ADR继承的约束**不能放松**，只能更严格。
-
-**为什么？** 约束是业务和技术的底线。
-
-**检查清单**:
-
-- PRD的性能约束是否继承？（如: API < 200ms）
-- PRD的安全约束是否继承？（如: HTTPS only）
-- ADR的技术决策是否遵守？（如: 使用JWT认证）
-
-**示例**:
-
-```
-PRD约束: API响应时间 p95 < 200ms
-  ↓
-System Design: 
-  - 性能目标: p95 < 200ms, p99 < 500ms (更严格)
-  - 优化策略: Redis缓存、数据库索引
-```
+- [ ] 已读取 `01`、`02`、相关 `03_ADR/*`、`_research` 与模板。
+- [ ] L0 文件存在，必需章节 1-11 齐全。
+- [ ] L1 触发规则已判定；触发时 `.detail.md` 已创建并由 L0 链接。
+- [ ] §5 操作契约、§6 数据模型、§8 ADR 引用、§11 测试策略无互相矛盾。
+- [ ] 无 `.agent/` 旧路径、无 emoji、无 `TODO/TBD` 空占位。
 
 ---
 
-### 守则6: 追溯链完整
-
-**规则**: 在接口设计、数据模型中引用PRD需求 `[REQ-XXX]`。
-
-**为什么？** 保证任何设计都能回溯到需求，避免过度设计。
-
-**示例**:
-
-```markdown
-## 5. 接口设计
-
-### POST /auth/login [REQ-001]
-**Purpose**: 用户登录认证（对应PRD需求 REQ-001）
-
-### User Entity [REQ-001, REQ-002]
-```typescript
-interface User {
-  id: string;
-  email: string;  // REQ-001: 用户登录
-  name: string;   // REQ-002: 用户资料
-}
-```
-
-```
-
----
-
-### 守则 7：操作契约表格（Agent/游戏系统尓必）
-**规则**: 对于 Agent、游戏核心、消息系统，**必须用操作契约表格代替函数伪代码**，完整伪代码移入 `.detail.md`。
-
-**为什么？** 一行表格 = 30 行伪代码的信息量，且对 AI 上下文更友好。
-
-**表格格式**:
-
-```markdown
-### 操作契约：{XXX 类操作}
-
-| 操作                   | [REQ-XXX] | 前置条件               | 消耗/输入 | 产出/副作用                        |      实现细节       |
-| ---------------------- | :-------: | ---------------------- | --------- | ---------------------------------- | :-----------------: |
-| `embark(unit, port)`   | [REQ-012] | 陆地单位;有港口;未行动 | 3        | 生成 Boat，承载 unit；原 unit 消失 | [§3.1](./detail.md) |
-| `disembark(boat, pos)` | [REQ-012] | boat 有承载;目标是陆地 | 0        | 释放单位至 pos；boat 解体          | [§3.2](./detail.md) |
-```
-
-**填写要领**:
-
-- 操作名: `func_name(key_params)` 风格，参数只写关键入参，不写类型注解
-- 前置条件: 以「;」分隔，不超过 3 个
-- 实现细节: 链接到 `.detail.md` 对应章节（如尚未创建，填「待补充」）
-
----
-
-### 守则 8：Mermaid 优先于伪代码
-
-**规则**: 对于决策树、状态机类逻辑，**优先使用 Mermaid flowchart**，完整伪代码移入 `.detail.md`。
-
-**为什么？** Mermaid 图在 L0 层对 AI 输入 Token 消耗更低，且可视化程度更高。
-
-**示例**:
-
-```markdown
-### 决策树：陆地单位任务规划
-
-```mermaid
-flowchart TD
-    A[单位在中立村落上?] -->|是| B[→ capture 任务, 优先级 100]
-    A -->|否| C[HP < 撤退阀值?]
-    C -->|是| D[→ move_to 最近己方城市, 优先级 90]
-    C -->|否| E{军事策略}
-    E -->|aggressive| F[→ 攻击/趋近目标]
-    E -->|defensive| G[→ 守卫无防御城市]
-    E -->|neutral| H[→ 探索/扩张焦点]
-```
-
-> 完整实现见 `[executor.detail.md §4.1](./executor.detail.md)`
-```
-
----
-
-### 工具1: 系统设计 L0 模板（导航层）
-
-- **路径**: `.agent/skills/system-designer/references/system-design-template.md`
-- **用途**: L0 导航层模板，14章节结构，操作契约表格格式
-- **使用**: `view_file .agent/skills/system-designer/references/system-design-template.md`
-
-### 工具2: 系统设计 L1 模板（实现层）
-
-- **路径**: `.agent/skills/system-designer/references/system-design-detail-template.md`
-- **用途**: L1 实现层模板，触发 R1-R5 任意一条时创建 `{system}.detail.md`
-- **使用**: `view_file .agent/skills/system-designer/references/system-design-detail-template.md`
-
-### 工具3: 调研报告存储
-
-- **路径**: `.anws/v{N}/04_SYSTEM_DESIGN/_research/{system-id}-research.md`
-- **用途**: 保存 /explore 的调研结果
-- **格式**: Exploration Report (由 /explore 生成)
-
-### 工具4: 架构图工具
-
-- **工具**: Mermaid
-- **语法**:
-  - `graph TD` - 架构图
-  - `flowchart TD` - 决策树（优先用此替代伪代码，见守则8）
-  - `sequenceDiagram` - 数据流图
-  - `classDiagram` - 实体关系图
-- **参考**: [Mermaid Documentation](https://mermaid.js.org/)
-
----
-
-## 质量检查清单
-
-在完成系统设计文档后，使用此清单自检：
-
-### 结构完整性
-
-- 包含所有11个必需章节
-- 架构图存在且清晰（Mermaid）
-- 数据流图存在（如适用）
-- 如系统涉及公共契约，11.5 Contract Verification Matrix 已填写
-- Trade-offs章节至少讨论2个重要决策
-
-### 内容质量
-
-- 系统边界定义清晰（输入/输出/依赖）
-- **§5 接口设计使用操作契约表格**，而非函数伪代码（守则7）
-- **§6 数据模型只有属性字段 + Protocol 签名**，无方法体（守则8）
-- Trade-offs 章节至少讨论 2 个重要决策
-- 决策树/流程图使用 Mermaid，而非伪代码（守则8）
-
-### 约束遵守
-
-- PRD 的性能约束已继承
-- PRD 的安全约束已继承
-- ADR 的技术决策已遵守
-- 追溯链完整（[REQ-XXX] 引用）
-- **L0 文件无方法体伪代码**（如有，立即移入 `.detail.md §3`）
-- **触发 R1-R5 时已创建 `.detail.md`**（否则标记「待补充」）
-
-### 可实施性
-
-- 操作契约表格完整（每个核心操作都有对应行）
-- 测试策略明确（单元/集成/E2E）
-- 如已创建 `.detail.md`，§3 每个小节都填写了「准入理由」
-- 部署流程清晰（如需要）
-
----
-
-## 常见场景与最佳实践
-
-### 场景1: 设计前端系统
-
-**核心关注**:
-
-- 组件设计（可复用性、Props接口）
-- 状态管理（Context vs Zustand vs Redux）
-- 路由设计（React Router）
-- 性能优化（懒加载、Code Splitting）
-
-**调研主题**:
-
-- "React组件设计模式 2025"
-- "React状态管理最佳实践"
-- "前端性能优化技巧"
-
-**Trade-offs示例**:
-
-- Context API vs Zustand
-- CSS-in-JS vs TailwindCSS
-
----
-
-### 场景2: 设计后端API系统
-
-**核心关注**:
-
-- API设计（RESTful vs GraphQL）
-- 认证授权（JWT vs Session）
-- 数据库连接（ORM vs 原生SQL）
-- 缓存策略（Redis、本地缓存）
-
-**调研主题**:
-
-- "FastAPI最佳架构 2025"
-- "RESTful API设计最佳实践"
-- "API性能优化与缓存"
-
-**Trade-offs示例**:
-
-- JWT vs Session
-- PostgreSQL vs MongoDB
-- SQLAlchemy ORM vs 原生SQL
-
----
-
-### 场景3: 设计数据库系统
-
-**核心关注**:
-
-- Schema设计（规范化 vs 反规范化）
-- 索引策略（B-tree vs Hash）
-- 事务隔离级别
-- 备份恢复策略
-
-**调研主题**:
-
-- "PostgreSQL数据库设计最佳实践"
-- "数据库索引优化策略"
-- "PostgreSQL性能调优"
-
-**Trade-offs示例**:
-
-- 规范化（3NF）vs 性能优化（反规范化）
-- ACID vs 最终一致性
-
----
-
-### 场景4: 设计多智能体系统
-
-**核心关注**:
-
-- Agent协作模式（Supervisor、Workflow）
-- 消息传递格式
-- 工具调用设计
-- 错误处理与重试
-
-**调研主题**:
-
-- "LangGraph多智能体设计模式"
-- "LLM工具调用最佳实践"
-- "Agent错误处理策略"
-
-**Trade-offs示例**:
-
-- Supervisor模式 vs Workflow模式
-- Function Calling vs 文本解析
-
----
-
-## 快速上手示例
-
-**任务**: 为后端API系统设计文档
-
-**Step 1: 发现 (Discover)**
-
-```
-系统: backend-api-system
-职责: 处理前端API请求、业务逻辑、数据库交互
-边界: 输入HTTP请求 → 输出JSON响应
-关联需求: [REQ-001] 用户登录, [REQ-002] Dashboard数据
-```
-
-**Step 2: 深潜 (Deep-Dive)**
-
-```
-/explore "FastAPI后端系统最佳架构设计 2025"
-→ 产出: _research/backend-api-system-research.md
-```
-
-**Step 3-5: 分解 + 设计 + 防御**
-
-```
-使用 `sequential-thinking` 组织 3—7 个 thought:
-1. 采用分层架构 (Presentation → Business → Data)
-2. 核心组件: AuthService, UserService, DatabaseManager
-3. API设计: POST /auth/login, GET /users/me
-4. 数据模型: User(id, email, passwordHash)
-5. 技术栈: FastAPI + SQLAlchemy + PostgreSQL
-6. Trade-off: 为什么用JWT而不是Session？
-7. 性能: Redis缓存用户信息，TTL 5分钟
-8. 安全: bcrypt密码哈希，Rate limiting
-...
-```
-
-**Step 6: 文档化 (Document)**
-
-```
-使用模板填充14章节 → 保存到:
-.anws/v{N}/04_SYSTEM_DESIGN/backend-api-system.md
-```
-
----
-
-**记住**: 好的设计是站在巨人肩膀上的。  
-调研业界最佳实践，深度思考权衡，清晰文档化。
-
-Happy Designing! 
+<completion_criteria>
+- `system_id` 与 `TARGET_DIR` 已由 `/design-system` 宿主确认。
+- 输出遵守 `.agents/skills/output-contract/SKILL.md` 的落盘与协作闭环。
+- L0/L1 边界、R1-R5、必需 1-11 章、可选 12-14 章语义清楚。
+- 所有公共契约均有来源锚点与验证责任。
+- 本 skill 仅服务 `/design-system`，不越权修改 PRD、ADR、Architecture 或 05A/05B。
+</completion_criteria>

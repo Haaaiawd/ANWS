@@ -42,7 +42,7 @@ python $SKILL_DIR/scripts/extract_ast.py $repo_path > $AST_JSON
 python $SKILL_DIR/scripts/git_detective.py $repo_path --days 90 > $GIT_JSON
 ```
 
-> `$SKILL_DIR` 为本 Skill 的安装路径（`.agent/skills/nexus-query` 或独立 repo 路径）。
+> `$SKILL_DIR` 为本 Skill 的安装路径（通常是 `.agents/skills/nexus-query`，投影到目标 IDE 时以该目标的 skills 目录为准）。
 
 **依赖安装（首次使用）**：
 ```bash

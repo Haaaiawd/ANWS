@@ -21,7 +21,7 @@ This skill carries the execution detail of `/craft`.
 - A weak document sounds energetic but depends on improvisation.
 
 > **Split from `output-contract`**: This file covers **scaffolds** for workflows/skills/prompts only. Shared on-disk spec, parent/child delegation, and single-writer rules live in **`.agents/skills/output-contract/SKILL.md`**.  
-> **CLI install manifest**: what copies on `anws init`, canonical vs **`templates_alpha*`** overlay, and merge checklists—read **`references/BUNDLE_POLICY.md`**.
+> **CLI install manifest**: what copies on `anws init`, registry + **`BUNDLE_POLICY`** boundaries—read **`references/BUNDLE_POLICY.md`**.
 
 ---
 

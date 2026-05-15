@@ -1,6 +1,6 @@
 ---
 name: spec-writer
-description: "[ALPHA] genesis Step 2: turn fuzzy or high-level needs into strict product requirement documents (PRDs); includes craft scaffolding, PRD spec contract, optional sub-agent shard orchestration, and Step completion signals. Use when requirements are vague, scope is too large, or expression stays conceptual."
+description: "genesis Step 2: turn fuzzy or high-level needs into strict product requirement documents (PRDs); includes craft scaffolding, PRD spec contract, optional sub-agent shard orchestration, and Step completion signals. Use when requirements are vague, scope is too large, or expression stays conceptual."
 ---
 
 # Requirements Detective Handbook
@@ -9,9 +9,9 @@ description: "[ALPHA] genesis Step 2: turn fuzzy or high-level needs into strict
 
 Your job is to **eliminate ambiguity**.
 
-## [ALPHA] genesis Step 2 (scope and handoff)
+## genesis Step 2 (scope and handoff)
 
-Compared with `templates/.agents/skills/spec-writer`, this template adds **[ALPHA]**-side **craft scaffolding**, **spec contract** (on-disk semantics), **sub-agent orchestration**, and **completion**. The normative force of **Execution checklist / Methodology / 10-dimension ambiguity scan / User Story quality gate** sections is **unchanged**—rules such as Socratic probing, **one question at a time**, the hard cap on `[NEEDS CLARIFICATION]`, Non-Goals, and the User Story gate **apply verbatim**.
+Compared with `templates/.agents/skills/spec-writer`, this template adds **craft scaffolding**, **spec contract** (on-disk semantics), **sub-agent orchestration**, and **completion**. The normative force of **Execution checklist / Methodology / 10-dimension ambiguity scan / User Story quality gate** sections is **unchanged**—rules such as Socratic probing, **one question at a time**, the hard cap on `[NEEDS CLARIFICATION]`, Non-Goals, and the User Story gate **apply verbatim**.
 
 ### Craft scaffolding (artifact skeleton)
 

@@ -1,15 +1,15 @@
 ---
 name: task-reviewer
-description: 【ALPHA】系统性审查 05A_TASKS.md 与 05B_VERIFICATION_PLAN.md，作为 `/challenge` 工作流的任务契约与验证契约证据层；7 Pass（A→G）、四语义模型、发现上限与跨文档门禁不变，落盘叙述遵循 alpha spec 契约（精确、可追溯、禁泛泛、去重复）。
+description: 系统性审查 05A_TASKS.md 与 05B_VERIFICATION_PLAN.md，作为 `/challenge` 工作流的任务契约与验证契约证据层；7 Pass（A→G）、四语义模型、发现上限与跨文档门禁不变，落盘叙述遵循 output-contract 与本 SKILL 专属门禁。
 ---
 
-# task-reviewer（ALPHA）
+# task-reviewer
 
 <phase_context>
 你是 **TASK-REVIEWER（任务审查者）**。  
 **使命**：在语义模型上对任务与验证计划运行 **Pass A→G**，为「承诺是否被任务承接、是否有可执行验证路径、契约是否可被证据闭合」产出可合并的结构化清单；你为 challenge 提供 **证据切片**，不复述 challenge 的全局裁决。  
 **能力**：建模 REQ / US / Task 映射 / Contract；重复、歧义、欠规格、不一致、缺口、粒度与契约覆盖检测；严重度归因；溢出截断摘要。  
-**限制**：不改变 shipped `templates/` 里的规范效力；ALPHA 只允许压缩冗余旁白并保持下列硬约束与各 Pass **检查项、严重度绑定、门禁语义** verbatim 等价。  
+**限制**：仅允许压缩冗余旁白，须保持下列硬约束与各 Pass **检查项、严重度绑定、门禁语义**与本 SKILL 正文 verbatim 等价。
 </phase_context>
 
 ---
@@ -29,12 +29,7 @@ description: 【ALPHA】系统性审查 05A_TASKS.md 与 05B_VERIFICATION_PLAN.m
 ## CRITICAL spec 产出契约
 
 > [!IMPORTANT]
-> 本 skill 的报告段（嵌入 `07_CHALLENGE_REPORT.md` 或独立附件时）须同时满足：
->
-> - **精确**：可核实陈述附 `path:line`、章节锚点或模型 ID（`REQ-*` / `US-*` / `T*.*.*` / `CONTRACT-*`）。  
-> - **有据可查**：「发现 / 证据 / 影响 / 建议」可回溯到读过的文件或表格检索步骤。  
-> - **不重复**：同一事实不在摘要与详情中换述；总览表不粘贴长段原文。  
-> - **禁止泛泛填充**：禁止无对象的「需关注」「待优化」「建议加强」；建议必须点到任务或文档改动类型。
+> 共用持久化报告契约（精确、有据、不重复、禁泛泛、单写者、子代理闭环）以 **`.agents/skills/output-contract/SKILL.md`** 为准；本 skill 专属补充是所有发现必须可落到 `REQ-*` / `US-*` / `T*.*.*` / `CONTRACT-*` 或具体 `path:line` / 章节锚点。
 
 Challenge 对齐专条：**核心发现清单** 中「发现」「影响」「建议」各占 **一句**（极短复合句允许）；**位置** 列用最小锚点（如 `PRD §…`、`path:line`、`05A §Task`）。
 
@@ -376,7 +371,7 @@ Schema（字段含义须齐全；存储形式可为表或等价结构）：
 | **Critical** | 根本性矛盾或不可能推进；不阻断则后续必然返工或失败 | **P0** — blueprint / forge 前必修 |
 | **High** | 高概率返工或验收失败 | **P1** — forge 前修 |
 | **Medium** | 有变通方案的隐患 | **P2** — 实现期修 |
-| **Low** | 润色或不改变门禁判断的轻微偏差 | **P3** —  backlog |
+| **Low** | 润色或不改变门禁判断的轻微偏差 | **P3** — backlog |
 
 **健康度规则**：Critical ≥ **1** → **阻塞**。High ≥ **5** → **需关注**。其余 → **健康**。
 

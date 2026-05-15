@@ -1,11 +1,11 @@
 ---
-description: "【ALPHA】/upgrade：anws update 后读 changelog、定级 Minor/Major、产人类可审计划并路由到 /change 或 /genesis；宿主不替下游落盘长模板。"
+description: "/upgrade：anws update 后读 changelog、定级 Minor/Major、产人类可审计划并路由到 /change 或 /genesis；宿主不替下游落盘长模板。"
 ---
 
-# /upgrade (ALPHA)
+# /upgrade
 
 <phase_context>
-你是 **UPGRADE ORCHESTRATOR（升级编排师）— ALPHA 线**。
+你是 **UPGRADE ORCHESTRATOR（升级编排师）**。
 
 **使命**：在 **`anws update` 已完成**的前提下，读取 `.anws/changelog/` 最新记录，判断 **Minor / Major**，生成可审升级计划，并在人类批准后**路由**到 `/change` 或 `/genesis`（由目标工作流执行写盘）。  
 **能力**：定位 changelog 与当前 `v{N}`、定级、框架→业务文档影响映射、路由建议、推断段 WARNING 标记规范。  
@@ -19,8 +19,8 @@ description: "【ALPHA】/upgrade：anws update 后读 changelog、定级 Minor/
 ## CRITICAL 凝练与版式（/craft + /challenge 思想）
 
 > [!IMPORTANT]
-> **craft**：改稿前 Read shipped `.agents/skills/craft-authoring/SKILL.md` 与 `.agents/workflows/craft.md`；各 `## Step …` 使用 **`### 做什么` / `### 为什么` / `### 怎么验收`**；`<completion_criteria>` 必填。  
-> **凝练**：计划与汇报 **一句一事**；定级规则与执行序 **不得削弱** shipped `templates/.../upgrade.md` 的硬约束。  
+> **craft**：改稿前 Read **`.agents/skills/craft-authoring/SKILL.md`** 与 **`.agents/workflows/craft.md`**；各 `## Step …` 使用 **`### 做什么` / `### 为什么` / `### 怎么验收`**；`<completion_criteria>` 必填。  
+> **凝练**：计划与汇报 **一句一事**；定级规则与执行序 **不得削弱** 本 workflow 所载硬约束。
 > **不注入**：人类检查点展示**须含职能**（changelog 路径、当前 `v{N}`、定级、推荐路由、受影响文件+原因、推断风险提示、批准/拒绝/调整）——**不**粘贴整页 fenced 模板。
 
 ---
@@ -54,7 +54,7 @@ description: "【ALPHA】/upgrade：anws update 后读 changelog、定级 Minor/
 
 ### 做什么
 
-按 shipped `upgrade` 规则（**仅** Minor/Major）：评估是否需**新架构版本**、是否动目录/多工作流协议、`01`/`02`/`03` **结构语义**、是否需保留旧版兼容叙事。逐条记录**是/否+一句理由**。
+按本 workflow **Minor / Major** 分级（**仅**此两档）：评估是否需**新架构版本**、是否动目录/多工作流协议、`01`/`02`/`03` **结构语义**、是否需保留旧版兼容叙事。逐条记录**是/否+一句理由**。
 
 ### 为什么
 
@@ -105,9 +105,9 @@ upgrade 与执行工作流解耦，避免双写。
 
 ### 做什么
 
-- **Minor**：读取宿主挂载的 **`/change`** 工作流（若使用 `templates_alpha` overlay 则读同树 `change.md`），将 Step 2 映射作为输入；后续**全部**遵守 `/change` 权限与签名；若执行中发现超出 `/change` → 停止并改 `/genesis`。  
-- **Major**：读取 **`/genesis`**（同上 overlay 规则），将 Step 2 作为新版本演进输入；遵守 Copy & Evolve 与版本规则。  
-- 需 AI 补全且非纯机械替换的段落：段前加 shipped 规定的 **`> [!WARNING] AI 推断填充，请人类复核。`**  
+- **Minor**：读取宿主挂载的 **`/change`** 工作流（**`.agents/workflows/change.md`**，与当前工作区同源），将 Step 2 映射作为输入；后续**全部**遵守 `/change` 权限与签名；若执行中发现超出 `/change` → 停止并改 `/genesis`。  
+- **Major**：读取 **`/genesis`**，将 Step 2 作为新版本演进输入；遵守 Copy & Evolve 与版本规则。  
+- 需 AI 补全且非纯机械替换的段落：段前加 **`> [!WARNING] AI 推断填充，请人类复核。`**
 - **业务常量**（领域术语、产品目标、用户故事业务意图、团队约束、自定义边界）**禁止**被框架升级覆盖。
 
 ### 为什么

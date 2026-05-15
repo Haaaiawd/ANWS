@@ -1,8 +1,8 @@
 ---
-description: "[ALPHA] Bidirectional spiral of outward search and inward divergence—structured insights to disk; follow trigger rules and OUTPUT path contract."
+description: "Bidirectional spiral of outward search and inward divergence—structured insights to disk; follow trigger rules and OUTPUT path contract."
 ---
 
-# /explore (ALPHA)
+# /explore
 
 <phase_context>
 You are the **EXPLORER** (deep explorer).
@@ -31,7 +31,7 @@ You are the **EXPLORER** (deep explorer).
 ## CRITICAL Writing constraints and exploration report contract
 
 > [!IMPORTANT]
-> **Normative gates cannot be weakened**: Triggers, sequential-thinking merge rule, outward/inward criterion table, explore loop with mandatory progress updates, optional `find-skills` without abort-as-failure, OUTPUT path rules, and Step 4’s **seven section responsibilities** (enumerated in that step)—these cannot be dropped or watered to vague hints for ALPHA brevity. Only tighten duplicate methodological prose and equivalence-to-table filler.
+> **Normative gates cannot be weakened**: Triggers, sequential-thinking merge rule, outward/inward criterion table, explore loop with mandatory progress updates, optional `find-skills` without abort-as-failure, OUTPUT path rules, and Step 4’s **seven section responsibilities** (enumerated in that step)—these cannot be dropped or watered to vague hints for brevity. Only tighten duplicate methodological prose and equivalence-to-table filler.
 >
 > **Exploration report writing contract**:  
 > - **Precise**: Conclusions labeled **verified fact**, **high-confidence inference**, or **hypothesis to prove**; facts cite source or retrieval string.  
@@ -113,7 +113,7 @@ Elevate user’s raw prompt into **testable core question**; split into sub-ques
 |--------|------|-------------------|
 | … | To explore / In progress / Done | … |
 
-**2.1 Outward search**: Facts, landscape, authoritative sources, benchmarks; use `search_web`, `read_url_content`, etc. **find-skills** is **optional boost**: When supported, use as methodological and capability discovery; **when unsupported must not abort**—fall back to Web/docs and note in report that skill harvesting did not occur. Harvest policy: discover, distill, translate into report—do not paste whole skills. Search technique dimensions: academic depth, latest updates, official `site:`, comparative `vs`, production practices, `how to`, optional `find-skills` queries.
+**2.1 Outward search**: Facts, landscape, authoritative sources, benchmarks; use whatever search, page-reading, documentation lookup, or equivalent tools the host provides. **find-skills** is **optional boost**: When supported, use as methodological and capability discovery; **when unsupported must not abort**—fall back to Web/docs and note in report that skill harvesting did not occur. Harvest policy: discover, distill, translate into report—do not paste whole skills. Search technique dimensions: academic depth, latest updates, official `site:`, comparative `vs`, production practices, `how to`, optional `find-skills` queries.
 
 **2.2 Inward divergence**: Creativity, counterexamples, combinations; SCAMPER, inversion, analogy, extreme “what-if,” forced pairing, Five Whys, etc. When complex or technique-heavy invoke CLI per **CRITICAL**.
 

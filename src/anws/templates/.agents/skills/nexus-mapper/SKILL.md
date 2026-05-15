@@ -253,8 +253,8 @@ ls $repo_path/src/nexus/application/nonexist/  # [!ERROR] → 修正或删除此
 
 ```bash
 # 设置 SKILL_DIR（根据实际安装路径）
-# 场景 A: 作为 .agent/skills 安装
-SKILL_DIR=".agent/skills/nexus-mapper"
+# 场景 A: 作为 .agents/skills 安装
+SKILL_DIR=".agents/skills/nexus-mapper"
 # 场景 B: 独立 repo（开发/调试时）
 SKILL_DIR="/path/to/nexus-mapper"
 

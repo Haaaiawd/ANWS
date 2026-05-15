@@ -1,8 +1,8 @@
 ---
-description: "[ALPHA] Contract-fidelity challenge to design/tasks/implementation—evidence first, gates intact; produces 07_CHALLENGE_REPORT.md."
+description: "Contract-fidelity challenge to design/tasks/implementation—evidence first, gates intact; produces 07_CHALLENGE_REPORT.md."
 ---
 
-# /challenge (ALPHA)
+# /challenge
 
 <phase_context>
 You are the **CHALLENGER**.
@@ -31,14 +31,9 @@ You are the **CHALLENGER**.
 ## CRITICAL Writing constraints and report contract
 
 > [!IMPORTANT]
-> **Normative gates cannot be weakened**: Contract sources and commitment model, severity definitions, full adherence to `REVIEW_MODE` and each reviewer skill, Step 4.5 review gate, routing logic `/blueprint` before `/forge`, and round archival protocol are hard constraints; do not shorten, soften, or replace with implication because this is ALPHA or for length targets. The only tightening allowed is duplicate explanation, filler, and paraphrase already carried by tables.
+> **Normative gates cannot be weakened**: Contract sources and commitment model, severity definitions, full adherence to `REVIEW_MODE` and each reviewer skill, Step 4.5 review gate, routing logic `/blueprint` before `/forge`, and round archival protocol are hard constraints; do not shorten, soften, or replace with implication for length targets. The only tightening allowed is duplicate explanation, filler, and paraphrase already carried by tables.
 >
-> **Output documents (spec / report) writing contract**:
->
-> - **Precise**: Verifiable statements carry source, `path:line`, or section anchor.  
-> - **Traceable**: Findings, evidence, and recommendations map back to concrete files, interfaces, or search steps.  
-> - **Non-repetitive**: The same fact is not restated differently; overview must not paste long detail blocks.  
-> - **No generic filler**: Ban object-less phrases like “needs attention,” “to be optimized,” “recommend strengthening.”
+> **Shared report contract**: Persisted-report rules (precision, evidence, non-repetition, no filler, single-writer, delegation closure) are defined in **`.agents/skills/output-contract/SKILL.md`**.
 >
 > **Challenge table rule**: In **Core findings**, **Finding**, **Impact**, and **Recommendation** are each **one sentence** (very short compound allowed); the **Location** column uses minimal anchors (e.g. `PRD §x`, `path:line`, `05A §Task`).
 
@@ -79,11 +74,11 @@ You are the **CHALLENGER**.
 
 ---
 
-## ALPHA paired skills (same bundle as this line)
+## Paired skills (same bundle as this line)
 
 > [!IMPORTANT]
-> When using the **`templates_alpha/`** or **`templates_alpha_en/`** overlay, Step 3 / 3.5 / 3.7 must read **`design-reviewer`**, **`task-reviewer`**, and **`code-reviewer`** from the **same tree**: `.agents/skills/<id>/SKILL.md` (sibling of `workflows/challenge.md`). **Do not** mix, in one session, with skill revisions under shipped `templates/`—gates and table semantics will drift.  
-> **`nexus-mapper`**: **prefer** this bundle **`.agents/skills/nexus-mapper/`**; fall back to shipped **`templates/`** only if the full alpha tree is not mounted.
+> Step 3 / 3.5 / 3.7 read **`design-reviewer`**, **`task-reviewer`**, and **`code-reviewer`** from workspace `.agents/skills/<id>/SKILL.md` (sibling of `workflows/challenge.md`).
+> **`nexus-mapper`**: read **`.agents/skills/nexus-mapper/SKILL.md`** when installed by `anws`.
 
 ---
 

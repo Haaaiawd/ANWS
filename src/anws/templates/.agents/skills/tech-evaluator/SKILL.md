@@ -1,17 +1,17 @@
 ---
 name: tech-evaluator
-description: 【ALPHA】服务于 `/genesis` Step 3「技术选型」：以 ATAM 与 12 维加权矩阵评估候选栈，产出可追溯的对比结论与 ADR 升格素材；不写正式 ADR 文件（落盘在 Step 5）。与 shipped `templates/` 中同名 skill 同源；优先读本 bundle 内同相对路径的 references。
+description: 服务于 `/genesis` Step 3「技术选型」：以 ATAM 与 12 维加权矩阵评估候选栈，产出可追溯的对比结论与 ADR 升格素材；不写正式 ADR 文件（落盘在 Step 5）。优先读本 SKILL 旁 `references/`。
 ---
 
-# 技术评估师手册 — 【ALPHA】Genesis Step 3
+# 技术评估师手册 — Genesis Step 3
 
 > "没有最好的技术栈，只有最适合的技术栈。" —— ThoughtWorks Technology Radar
 
-本技能基于 **SEI 的 ATAM (Architecture Tradeoff Analysis Method)** 与 **加权决策矩阵**。在 **`templates_alpha/`** / **`templates_alpha_en/`** ALPHA 工作流中与 `/genesis` 绑定为 **Step 3**；ADR 的**正式写入**与编号治理以 **Step 5** 与 `genesis.md` 为准。
+本技能基于 **SEI 的 ATAM (Architecture Tradeoff Analysis Method)** 与 **加权决策矩阵**。在 **`/genesis`** 中与 **Step 3** 绑定；ADR 的**正式写入**与编号治理以 **Step 5** 与 `genesis.md` 为准。
 
 ---
 
-## CRITICAL /genesis 门禁（与 shipped skill 的差异收口）
+## CRITICAL /genesis 门禁（本线专用收口）
 
 > [!IMPORTANT]
 >
@@ -124,18 +124,18 @@ description: 【ALPHA】服务于 `/genesis` Step 3「技术选型」：以 ATAM
 
 | 维度            | 权重建议 | 评估问题            |
 | ------------- | ---- | --------------- |
-| **需求匹配**      | —    | 能否实现所有核心功能？     |
-| **扩展性**       | —    | 能否支撑 10x 增长？    |
-| **性能**        | —    | 能否满足响应时间 / 吞吐量？ |
-| **安全性**       | —    | 内置安全与合规支持？      |
-| **团队技能**      | —    | 熟悉度与学习曲线？       |
-| **人才市场**      | —    | 招聘与外包可得性？       |
-| **开发速度**      | —    | 迭代与交付速度？        |
-| **TCO (总成本)** | —    | 开发 + 运维 + 许可证？   |
-| **社区生态**      | —    | 库、工具与排障资源？      |
-| **长期维护**      | —    | 技术寿命与 LTS？       |
-| **集成能力**      | —    | 与存量与第三方集成？      |
-| **AI 就绪**     | —    | 接入 AI / LLM 的便利度？ |
+| **需求匹配**      | — | 能否实现所有核心功能？     |
+| **扩展性**       | — | 能否支撑 10x 增长？    |
+| **性能**        | — | 能否满足响应时间 / 吞吐量？ |
+| **安全性**       | — | 内置安全与合规支持？      |
+| **团队技能**      | — | 熟悉度与学习曲线？       |
+| **人才市场**      | — | 招聘与外包可得性？       |
+| **开发速度**      | — | 迭代与交付速度？        |
+| **TCO (总成本)** | — | 开发 + 运维 + 许可证？   |
+| **社区生态**      | — | 库、工具与排障资源？      |
+| **长期维护**      | — | 技术寿命与 LTS？       |
+| **集成能力**      | — | 与存量与第三方集成？      |
+| **AI 就绪**     | — | 接入 AI / LLM 的便利度？ |
 
 
 #### 做什么
@@ -195,7 +195,7 @@ ADR 核心价值在取舍与后果，不单是赢家声明。
 
 ---
 
-## 老师傅守则
+## ALPHA 决策守则
 
 1. **"无聊"技术优先**：除非有充分理由，选成熟栈。
 2. **创新预算有限**：每项目 1–2 个创新点配额，其余求稳。
@@ -206,7 +206,7 @@ ADR 核心价值在取舍与后果，不单是赢家声明。
 
 ## references 与同 bundle 路径说明
 
-本 bundle 在 **`templates_alpha/.agents/skills/tech-evaluator/references/`** 已包含与 shipped **`templates/`** 镜像的 **`ADR_TEMPLATE.md`**。读取时 **仅以本 SKILL 旁 `references/`** 为准；**禁止**同一会话与 shipped `templates/.agents/skills/tech-evaluator/` 混读同名条文。
+与本 SKILL 同级的 **`references/ADR_TEMPLATE.md`** 供 ADR 骨架引用。读取时 **仅以本 SKILL 旁 `references/`** 为准。
 
 | 文件 | 用途 |
 |------|------|
@@ -248,5 +248,5 @@ ADR 核心价值在取舍与后果，不单是赢家声明。
 - 交付物满足 **CRITICAL spec 产出契约**（可核对 / 可计算 / 可推演 / 可升格 / 验证策略显式）。
 - 在 `/genesis` Step 3 默认路径下，**未**对 `.anws/v{N}/03_ADR/` 进行 ADR 落盘。
 - Handoff checklist 全部为真或显式豁免项已记入最后一节「未决事项」。
-- 若装载自 `templates_alpha` 或 `templates_alpha_en`，与本次会话其他 skill 取自**同一 overlay 树**，不与 shipped `templates/` 混用同一步骤的异版 skill，以免门禁语义漂移。
+- 与同一会话内其它 skill 一致，均取自工作区 **`.agents/skills/`**。
 </completion_criteria>

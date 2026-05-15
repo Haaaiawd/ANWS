@@ -1,11 +1,11 @@
 ---
-description: "[ALPHA] /design-system: single-system detailed design; host owns order, gates, paths; sections, L0/L1 split, and 6D depth are authoritative in **this overlay** `.agents/skills/system-designer/` (mirrors shipped `templates/` at the same relative path)."
+description: "/design-system: single-system detailed design; host owns order, gates, paths; sections, L0/L1 split, and 6D depth are authoritative in workspace **`.agents/skills/system-designer/`**."
 ---
 
-# /design-system (ALPHA)
+# /design-system
 
 <phase_context>
-You are the **SYSTEM DESIGNER (ALPHA track)**.
+You are the **SYSTEM DESIGNER**.
 
 **Mission**: Produce (optionally two-layer) system design docs for one `<system-id>` with research, traceability, and conditional review gates satisfied.  
 **Capabilities**: version targeting, context load, `/explore` research, `sequential-thinking` selection, L0/L1 persistence from templates, conditional `/challenge`, `AGENTS.md` navigation line.  
@@ -19,7 +19,7 @@ You are the **SYSTEM DESIGNER (ALPHA track)**.
 ## CRITICAL concision & layout (/craft + /challenge spirit)
 
 > [!IMPORTANT]
-> **craft**: Before editing, Read shipped `.agents/skills/craft-authoring/SKILL.md` and `.agents/workflows/craft.md`; each `## Step …` uses **`### What to do` / `### Why` / `### How to verify`**; `<completion_criteria>` required.  
+> **craft**: Before editing, Read **`.agents/skills/craft-authoring/SKILL.md`** and **`.agents/workflows/craft.md`**; each `## Step …` uses **`### What to do` / `### Why` / `### How to verify`**; `<completion_criteria>` required.  
 > **Concision**: Persisted prose **one fact per sentence**; table discipline aligns with `/challenge` spirit (do not paste challenge body).  
 > **No injection**: Do not unfold full 6D prose, long FAQ, or giant optional-skill catalogs—**authority** is **`.agents/skills/system-designer/SKILL.md`** and the two reference templates above.
 
@@ -48,7 +48,7 @@ You are the **SYSTEM DESIGNER (ALPHA track)**.
 
 > [!IMPORTANT]
 > When this design defines public APIs, CLI semantics, config/file formats, error semantics, or cross-system protocols, Step 6 **must** run `/challenge` on `{system-id}.md`.  
-> If the host mounts **`templates_alpha` / `templates_alpha_en`** `challenge.md`, reviewer skills are read **only** from the **same bundle** `.agents/skills/*` paired there—**do not** mix, in one session, with shipped `templates/` skills of the same names.
+> When the host runs **`/challenge`**, read reviewer skills from the paired paths under the **same workspace** `.agents/skills/*` as that `challenge.md`.
 
 ---
 
@@ -196,7 +196,7 @@ Human sign-off plus team entry makes design externally visible.
 <completion_criteria>
 - **Concision & layout**: all Steps have the three subsections; no SKILL/template wall-of-text pasted as substitute for reading files.  
 - `system_id` + `TARGET_DIR` explicit; missing inputs caused correct stop.  
-- `/explore` executed with usable `_research`; Step 5 read shipped `system-designer` + templates and wrote L0 (+ conditional L1).  
+- `/explore` executed with usable `_research`; Step 5 read **`.agents/skills/system-designer/`** + templates and wrote L0 (+ conditional L1).  
 - Step 6 executed when contract gate applies, or waived with valid reason.  
 - Step 7 human prompts plus one-line `AGENTS.md` entry complete.  
 </completion_criteria>

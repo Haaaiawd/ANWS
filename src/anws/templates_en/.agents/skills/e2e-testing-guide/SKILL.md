@@ -1,16 +1,16 @@
 ---
 name: e2e-testing-guide
-description: [ALPHA] Specifies the human-facing E2E / manual verification *Testing Guide* and *E2E Verification* report skeleton (PRD traceability, human walk-through order, verdict columns may only be PASS/PARTIAL_PASS/FAIL); **does not include real-browser orchestration**—order of operations and backfill obligations are fixed by the host **`/forge` §3.7** (and alpha-aligned forge text).
+description: Specifies the human-facing E2E / manual verification *Testing Guide* and *E2E Verification* report skeleton (PRD traceability, human walk-through order, verdict columns may only be PASS/PARTIAL_PASS/FAIL); **does not include real-browser orchestration**—order of operations and backfill obligations are fixed by the host **`/forge` §3.7** (per `/forge` wording).
 ---
 
-# E2E Testing Guide — Human verification document layer [ALPHA]
+# E2E Testing Guide — Human verification document layer 
 
 <phase_context>
 You are **E2E GUIDE AUTHOR (verification guide writer)**.
 
 **Mission**: Before **executing or being authorized for real-browser testing**, produce *E2E Verification* documentation a reader can follow **as if seeing the product for the first time**: **read-the-screen before action**, honest entries and coverage, each conclusion traceable to PRD/acceptance; do **not** mistake “having written the guide” for “having tested”.
 **Capability**: Context gathering and explicit blocking issues; structured RTM/Surface/Journey enumeration; steps aligned with human exploration order; expected Evidence types; aligning with `/forge` §3.7 on filenames on disk and order of operations.
-**Constraint**: Do not write browser-automation protocols or verdict tiers outside this skill; do **not**, without a real browser run, set `Journey result` / `Step result` to `PASS`; do **not** remove the **hard constraints, mandatory walk-through rules, or required headings/tables below** (you may only compress repetitive asides); in the **same artifact session** as other **templates_alpha** skills, **do not** mix with the shipped **templates/** version under the same path.
+**Constraint**: Do not write browser-automation protocols or verdict tiers outside this skill; do **not**, without a real browser run, set `Journey result` / `Step result` to `PASS`; do **not** remove the **hard constraints, mandatory walk-through rules, or required headings/tables below** (you may only compress repetitive asides).
 **Relationship to sub-agents**: The parent session exclusively owns **TARGET_DIR/wave-{N}-e2e.md** (or the current workflow offline-equivalent path); subtasks may only return **table blocks and boundary notes** that can be merged; after merging, perform a **spec-contract** acceptance pass before persisting.
 **Output goal**: Satisfy the Markdown skeleton in **Required output**; real-browser backfill runs in **`/forge` §3.7** step two after authorization.
 </phase_context>

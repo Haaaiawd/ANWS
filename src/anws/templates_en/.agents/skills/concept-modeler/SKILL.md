@@ -1,9 +1,9 @@
 ---
 name: concept-modeler
-description: 【ALPHA】Use when user needs are vague or terminology is unclear. Clarifies domain concepts through interactive follow-up questions, extracting entities, flows, and dark matter (missing_components). Invoked by **alpha `/genesis` Step 1** after Step 0 has set `TARGET_DIR = .anws/v{N}`; use with the `templates_alpha` workflow bundle in the same bundle; **do not** mix in the same session with the shipped skill of the same name under `templates/`.
+description: Use when user needs are vague or terminology is unclear. Clarifies domain concepts through interactive follow-up questions, extracting entities, flows, and dark matter (missing_components). Invoked by **`/genesis` Step 1** after Step 0 has set `TARGET_DIR = .anws/v{N}`; use with **`/genesis`** in the same workspace.
 ---
 
-# Domain Modeler【ALPHA】
+# Domain Modeler
 
 > "If you cannot describe it clearly, you cannot build it." — Eric Evans
 
@@ -16,7 +16,7 @@ You are the **DOMAIN MODELER**.
 
 **Mission**: In `/genesis` **Step 1**, converge vague user wording into **Ubiquitous Language** and a machine-readable/writable `concept_model.json`; supply unambiguous nouns, verbs, and known gaps for PRD writing.  
 **Capabilities**: Vagueness scan (entities / verbs / dark matter / boundaries), controlled questioning (multiple choice or very short answers), incremental model maintenance on every answer, `glossary` and `clarifications` traceability.  
-**Constraints**: **Output only one question to the user at a time** (queue is internal only; do not dump the full list at the user); do not skip follow-up and fill JSON from memory; do not mix in-session with the shipped `templates/` `concept-modeler`; if the host provides a structured questioning tool (e.g. `ask question`), **prefer the tool** to ask.  
+**Constraints**: **Output only one question to the user at a time** (queue is internal only; do not dump the full list at the user); do not skip follow-up and fill JSON from memory; if the host provides a structured questioning tool (e.g. `ask question`), **prefer the tool** to ask.
 **Sub-agents (optional)**: Bounded slices only (e.g. "only generate vagueness candidates", "only reconcile glossary synonym conflicts"); after merge **the parent agent** is the sole writer of `.anws/v{N}/concept_model.json`; sub-agents must not race the same file.  
 **Output Goal**: `.anws/v{N}/concept_model.json` with field semantics matching the **spec contract** below; user-side closure on key terminology.
 </phase_context>
@@ -115,7 +115,7 @@ You are the **DOMAIN MODELER**.
 
 ## Triggering and host pairing
 
-- **Primary path**: alpha **`/genesis` Step 1**: after Step 0 has set `TARGET_DIR`, load this skill, run requirement clarification, and write `concept_model.json`.  
+- **Primary path**: **`/genesis` Step 1**: after Step 0 has set `TARGET_DIR`, load this skill, run requirement clarification, and write `concept_model.json`.  
 - **Secondary path**: if the user does domain scaffolding outside genesis, still follow this skill and write `concept_model.json` for the currently active version (path rules unchanged).
 
 ---
@@ -193,7 +193,7 @@ JSON on disk matches the latest conversation; no "answered everything then fabri
 
 ---
 
-## Veteran rules (stacked with ALPHA contract)
+## Veteran rules (stacked with this SKILL contract)
 
 1. **Do not assume**: Never default-understand user vocabulary; questions are contract sources.  
 2. **One at a time**: Only one outward question.  
@@ -227,4 +227,4 @@ JSON on disk matches the latest conversation; no "answered everything then fabri
 - [ ] **`clarifications`** matches outward question count or gaps are explainable.  
 - [ ] Model saved to **`TARGET_DIR/concept_model.json`** (equivalent **`.anws/v{N}/concept_model.json`**).  
 - [ ] User confirmed terminology understanding (verbal or "continue"-class signal—next genesis step gating is host-defined).  
-- [ ] Not mixed in-session with shipped **`templates/`** `concept-modeler`.
+- [ ] Session uses only workspace **`.agents/skills/concept-modeler/SKILL.md`**; no alternate-path paraphrase of the same skill.

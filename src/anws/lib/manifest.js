@@ -5,11 +5,11 @@ const { getTarget } = require("./adapters");
 /**
  * RESOURCE_REGISTRY — CLI `anws init` / `anws update` 的唯一「复制来源清单」
  *
- * - 每条 `source` 相对于 canonical **`templates/`**（见 `lib/resources` 的 `TEMPLATE_ROOT`）。
- * - 默认 `resolveCanonicalSource` / `resolveCanonicalPath(..., 'zh')` 只读该根目录；**不会**自动包含 `templates_alpha*`。英文包见 `resolveCanonicalPath(..., 'en')` + `templates_en/`（由 `anws init --locale` / install-lock `templateLocale` 驱动）。
+ * - 每条 `source` 相对于 **`templates/`** 下的相对路径（见 `lib/resources` 的 `TEMPLATE_ROOT`）；校验脚本只验证该根。
+ * - **`resolveCanonicalPath(rel, templateLocale)`**：`zh` 读 `templates/`；`en` 优先 `templates_en/` 同源路径，缺失则回退 `templates/`（由 `anws init --locale` / install-lock `templateLocale` 驱动）。
  * - **`templates/` 磁盘上可能存在未在此登记的路径**（遗留或备用）；未登记则 **不会** 投影到用户项目。
- * - **Alpha overlay**（`templates_alpha/`、`templates_alpha_en/`）整树 **默认不在登记范围内**；语义与合并决策见
- *   **`templates/.agents/skills/craft-authoring/references/BUNDLE_POLICY.md`**（及 EN 镜像）。
+ * - 发货模板为 **workflow/skill 正文**（与 `RESOURCE_REGISTRY` 登记一致）；安装边界与维护约定见
+ *   **`templates/.agents/skills/craft-authoring/references/BUNDLE_POLICY.md`**（及 `templates_en/` 镜像）。
  */
 const RESOURCE_REGISTRY = [
   {
@@ -162,18 +162,6 @@ const RESOURCE_REGISTRY = [
     type: "skill",
     source: ".agents/skills/output-contract/SKILL.md",
     fileName: "output-contract/SKILL.md",
-  },
-  {
-    id: "report-template",
-    type: "skill",
-    source: ".agents/skills/report-template/SKILL.md",
-    fileName: "report-template/SKILL.md",
-  },
-  {
-    id: "report-template-reference",
-    type: "skill",
-    source: ".agents/skills/report-template/references/REPORT_TEMPLATE.md",
-    fileName: "report-template/references/REPORT_TEMPLATE.md",
   },
   {
     id: "runtime-inspector",

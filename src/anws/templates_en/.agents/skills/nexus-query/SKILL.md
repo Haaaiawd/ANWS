@@ -42,7 +42,7 @@ python $SKILL_DIR/scripts/extract_ast.py $repo_path > $AST_JSON
 python $SKILL_DIR/scripts/git_detective.py $repo_path --days 90 > $GIT_JSON
 ```
 
-> `$SKILL_DIR` is this skill's install path (`.agent/skills/nexus-query` or standalone repo path).
+> `$SKILL_DIR` is this skill's install path, usually `.agents/skills/nexus-query`; when projected to a target IDE, use that target's skills directory.
 
 **Dependency install (first use)**:
 ```bash

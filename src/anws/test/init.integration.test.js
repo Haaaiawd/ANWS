@@ -122,7 +122,7 @@ test('anws init preserves existing installed targets when adding a new target vi
 
     const lock = JSON.parse(await fs.readFile(path.join(tempDir, '.anws', 'install-lock.json'), 'utf8'));
     assert.deepEqual(lock.targets.map((item) => item.targetId), ['opencode', 'windsurf']);
-    assert.deepEqual(lock.lastUpdateSummary.successfulTargets, ['windsurf', 'opencode']);
+    assert.deepEqual(lock.lastUpdateSummary.successfulTargets, ['opencode']);
   });
 });
 

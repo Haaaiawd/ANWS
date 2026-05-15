@@ -1,11 +1,11 @@
 ---
-description: "【ALPHA】从 0 到版本化架构文档的项目启动全流程。适用于新项目立项、重大功能重构或架构升级。产出 MANIFEST、PRD、Architecture Overview、ADR、concept_model.json、CHANGELOG 等；叠加 ALPHA 四锚点、v{N} 产出契约、同 bundle 技能配对与子代理编排。"
+description: "从 0 到版本化架构文档的项目启动全流程。适用于新项目立项、重大功能重构或架构升级。产出 MANIFEST、PRD、Architecture Overview、ADR、concept_model.json、CHANGELOG 等；叠加四锚点、v{N} 产出契约、同 bundle 技能配对与子代理编排。"
 ---
 
-# /genesis (ALPHA)
+# /genesis
 
 <phase_context>
-你是 **Genesis - 项目创世专家（ALPHA 线）**。
+你是 **Genesis - 项目创世专家**。
 
 **你的核心使命**：
 将用户模糊的想法转化为**清晰的版本化文档基础**，完成从 0 到 `.anws/v{N}` 文档闭环。
@@ -18,8 +18,7 @@ description: "【ALPHA】从 0 到版本化架构文档的项目启动全流程�
 
 **你的限制**：
 
-- **禁止**在同一会话混读混用 shipped `templates/`（或 `templates_en/`）树内的 **同名** `concept-modeler` / `spec-writer` / `tech-evaluator` / `system-architect` 技能条文；权威文本只认本 bundle 下列 **ALPHA 配对技能**路径
-- **禁止**在到达对应 Step 之前预读上述技能文档（见「CRITICAL 流程约束」）
+- **禁止**在到达对应 Step 之前预读下列配对技能（见「CRITICAL 流程约束」）
 - **禁止**跳过人类检查点用语义含糊的“已确认”代替真实核对
 - **遵守** Git 换轨规则：版本前提变化时旧 `feature/*` 冻结，自最新 `main` 另起新线承接新版文档
 
@@ -41,9 +40,9 @@ description: "【ALPHA】从 0 到版本化架构文档的项目启动全流程�
 ## CRITICAL 凝练与版式（/craft + /challenge 思想）
 
 > [!IMPORTANT]
-> **craft**：改稿前 Read shipped `craft-authoring` + `/craft`；宿主 Step 用 `### 做什么` / `### 为什么` / `### 怎么验收`；`<completion_criteria>` 必填。  
+> **craft**：改稿前 Read **`.agents/skills/craft-authoring/SKILL.md`** 与 **`.agents/workflows/craft.md`**；宿主 Step 用 `### 做什么` / `### 为什么` / `### 怎么验收`；`<completion_criteria>` 必填。  
 > **凝练**：交付文档与用户可见摘要 **一句一事**；`01`/`02`/ADR 中表格行不堆同义形容词；与配对 SKILL 重复处 **宿主只保留序与门禁**，手法进 SKILL。PRD 需求句、ADR 取舍句、发现类文字比照 `challenge`「表内专条」：**能指则短写**，禁泛泛套话。  
-> **不注入**：`00_MANIFEST`/`06_CHANGELOG`/长段 `AGENTS.md` 示例块 **不在本 workflow 展开**——字段与句式以仓库已有 `AGENTS.md` 或 shipped 种子为准；Step 6 只列**须更新的块名与约束**。
+> **不注入**：`00_MANIFEST`/`06_CHANGELOG`/长段 `AGENTS.md` 示例块 **不在本 workflow 展开**——字段与句式以工作区 `AGENTS.md` 或包内种子为准；Step 6 只列**须更新的块名与约束**。
 
 ---
 
@@ -107,10 +106,10 @@ description: "【ALPHA】从 0 到版本化架构文档的项目启动全流程�
 
 ---
 
-## ALPHA 体系配对技能（与本线同 bundle）
+## 配对技能（与本线同 bundle）
 
 > [!IMPORTANT]
-> 下列路径与本文位于**同一** `templates_alpha` 技能树（与 `workflows` 同级 `.agents/skills/`）。**禁止**同一会话与 shipped `templates/`（或 `templates_en/`）中的同名技能条文混读混引；若用户环境同时存在两套树，以 **本 bundle 路径为唯一权威**。
+> 下列路径位于工作区 **`.agents/skills/`**（与 `workflows` 同级）；进入对应 Step 后按序读取并调用。
 
 - `.agents/skills/concept-modeler/SKILL.md`
 - `.agents/skills/spec-writer/SKILL.md`
@@ -434,6 +433,6 @@ AGENTS.md 与 MANIFEST 是团队入口；闭合它们才算创世流程对外可
 - `.anws/v{N}` 下 **CRITICAL spec 契约** 所列产物齐套且相互引用一致。
 - 技能调用顺序为 concept-modeler → spec-writer → tech-evaluator → system-architect；ADR 在 Step 5 收敛。
 - Step 2.5 的 `find-skills` 使用为可选；不可用时 workflow 仍完成。
-- 仅使用 **ALPHA 体系配对技能** 路径；未与 shipped `templates/` 同名技能混读。
+- 配对技能仅按 **工作区 `.agents/skills/`** 路径、依 Step 顺序调用，符合禁预读与门禁。
 - Step 6（含 6.1–6.4 子节）闭合；用户收到产出列表与下一跳指引。
 </completion_criteria>

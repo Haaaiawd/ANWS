@@ -31,6 +31,8 @@ description: 当用户在 skills-only 环境中需要判断应该从哪个 anws 
 
 ## Workflow Map
 
+> `references/*.md` 由 CLI 在 skills-only target（如 Codex / Trae）投影生成：源文件仍是 canonical `.agents/workflows/*.md`。
+
 - `references/quickstart.md`
   - 用途：总入口。用于判断项目目前处于哪一阶段，以及应先调用哪个工作流
 - `references/probe.md`

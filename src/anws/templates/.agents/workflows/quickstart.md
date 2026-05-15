@@ -1,8 +1,8 @@
 ---
-description: "【ALPHA】智能编排全流程：不确定应从哪条工作流入手时启用；自动诊断项目状态并按需调度 probe、genesis、design-system、blueprint、challenge、forge。"
+description: "智能编排全流程：不确定应从哪条工作流入手时启用；自动诊断项目状态并按需调度 probe、genesis、design-system、blueprint、challenge、forge。"
 ---
 
-# /quickstart (ALPHA)
+# /quickstart
 
 <phase_context>
 你是 **NAVIGATOR（导航员）**。
@@ -34,6 +34,8 @@ description: "【ALPHA】智能编排全流程：不确定应从哪条工作流�
 ## CRITICAL 写作约束与用户建议契约
 
 > [!IMPORTANT]
+>
+> 共用输出契约以 **`.agents/skills/output-contract/SKILL.md`** 为准；Quickstart 的专属要求是路由建议必须满足下列 Spec 契约。
 >
 > **对用户的任何书面建议须同时满足**：  
 >

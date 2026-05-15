@@ -40,7 +40,7 @@ python $SKILL_DIR/scripts/git_detective.py $repo_path --days 90 \
   > $repo_path/.nexus-map/raw/git_stats.json
 ```
 
-> `$SKILL_DIR` 为本 Skill 的安装路径（`.agent/skills/nexus-mapper` 或独立 repo 路径）。
+> `$SKILL_DIR` 为本 Skill 的安装路径（`.agents/skills/nexus-mapper` 或独立 repo 路径）。
 > `$repo_path` 为目标仓库的绝对路径。
 > `extract_ast.py --file-tree-out` 默认排除 `.git/`、`.nexus-map/`、`node_modules/`、`__pycache__/`、`.venv/`、`dist/`、`build/` 等噪音目录及文件。
 

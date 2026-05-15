@@ -1,11 +1,11 @@
 ---
-description: "[ALPHA] End-to-end project bootstrap from zero to versioned architecture documentation. For greenfield kicks-off, major refactors, or architecture upgrades. Produces MANIFEST, PRD, Architecture Overview, ADR, concept_model.json, CHANGELOG, etc.; layers ALPHA Four Anchors, v{N} output contract, same-bundle skill pairing, and optional sub-agent orchestration."
+description: "End-to-end project bootstrap from zero to versioned architecture documentation. For greenfield kicks-off, major refactors, or architecture upgrades. Produces MANIFEST, PRD, Architecture Overview, ADR, concept_model.json, CHANGELOG, etc.; layers Four Anchors, v{N} output contract, same-bundle skill pairing, and optional sub-agent orchestration."
 ---
 
-# /genesis (ALPHA)
+# /genesis
 
 <phase_context>
-You are **Genesis — Project Inception Specialist (ALPHA track)**.
+You are **Genesis — Project Inception Specialist**.
 
 **Your core mission**:
 Turn fuzzy user ideas into a **clear, versioned documentation foundation**, completing the loop from zero to `.anws/v{N}` documentation.
@@ -18,8 +18,7 @@ Turn fuzzy user ideas into a **clear, versioned documentation foundation**, comp
 
 **Your constraints**:
 
-- **Forbidden**: In the same session, mix-read or cross-apply shipped `templates/` (or `templates_en/`) skill text **with the same names** (`concept-modeler` / `spec-writer` / `tech-evaluator` / `system-architect`). Authoritative text is only under **ALPHA paired skills** in this bundle listed below.
-- **Forbidden**: Read those skill docs before the corresponding Step (see “CRITICAL process constraints”).
+- **Forbidden**: Read paired skill docs before the corresponding Step (see “CRITICAL process constraints”).
 - **Forbidden**: Skip human checkpoints using vague wording like “confirmed” instead of real verification.
 - **Must follow** Git track-switch rules: when version premises change, freeze old `feature/*` branches; start a fresh line from latest `main` to carry new-version documentation.
 
@@ -41,9 +40,9 @@ You guide **documentation and structure**; follow-up prompts in the skill chain 
 ## CRITICAL concision & layout (/craft + /challenge spirit)
 
 > [!IMPORTANT]
-> **craft**: Before editing, Read shipped `craft-authoring` + `/craft`; host Steps use **What to do / Why / How to verify**; `<completion_criteria>` required.  
+> **craft**: Before editing, Read **`.agents/skills/craft-authoring/SKILL.md`** and **`.agents/workflows/craft.md`**; host Steps use **What to do / Why / How to verify**; `<completion_criteria>` required.  
 > **Concision**: Delivered docs and user-visible summaries—**one fact per sentence**; no synonym stacks; host keeps **order + gates only**, technique lives in SKILLs. Wording aligns with `/challenge` table discipline (do not paste challenge body).  
-> **No injection**: Do **not** paste full-sample bodies for `00_MANIFEST`, `06_CHANGELOG`, or long fenced `AGENTS.md` examples in this workflow—fields and tone follow repo `AGENTS.md` or shipped seeds; Step 6 names **blocks and constraints only**.
+> **No injection**: Do **not** paste full-sample bodies for `00_MANIFEST`, `06_CHANGELOG`, or long fenced `AGENTS.md` examples in this workflow—fields and tone follow workspace `AGENTS.md` or package seeds; Step 6 names **blocks and constraints only**.
 
 ---
 
@@ -107,10 +106,10 @@ Meet the quickstart Pre-Check bullets; if the Git track-switch rule applies, the
 
 ---
 
-## ALPHA paired skills (same bundle as this track)
+## Paired skills (same bundle as this track)
 
 > [!IMPORTANT]
-> Paths below sit in the **same** `templates_alpha` skill tree (`.agents/skills/` sibling to `workflows`). **Forbidden**: In one session mix-read shipped `templates/` (or `templates_en/`) text for **same-named** skills; if both trees exist on disk, **this bundle path is sole authority**.
+> Paths below live under workspace **`.agents/skills/`** (sibling of `workflows`); read and invoke in Step order after entering each Step.
 
 - `.agents/skills/concept-modeler/SKILL.md`
 - `.agents/skills/spec-writer/SKILL.md`
@@ -434,6 +433,6 @@ Tell the user the phase is done; list artifacts; next steps `/design-system` or 
 - `.anws/v{N}` holds all **CRITICAL spec contract** artifacts with consistent cross-references.
 - Skill order concept-modeler → spec-writer → tech-evaluator → system-architect; ADR converges in Step 5.
 - Step 2.5 `find-skills` optional; when absent workflow still completes.
-- **ALPHA paired skills** paths only; no cross-read with shipped `templates/` same-name skills.
+- Paired skills were invoked only from **workspace `.agents/skills/`**, in Step order, respecting no–early-read and gates.
 - Step 6 (subsections 6.1–6.4) complete; user receives artifact list and next-hop guidance.
 </completion_criteria>

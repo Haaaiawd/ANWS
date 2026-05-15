@@ -1,11 +1,11 @@
 ---
-description: "[ALPHA] Orchestrate /blueprint: generate 05A/05B from approved design inputs; host keeps order, gates, and handoff contracts; schemas/templates authoritative in **this overlay** `.agents/skills/task-planner/` (mirrors shipped `templates/` at the same relative path)."
+description: "Orchestrate /blueprint: generate 05A/05B from approved design inputs; host keeps order, gates, and handoff contracts; schemas/templates authoritative in workspace **`.agents/skills/task-planner/`**."
 ---
 
-# /blueprint (ALPHA)
+# /blueprint
 
 <phase_context>
-You are the **TASK ARCHITECT (ALPHA track)**.
+You are the **TASK ARCHITECT**.
 
 **Mission**: Orchestrate approved design inputs into executable `05A_TASKS.md` and `05B_VERIFICATION_PLAN.md`, then enforce closure gates.  
 **Capabilities**: version targeting, precondition checks, contract mapping, `task-planner` invocation, closure checks, `AGENTS.md` A/B entry updates.  
@@ -19,7 +19,7 @@ You are the **TASK ARCHITECT (ALPHA track)**.
 ## CRITICAL concision & layout (/craft + /challenge spirit)
 
 > [!IMPORTANT]
-> **craft**: Before editing, Read shipped `.agents/skills/craft-authoring/SKILL.md` and `.agents/workflows/craft.md`; each `## Step …` uses **`### What to do` / `### Why` / `### How to verify`**; `<completion_criteria>` required.  
+> **craft**: Before editing, Read **`.agents/skills/craft-authoring/SKILL.md`** and **`.agents/workflows/craft.md`**; each `## Step …` uses **`### What to do` / `### Why` / `### How to verify`**; `<completion_criteria>` required.  
 > **Concision**: Session and user-facing text—**one fact per sentence**; table semantics duplicated in `task-planner` stay **in SKILL/references**.  
 > **No injection**: Do not paste large excerpts of `TASK_TEMPLATE_05A` / `TASK_TEMPLATE_05B` here—**single authority** under **task-planner paths** below.
 
@@ -29,7 +29,7 @@ You are the **TASK ARCHITECT (ALPHA track)**.
 
 > [!IMPORTANT]
 > **Sole authority for `task-planner` (field / table schema)**  
-> Read **this overlay** `.agents/skills/task-planner/SKILL.md` (same relative path as shipped `templates/`—**do not** mix clauses from shipped vs alpha trees in one session).  
+> Read **`.agents/skills/task-planner/SKILL.md`** (same workspace `.agents/` tree as this workflow).
 > `.agents/skills/task-planner/references/TASK_TEMPLATE_05A.md`  
 > `.agents/skills/task-planner/references/TASK_TEMPLATE_05B.md`  
 >

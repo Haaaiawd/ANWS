@@ -1,11 +1,11 @@
 ---
-description: "【ALPHA】/change：当前版本内受控变更与 05A/05B 回流；权限与十问闸门不减；与 task-planner 字段对齐；大段签名样例不注入宿主。"
+description: "/change：当前版本内受控变更与 05A/05B 回流；权限与十问闸门不减；与 task-planner 字段对齐；大段签名样例不注入宿主。"
 ---
 
-# /change (ALPHA)
+# /change
 
 <phase_context>
-你是 **CHANGE MANAGER（变更管理师）— ALPHA 线**。
+你是 **CHANGE MANAGER（变更管理师）**。
 
 **使命**：在**已进入 `/forge` 编码阶段之后**，处理当前 `v{N}` 内的受控变更、契约与任务/验证回流；仅当**前提演进**时升级到 `/genesis`。  
 **能力**：版本定位、十问分级、影响面定位、签名后改 `05A`/`05B`/`06`、ADR↔04 引用检测、与 `task-planner` 口径对齐的字段编辑。  
@@ -19,8 +19,8 @@ description: "【ALPHA】/change：当前版本内受控变更与 05A/05B 回流
 ## CRITICAL 凝练与版式（/craft + /challenge 思想）
 
 > [!IMPORTANT]
-> **craft**：改稿前 Read shipped `.agents/skills/craft-authoring/SKILL.md` 与 `.agents/workflows/craft.md`；各 `## Step …` 使用 **`### 做什么` / `### 为什么` / `### 怎么验收`**；`<completion_criteria>` 必填。  
-> **凝练**：对用户的计划与报告 **一句一事**；与 shipped `templates/.../change.md` 重复的十问逻辑 **不得删减为暗示**，可收紧仅为重复叙事。  
+> **craft**：改稿前 Read **`.agents/skills/craft-authoring/SKILL.md`** 与 **`.agents/workflows/craft.md`**；各 `## Step …` 使用 **`### 做什么` / `### 为什么` / `### 怎么验收`**；`<completion_criteria>` 必填。  
+> **凝练**：对用户的计划与报告 **一句一事**；本 workflow 所载十问逻辑 **不得删减为暗示**，可收紧仅为重复叙事。  
 > **不注入**：不在本文件展开完整「变更评估表」「签名检查点」长 fence——**须含字段/职能**在 Step 1、Step 3 以列表指明的为准。
 
 ---
@@ -28,7 +28,7 @@ description: "【ALPHA】/change：当前版本内受控变更与 05A/05B 回流
 ## CRITICAL 权限边界（闸门不可削弱）
 
 > [!IMPORTANT]
-> 以「**是否改变当前版本核心前提**」为准，**不以**所触文件类型为准。下列表格与 shipped `.agents/workflows/change.md` **语义等价**；若冲突以 shipped 为准并回修 alpha。
+> 以「**是否改变当前版本核心前提**」为准，**不以**所触文件类型为准。下列表格即本 workflow **权限边界**的规范表述。
 
 | 能力 | 允许 | 禁止 |
 |------|:----:|:----:|
@@ -78,7 +78,7 @@ description: "【ALPHA】/change：当前版本内受控变更与 05A/05B 回流
 
 ### 做什么
 
-须**逐条**回答下列 10 问（答案写入会话或短表；**本 workflow 不嵌** shipped 中的完整示例表）：
+须**逐条**回答下列 10 问（答案写入会话或短表；**本 workflow 不嵌**长示例表全文）：
 
 1. 是否改变需求目标/用户故事集合/边界？  
 2. 是否改变系统边界/关键执行模型/架构基线？  
@@ -145,7 +145,7 @@ description: "【ALPHA】/change：当前版本内受控变更与 05A/05B 回流
 
 ### 做什么
 
-按 shipped `change` 的叙事向用户说明：**为何**超出 `/change`、须新版本与换轨（Git 冻结 + 自 `main` 新 `feature/*`）；**不**在本文件嵌长通知模板。
+按 **Step 4** 意图向用户说明：**为何**超出 `/change`、须新版本与换轨（Git 冻结 + 自 `main` 新 `feature/*`）；**不**在本文件嵌长通知模板。
 
 ### 为什么
 

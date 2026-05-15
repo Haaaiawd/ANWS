@@ -1,10 +1,9 @@
 ---
 name: design-reviewer
-description: 【ALPHA】Load when `/challenge` needs design-side contract-closure evidence (three-dimensional architecture and system-design doc review); deliver anchorable, severity-graded findings for inclusion in 07_CHALLENGE_REPORT—not final rulings outside challenge context.
+description: Load when `/challenge` needs design-side contract-closure evidence (three-dimensional architecture and system-design doc review); deliver anchorable, severity-graded findings for inclusion in 07_CHALLENGE_REPORT—not final rulings outside challenge context.
 ---
 
-# design-reviewer (ALPHA)
-
+# design-reviewer
 > Naming design defects before implementation is an order of magnitude cheaper than settling the debt after production.
 
 Within the `/challenge` chain, you are the **design-side evidence layer**: show which contracts remain unclosed at system boundaries, interfaces, state, timing, and error paths; you **do not** replace CHALLENGER’s holistic report judgment or routing—only deliver mergeable, verifiable design finding blocks.
@@ -28,10 +27,10 @@ Within the `/challenge` chain, you are the **design-side evidence layer**: show 
 
 > [!IMPORTANT]
 >
-> - **Precise**: Every finding carries **minimal sufficient anchors** (`path`, explicit title / subsection name, or stable chapter id); do not write only “see architecture doc”.
+> Shared persisted-report rules (precision, evidence, non-repetition, no filler, single-writer, delegation closure) are defined in **`.agents/skills/output-contract/SKILL.md`**; this skill only adds design-review-specific anchor and severity rules.
+> - **Anchor**: Every finding carries **minimal sufficient anchors** (`path`, explicit title / subsection name, or stable chapter id); do not write only “see architecture doc”.
 > - **Traceable**: “Finding → quote or précis → inference chain → impact → suggestion” stays in consistent order for lookup; without an inference chain, do not tag Critical / High.
-> - **No duplication**: Same gap keeps only one master finding; the summary table does not paste long detail blobs.
-> - **No padding**: Forbidden: object-free “attention needed”, “recommend strengthening”, “to optimize”; in the **Core findings table**, **finding / impact / suggestion** are each **one sentence** (very short compound sentences allowed).
+> - **Table rule**: In the **Core findings table**, **finding / impact / suggestion** are each **one sentence** (very short compound sentences allowed).
 > - **Quality over quantity**: A few high-signal findings beat a pile of guesses.
 
 ---
